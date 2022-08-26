@@ -1,0 +1,23 @@
+# https://github.com/prometheus/alertmanager/blob/v0.24.0/doc/examples/simple.yml
+---
+global:
+  smtp_smarthost: 'email-smtp.eu-central-1.amazonaws.com:587'
+  smtp_from: 'alert@local.naim.run'
+  smtp_auth_username: '<secret>'
+  smtp_auth_password: '<secret>'
+
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  receiver: none
+  routes:
+    - matchers:
+        - severity="warning"
+      receiver: devops
+    
+receivers:
+  - name: devops
+    email_configs:
+      - to: 'person@local.naim.run'
+      - to: 'devops-team@local.naim.run'
+  - name: none
+  

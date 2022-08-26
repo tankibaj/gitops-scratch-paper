@@ -1,0 +1,73 @@
+kube-prometheus-stack:
+  fullnameOverride: prometheus # Provide a name to substitute for the full names of resources
+  
+  alertmanager:
+    enabled: false
+  
+  grafana:
+    enabled: false
+
+  kubeApiServer:
+    enabled: false
+
+  kubelet:
+    enabled: true
+
+  kubeControllerManager:
+    enabled: false
+
+  coreDns:
+    enabled: false
+
+  kubeDns:
+    enabled: false
+
+  kubeEtcd:
+    enabled: false
+
+  kubeScheduler:
+    enabled: false
+
+  kubeProxy:
+    enabled: false
+
+  kubeStateMetrics:
+    enabled: true
+  
+  kube-state-metrics:
+    fullnameOverride: kube-state-metrics
+
+  nodeExporter:
+    enabled: true
+    
+  prometheus-node-exporter:
+    fullnameOverride: node-exporter
+
+  prometheusOperator:
+    enabled: true
+    admissionWebhooks: # https://github.com/prometheus-community/helm-charts/issues/418#issuecomment-740578727
+      failurePolicy: Ignore
+    ## If true, the operator will create and maintain a service for scraping kubelets
+    kubeletService:
+      enabled: true
+  
+  
+  prometheus:
+    enabled: true
+    
+    prometheusSpec:
+      # Remote Write all the scrapped data to Cortex side with specific header parameter
+      remoteWrite:
+        - name: cortex
+          url: https://cortex.local.naim.run/api/prom/push/org2
+      
+      # How long to retain metrics
+      retention: 1d
+      
+      # Configure Persistent Volume for Prometheus storage
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 5Gi

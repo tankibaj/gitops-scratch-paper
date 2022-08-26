@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: promtail-appset
+  namespace: argocd
+  labels:
+    name: logging
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+            url: https://kubernetes.default.svc
+            values:
+              tag: production
+              loki_endpoint: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+          - cluster: development
+            url: https://development-cluster.local.naim.run
+            values:
+              tag: production
+              loki_endpoint: https://loki.local.naim.run/loki/api/v1/push
+  template:
+    metadata:
+      name: 'promtail-{{cluster}}'
+      labels:
+        name: logging
+    spec:
+      project: gitops
+      source:
+        repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+        targetRevision: main
+        path: promtail/{{values.tag}}
+        helm:
+          releaseName: promtail
+          values: |
+            promtail:
+              config:
+                clients:
+                  - url: '{{values.loki_endpoint}}'
+                    external_labels:
+                      cluster: '{{cluster}}'
+      destination:
+        server: '{{url}}'
+        namespace: promtail
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true

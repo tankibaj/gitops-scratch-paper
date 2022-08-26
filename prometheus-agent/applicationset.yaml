@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: prometheus-agent-appset
+  namespace: argocd
+  labels:
+    name: monitoring
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+            url: https://kubernetes.default.svc
+            values:
+              tag: in-cluster
+#          - cluster: development
+#            url: https://dev-cluster.local.naim.run
+#            values:
+#              tag: main
+  template:
+    metadata:
+      name: 'prometheus-agent-{{cluster}}'
+      labels:
+        name: monitoring
+    spec:
+      project: gitops
+      source:
+        repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+        targetRevision: main
+        path: prometheus-agent/{{values.tag}}
+        helm:
+          skipCrds: true # https://github.com/prometheus-operator/prometheus-operator/issues/4439#issuecomment-1110279191
+          releaseName: kube-prometheus
+          values: |
+            kube-prometheus-stack:
+              prometheus:
+                prometheusSpec:
+                  externalLabels:
+                    cluster: '{{cluster}}'
+      destination:
+        server: '{{url}}'
+        namespace: prometheus-agent
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true

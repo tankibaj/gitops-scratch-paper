@@ -1,0 +1,2 @@
+promtail:
+  fullnameOverride: promtail # -- Overrides the chart's computed fullname
