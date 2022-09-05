@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+  labels:
+    name: ingress-controller
+spec:
+  project: gitops
+  source:
+    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+    targetRevision: main
+    path: ingress-nginx
+    helm:
+      releaseName: nginx
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ingress-nginx
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
