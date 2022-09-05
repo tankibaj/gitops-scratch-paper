@@ -11,9 +11,9 @@ ingress-nginx:
         }
     
     ingressClassResource:
-      name: nginx                       # -- Name of the ingressClass
+      name: nginx-public                # -- Name of the ingressClass
       default: false                    # -- Is this the default ingressClass for the cluster
-      #ingressClass: nginx              # -- For backwards compatibility with ingress.class annotation, use ingressClass. Algorithm is as follows, first ingressClassName is considered, if not present, controller looks for ingress.class annotation.
+      #ingressClass: nginx-public       # -- For backwards compatibility with ingress.class annotation, use ingressClass. Algorithm is as follows, first ingressClassName is considered, if not present, controller looks for ingress.class annotation.
     
     replicaCount: 1
     
