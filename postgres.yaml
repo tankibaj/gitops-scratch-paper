@@ -1,23 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: harbor
+  name: postgres
   namespace: argocd
   labels:
-    name: harbor
+    name: db
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    path: harbor
+    path: postgres
     targetRevision: main
     helm:
-      releaseName: harbor
+      releaseName: postgres
       valueFiles:
         - values.yaml
         - secrets.enc.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: harbor
+    namespace: postgres
   syncPolicy:
     automated: { }

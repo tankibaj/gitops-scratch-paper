@@ -5,3 +5,4 @@ This repository contains all the GitOps-y stuff that I'm testing with. Most thin
 - [Observability Stack](observability.md)
 - [Ingress Nginx Controller](ingress-nginx.md)
 - [Harbor](harbor.md)
+- [PostgreSQL](postgres.md)
