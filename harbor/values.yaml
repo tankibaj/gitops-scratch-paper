@@ -1,0 +1,49 @@
+harbor:
+  expose:
+    type: ingress
+    tls:
+      enabled: false
+    ingress:
+      hosts:
+        core: registry.local.naim.run
+      className: nginx-public
+#      annotations:
+#        kubernetes.io/ingress.class: alb
+#        alb.ingress.kubernetes.io/load-balancer-name: harbor-ingress
+#        alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:XXXXXXXXX:certificate/XXXXXX
+#        alb.ingress.kubernetes.io/scheme: internet-facing
+#        alb.ingress.kubernetes.io/target-type: ip
+#        alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+#        alb.ingress.kubernetes.io/ssl-redirect: '443'
+#        alb.ingress.kubernetes.io/backend-protocol: HTTP
+#        alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+        
+  externalURL: https://registry.local.naim.run
+  
+  persistence:
+    enabled: true
+    imageChartStorage:
+      type: s3
+      s3:
+        region: eu-central-1
+        bucket: harbor-registry-demo
+        
+  registry:
+    # -- If true, the registry returns relative URLs in Location headers.
+    # -- Enable it if Harbor is behind the reverse proxy like ingress-Nginx or Traefik. Doesn't require it for AWS LB Controller.
+    # -- https://github.com/goharbor/harbor-helm/issues/345
+    relativeurls: true
+    
+  chartmuseum:
+    enabled: false
+
+  notary:
+    enabled: false
+    
+  database:
+    type: external
+    external:
+      host: "db-registry.local.naim.run"
+      port: "5432"
+      username: "harbor"
+      sslmode: "require"
