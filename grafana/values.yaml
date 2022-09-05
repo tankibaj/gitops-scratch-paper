@@ -34,11 +34,11 @@ grafana:
       name: Keycloak
       allow_sign_up: true
       client_id: grafana
-      scopes: profile email groups
+      scopes: openid profile email groups
       auth_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/auth
       token_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/token
       api_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/userinfo
-      role_attribute_path: contains(groups[*], 'Admin') && 'Admin' || contains(groups[*], 'DevOps') && 'Editor' || 'Viewer'
+      role_attribute_path: contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'developer') && 'Editor' || 'Viewer'
   
   ## Configure additional grafana datasource's (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
