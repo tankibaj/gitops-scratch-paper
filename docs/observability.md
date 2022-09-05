@@ -49,6 +49,13 @@ kubectl delete ns consul --force
 kubectl apply -f cortex.yaml
 ```
 
+#### Alert and Rule
+
+- [Alertmanager](../cortex-alert-rules/alertmanager.md)
+
+- [Rules](../cortex-alert-rules/rules.md)
+
+
 #### Clean up
 
 ```bash

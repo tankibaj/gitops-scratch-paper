@@ -1,8 +1,8 @@
 This repository contains all the GitOps-y stuff that I'm testing with. Most things are broken, so use at your own risk
 
 ## List
-- [ArgoCD project](project.md)
-- [Observability Stack](observability.md)
-- [Ingress Nginx Controller](ingress-nginx.md)
-- [Harbor](harbor.md)
-- [PostgreSQL](postgres.md)
+- [ArgoCD project](docs/project.md)
+- [Observability Stack](docs/observability.md)
+- [Ingress Nginx Controller](docs/ingress-nginx.md)
+- [Harbor](docs/harbor.md)
+- [PostgreSQL](docs/postgres.md)

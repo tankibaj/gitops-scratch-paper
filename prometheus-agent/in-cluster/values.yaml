@@ -31,6 +31,11 @@ kube-prometheus-stack:
       datasources:
         enabled: true
         defaultDatasourceEnabled: false # Disable default kube-prometheus-stack datasource
+    
+    grafana.ini:
+      server:
+        domain: grafana-central.local.naim.run
+        root_url: https://grafana-central.local.naim.run
   
     ## Configure additional grafana datasources (passed through tpl)
     ## ref: http://docs.grafana.org/administration/provisioning/#datasources
@@ -140,18 +145,6 @@ kube-prometheus-stack:
 
   prometheus:
     enabled: true
-    # One ServiceMonitor CRD for scraping data from all Cortex components
-    #  additionalServiceMonitors:
-    #    - name: cortex-health-monitor
-    #      endpoints:
-    #        - path: /metrics
-    #          port: http-metrics
-    #      namespaceSelector:
-    #        matchNames:
-    #          - cortex
-    #      selector:
-    #        matchLabels:
-    #          app.kubernetes.io/name: cortex
     
     prometheusSpec:
       # Remote Write all the scrapped data to Cortex side with specific header parameter
@@ -172,7 +165,3 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 5Gi
-      
-      # Adding a common custom label for all the scrapped metrics
-#      externalLabels:
-#        cluster: "incluster"
