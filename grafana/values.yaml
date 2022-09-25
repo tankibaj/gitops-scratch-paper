@@ -22,12 +22,12 @@ grafana:
   
   grafana.ini:
     server:
-      domain: grafana.local.naim.run
+      #domain: grafana.local.naim.run
       root_url: https://grafana.local.naim.run
     
     auth:
       # -- Set to true to disable (hide) the login form, useful if you use OAuth
-      disable_login_form: false #true
+      disable_login_form: true # Defaults to false.
 
     auth.generic_oauth:
       enabled: true
