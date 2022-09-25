@@ -8,7 +8,7 @@ grafana:
   ingress:
     enabled: true
     hosts:
-      - dashboard.local.naim.run
+      - grafana.local.naim.run
     path: /
     pathType: Prefix
   
@@ -22,8 +22,8 @@ grafana:
   
   grafana.ini:
     server:
-      domain: dashboard.local.naim.run
-      root_url: https://dashboard.local.naim.run
+      domain: grafana.local.naim.run
+      root_url: https://grafana.local.naim.run
     
     auth:
       # -- Set to true to disable (hide) the login form, useful if you use OAuth
@@ -42,7 +42,7 @@ grafana:
   
   ## Configure additional grafana datasource's (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
-  additionalDataSources:
+  datasources:
     - name: Cortex
       access: proxy
       jsonData:
