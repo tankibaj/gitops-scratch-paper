@@ -597,4 +597,3 @@ data:
         "uid": "alertmanager-overview",
         "version": 0
     }
-{{- end }}

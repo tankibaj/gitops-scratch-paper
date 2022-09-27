@@ -1049,4 +1049,3 @@ data:
         "title": "Node Exporter / Nodes",
         "version": 0
     }
-{{- end }}
