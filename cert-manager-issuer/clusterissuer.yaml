@@ -10,7 +10,7 @@ spec:
     email: mail@thenaim.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory #https://acme-v02.api.letsencrypt.org/directory # -- Lets-encrypt production server
     privateKeySecretRef:
-      name: issuer-account-key # -- The secret resource that will be used to store the account's private key.
+      name: issuer-private-key # -- The secret resource that will be used to store the account's private key.
     solvers:
       - dns01: # -- DNS challenge solver
           # -- https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/
