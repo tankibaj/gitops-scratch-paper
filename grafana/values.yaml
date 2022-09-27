@@ -7,6 +7,8 @@ grafana:
   
   ingress:
     enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
     hosts:
       - grafana.local.naim.run
     path: /
