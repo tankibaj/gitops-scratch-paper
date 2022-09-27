@@ -14,8 +14,9 @@ grafana:
     path: /
     pathType: Prefix
     tls:
-      - hosts:
-        - grafana.local.naim.run
+      - secretName: grafana-tls
+        hosts:
+          - grafana.local.naim.run
   
   sidecar:
     dashboards:
