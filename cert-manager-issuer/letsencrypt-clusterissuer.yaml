@@ -8,7 +8,7 @@ metadata:
 spec:
   acme:
     email: mail@thenaim.com
-    server: https://acme-v02.api.letsencrypt.org/directory # -- Lets-encrypt production server
+    server: https://acme-staging-v02.api.letsencrypt.org/directory #https://acme-v02.api.letsencrypt.org/directory # -- Lets-encrypt production server
     privateKeySecretRef:
       name: issuer-account-key # -- The secret resource that will be used to store the account's private key.
     solvers:
@@ -21,4 +21,4 @@ spec:
               key: api-token
         selector:
           dnsZones:
-            - 'local.naim.run'
+            - "local.naim.run"

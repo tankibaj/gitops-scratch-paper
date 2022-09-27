@@ -1,0 +1,16 @@
+# -- https://cert-manager.io/docs/usage/certificate/#creating-certificate-resources
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-local-naim-run
+spec:
+  secretName: wildcard-local-naim-run-tls
+  commonName: "*.local.naim.run"
+  dnsNames:
+    - local.naim.run
+    - "*.local.naim.run"
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+    group: cert-manager.io
