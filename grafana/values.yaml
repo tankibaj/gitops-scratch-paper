@@ -7,8 +7,9 @@ grafana:
   
   ingress:
     enabled: true
+    ingressClassName: nginx-public
     annotations:
-      kubernetes.io/tls-acme: "true"
+#      kubernetes.io/tls-acme: "true"
 #      cert-manager.io/cluster-issuer: letsencrypt
     hosts:
       - grafana.local.naim.run
