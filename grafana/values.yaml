@@ -8,15 +8,16 @@ grafana:
   ingress:
     enabled: true
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
+      kubernetes.io/tls-acme: "true"
+#      cert-manager.io/cluster-issuer: letsencrypt
     hosts:
       - grafana.local.naim.run
     path: /
     pathType: Prefix
-    tls:
-      - secretName: grafana-tls
-        hosts:
-          - grafana.local.naim.run
+#    tls:
+#      - secretName: grafana-tls
+#        hosts:
+#          - grafana.local.naim.run
   
   sidecar:
     dashboards:
