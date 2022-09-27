@@ -1,9 +1,4 @@
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-overview
-  labels:
-    grafana_dashboard: "1"
 data:
   grafana-overview.json: |-
     {
@@ -317,7 +312,7 @@ data:
                     {
                         "expr": "sum by (status_code) (irate(grafana_http_request_duration_seconds_count{job=~\"$job\", instance=~\"$instance\"}[1m])) ",
                         "interval": "",
-                        "legendFormat": "{{`{{`}}status_code{{`}}`}}",
+                        "legendFormat": "{{status_code}}",
                         "refId": "A"
                     }
                 ],
@@ -614,8 +609,13 @@ data:
                 "1d"
             ]
         },
-        "timezone": "{{ .Values.grafana.defaultDashboardsTimezone }}",
+        "timezone": "Europe/Berlin",
         "title": "Grafana Overview",
         "uid": "6be0s85Mk",
         "version": 2
     }
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: grafana-overview

@@ -1,9 +1,4 @@
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: namespace-by-pod
-  labels:
-    grafana_dashboard: "1"
 data:
   namespace-by-pod.json: |-
     {
@@ -655,7 +650,7 @@ data:
                         "expr": "sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
+                        "legendFormat": "{{pod}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -756,7 +751,7 @@ data:
                         "expr": "sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                         "format": "time_series",
                         "intervalFactor": 1,
-                        "legendFormat": "{{`{{`}}pod{{`}}`}}",
+                        "legendFormat": "{{pod}}",
                         "refId": "A",
                         "step": 10
                     }
@@ -868,7 +863,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
+                                "legendFormat": "{{pod}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -969,7 +964,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
+                                "legendFormat": "{{pod}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1090,7 +1085,7 @@ data:
                                 "expr": "sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
+                                "legendFormat": "{{pod}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1191,7 +1186,7 @@ data:
                                 "expr": "sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])) by (pod)",
                                 "format": "time_series",
                                 "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}pod{{`}}`}}",
+                                "legendFormat": "{{pod}}",
                                 "refId": "A",
                                 "step": 10
                             }
@@ -1279,7 +1274,7 @@ data:
 
                     },
                     "datasource": "$datasource",
-                    "hide": {{ if .Values.grafana.sidecar.dashboards.multicluster.global.enabled }}0{{ else }}2{{ end }},
+                    "hide": 0,
                     "includeAll": false,
                     "label": null,
                     "multi": false,
@@ -1442,8 +1437,13 @@ data:
                 "30d"
             ]
         },
-        "timezone": "{{ .Values.grafana.defaultDashboardsTimezone }}",
+        "timezone": "Europe/Berlin",
         "title": "Kubernetes / Networking / Namespace (Pods)",
         "uid": "8b7a8b326d7a6f1f04244066368c67af",
         "version": 0
     }
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: namespace-by-pod

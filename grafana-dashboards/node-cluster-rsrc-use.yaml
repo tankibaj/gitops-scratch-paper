@@ -1,9 +1,4 @@
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: node-cluster-rsrc-use
-  labels:
-    grafana_dashboard: "1"
 data:
   node-cluster-rsrc-use.json: |-
     {
@@ -81,7 +76,7 @@ data:
                                 "expr": "((\n  instance:node_cpu_utilisation:rate5m{job=\"node-exporter\", cluster=\"$cluster\"}\n  *\n  instance:node_num_cpu:sum{job=\"node-exporter\", cluster=\"$cluster\"}\n) != 0 )\n/ scalar(sum(instance:node_num_cpu:sum{job=\"node-exporter\", cluster=\"$cluster\"}))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}} instance {{`}}`}}",
+                                "legendFormat": "{{ instance }}",
                                 "refId": "A"
                             }
                         ],
@@ -174,7 +169,7 @@ data:
                                 "expr": "(\n  instance:node_load1_per_cpu:ratio{job=\"node-exporter\", cluster=\"$cluster\"}\n  / scalar(count(instance:node_load1_per_cpu:ratio{job=\"node-exporter\", cluster=\"$cluster\"}))\n)  != 0\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
+                                "legendFormat": "{{instance}}",
                                 "refId": "A"
                             }
                         ],
@@ -280,7 +275,7 @@ data:
                                 "expr": "(\n  instance:node_memory_utilisation:ratio{job=\"node-exporter\", cluster=\"$cluster\"}\n  / scalar(count(instance:node_memory_utilisation:ratio{job=\"node-exporter\", cluster=\"$cluster\"}))\n) != 0\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
+                                "legendFormat": "{{instance}}",
                                 "refId": "A"
                             }
                         ],
@@ -373,7 +368,7 @@ data:
                                 "expr": "instance:node_vmstat_pgmajfault:rate5m{job=\"node-exporter\", cluster=\"$cluster\"}",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
+                                "legendFormat": "{{instance}}",
                                 "refId": "A"
                             }
                         ],
@@ -487,14 +482,14 @@ data:
                                 "expr": "instance:node_network_receive_bytes_excluding_lo:rate5m{job=\"node-exporter\", cluster=\"$cluster\"} != 0",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}} Receive",
+                                "legendFormat": "{{instance}} Receive",
                                 "refId": "A"
                             },
                             {
                                 "expr": "instance:node_network_transmit_bytes_excluding_lo:rate5m{job=\"node-exporter\", cluster=\"$cluster\"} != 0",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}} Transmit",
+                                "legendFormat": "{{instance}} Transmit",
                                 "refId": "B"
                             }
                         ],
@@ -595,14 +590,14 @@ data:
                                 "expr": "instance:node_network_receive_drop_excluding_lo:rate5m{job=\"node-exporter\", cluster=\"$cluster\"} != 0",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}} Receive",
+                                "legendFormat": "{{instance}} Receive",
                                 "refId": "A"
                             },
                             {
                                 "expr": "instance:node_network_transmit_drop_excluding_lo:rate5m{job=\"node-exporter\", cluster=\"$cluster\"} != 0",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}} Transmit",
+                                "legendFormat": "{{instance}} Transmit",
                                 "refId": "B"
                             }
                         ],
@@ -708,7 +703,7 @@ data:
                                 "expr": "(\n  instance_device:node_disk_io_time_seconds:rate5m{job=\"node-exporter\", cluster=\"$cluster\"}\n  / scalar(count(instance_device:node_disk_io_time_seconds:rate5m{job=\"node-exporter\", cluster=\"$cluster\"}))\n) != 0\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}} {{`{{`}}device{{`}}`}}",
+                                "legendFormat": "{{instance}} {{device}}",
                                 "refId": "A"
                             }
                         ],
@@ -801,7 +796,7 @@ data:
                                 "expr": "(\n  instance_device:node_disk_io_time_weighted_seconds:rate5m{job=\"node-exporter\", cluster=\"$cluster\"}\n  / scalar(count(instance_device:node_disk_io_time_weighted_seconds:rate5m{job=\"node-exporter\", cluster=\"$cluster\"}))\n) != 0\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}} {{`{{`}}device{{`}}`}}",
+                                "legendFormat": "{{instance}} {{device}}",
                                 "refId": "A"
                             }
                         ],
@@ -907,7 +902,7 @@ data:
                                 "expr": "sum without (device) (\n  max without (fstype, mountpoint) ((\n    node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\", cluster=\"$cluster\"}\n    -\n    node_filesystem_avail_bytes{job=\"node-exporter\", fstype!=\"\", cluster=\"$cluster\"}\n  ) != 0)\n)\n/ scalar(sum(max without (fstype, mountpoint) (node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\", cluster=\"$cluster\"})))\n",
                                 "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": "{{`{{`}}instance{{`}}`}}",
+                                "legendFormat": "{{instance}}",
                                 "refId": "A"
                             }
                         ],
@@ -991,7 +986,7 @@ data:
                         "value": ""
                     },
                     "datasource": "$datasource",
-                    "hide": {{ if .Values.grafana.sidecar.dashboards.multicluster.global.enabled }}0{{ else }}2{{ end }},
+                    "hide": 0,
                     "includeAll": false,
                     "label": null,
                     "multi": false,
@@ -1042,7 +1037,12 @@ data:
                 "30d"
             ]
         },
-        "timezone": "{{ .Values.grafana.defaultDashboardsTimezone }}",
+        "timezone": "Europe/Berlin",
         "title": "Node Exporter / USE Method / Cluster",
         "version": 0
     }
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: node-cluster-rsrc-use

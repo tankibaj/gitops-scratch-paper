@@ -1,9 +1,4 @@
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nodes-darwin
-  labels:
-    grafana_dashboard: "1"
 data:
   nodes-darwin.json: |-
     {
@@ -81,7 +76,7 @@ data:
                                 "expr": "(\n  (1 - sum without (mode) (rate(node_cpu_seconds_total{job=\"node-exporter\", mode=~\"idle|iowait|steal\", instance=\"$instance\"}[$__rate_interval])))\n/ ignoring(cpu) group_left\n  count without (cpu, mode) (node_cpu_seconds_total{job=\"node-exporter\", mode=\"idle\", instance=\"$instance\"})\n)\n",
                                 "format": "time_series",
                                 "intervalFactor": 5,
-                                "legendFormat": "{{`{{`}}cpu{{`}}`}}",
+                                "legendFormat": "{{cpu}}",
                                 "refId": "A"
                             }
                         ],
@@ -481,24 +476,24 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)\"}[$__rate_interval])",
+                                "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__rate_interval])",
                                 "format": "time_series",
-                                "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}device{{`}}`}} read",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{device}} read",
                                 "refId": "A"
                             },
                             {
-                                "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)\"}[$__rate_interval])",
+                                "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__rate_interval])",
                                 "format": "time_series",
-                                "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}device{{`}}`}} written",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{device}} written",
                                 "refId": "B"
                             },
                             {
-                                "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)\"}[$__rate_interval])",
+                                "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__rate_interval])",
                                 "format": "time_series",
-                                "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}device{{`}}`}} io time",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{device}} io time",
                                 "refId": "C"
                             }
                         ],
@@ -525,7 +520,7 @@ data:
                         },
                         "yaxes": [
                             {
-                                "format": "Bps",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -533,7 +528,7 @@ data:
                                 "show": true
                             },
                             {
-                                "format": "percentunit",
+                                "format": "s",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -543,223 +538,111 @@ data:
                         ]
                     },
                     {
-                        "datasource": "$datasource",
-                        "fieldConfig": {
-                            "defaults": {
-                                "custom": {
+                        "aliasColors": {
 
-                                },
-                                "thresholds": {
-                                    "mode": "absolute",
-                                    "steps": [
-                                        {
-                                            "color": "green"
-                                        },
-                                        {
-                                            "color": "yellow",
-                                            "value": 0.8
-                                        },
-                                        {
-                                            "color": "red",
-                                            "value": 0.9
-                                        }
-                                    ]
-                                },
-                                "unit": "decbytes"
-                            },
-                            "overrides": [
-                                {
-                                    "matcher": {
-                                        "id": "byName",
-                                        "options": "Mounted on"
-                                    },
-                                    "properties": [
-                                        {
-                                            "id": "custom.width",
-                                            "value": 260
-                                        }
-                                    ]
-                                },
-                                {
-                                    "matcher": {
-                                        "id": "byName",
-                                        "options": "Size"
-                                    },
-                                    "properties": [
-                                        {
-                                            "id": "custom.width",
-                                            "value": 93
-                                        }
-                                    ]
-                                },
-                                {
-                                    "matcher": {
-                                        "id": "byName",
-                                        "options": "Used"
-                                    },
-                                    "properties": [
-                                        {
-                                            "id": "custom.width",
-                                            "value": 72
-                                        }
-                                    ]
-                                },
-                                {
-                                    "matcher": {
-                                        "id": "byName",
-                                        "options": "Available"
-                                    },
-                                    "properties": [
-                                        {
-                                            "id": "custom.width",
-                                            "value": 88
-                                        }
-                                    ]
-                                },
-                                {
-                                    "matcher": {
-                                        "id": "byName",
-                                        "options": "Used, %"
-                                    },
-                                    "properties": [
-                                        {
-                                            "id": "unit",
-                                            "value": "percentunit"
-                                        },
-                                        {
-                                            "id": "custom.displayMode",
-                                            "value": "gradient-gauge"
-                                        },
-                                        {
-                                            "id": "max",
-                                            "value": 1
-                                        },
-                                        {
-                                            "id": "min",
-                                            "value": 0
-                                        }
-                                    ]
-                                }
-                            ]
                         },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "$datasource",
+                        "fill": 1,
+                        "fillGradient": 0,
                         "gridPos": {
 
                         },
                         "id": 7,
+                        "legend": {
+                            "alignAsTable": false,
+                            "avg": false,
+                            "current": false,
+                            "max": false,
+                            "min": false,
+                            "rightSide": false,
+                            "show": true,
+                            "sideWidth": null,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "links": [
+
+                        ],
+                        "nullPointMode": "null",
+                        "percentage": false,
+                        "pointradius": 5,
+                        "points": false,
+                        "renderer": "flot",
+                        "repeat": null,
+                        "seriesOverrides": [
+                            {
+                                "alias": "used",
+                                "color": "#E0B400"
+                            },
+                            {
+                                "alias": "available",
+                                "color": "#73BF69"
+                            }
+                        ],
+                        "spaceLength": 10,
                         "span": 6,
+                        "stack": true,
+                        "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "max by (mountpoint) (node_filesystem_size_bytes{job=\"node-exporter\", instance=\"$instance\", fstype!=\"\"})\n",
-                                "format": "table",
-                                "instant": true,
+                                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"$instance\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"$instance\", fstype!=\"\"}\n  )\n)\n",
+                                "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": ""
+                                "legendFormat": "used",
+                                "refId": "A"
                             },
                             {
-                                "expr": "max by (mountpoint) (node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"$instance\", fstype!=\"\"})\n",
-                                "format": "table",
-                                "instant": true,
+                                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"$instance\", fstype!=\"\"}\n  )\n)\n",
+                                "format": "time_series",
                                 "intervalFactor": 2,
-                                "legendFormat": ""
+                                "legendFormat": "available",
+                                "refId": "B"
                             }
                         ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
                         "title": "Disk Space Usage",
-                        "transformations": [
-                            {
-                                "id": "groupBy",
-                                "options": {
-                                    "fields": {
-                                        "Value #A": {
-                                            "aggregations": [
-                                                "lastNotNull"
-                                            ],
-                                            "operation": "aggregate"
-                                        },
-                                        "Value #B": {
-                                            "aggregations": [
-                                                "lastNotNull"
-                                            ],
-                                            "operation": "aggregate"
-                                        },
-                                        "mountpoint": {
-                                            "aggregations": [
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
 
-                                            ],
-                                            "operation": "groupby"
-                                        }
-                                    }
-                                }
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "format": "bytes",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": 0,
+                                "show": true
                             },
                             {
-                                "id": "merge",
-                                "options": {
-
-                                }
-                            },
-                            {
-                                "id": "calculateField",
-                                "options": {
-                                    "alias": "Used",
-                                    "binary": {
-                                        "left": "Value #A (lastNotNull)",
-                                        "operator": "-",
-                                        "reducer": "sum",
-                                        "right": "Value #B (lastNotNull)"
-                                    },
-                                    "mode": "binary",
-                                    "reduce": {
-                                        "reducer": "sum"
-                                    }
-                                }
-                            },
-                            {
-                                "id": "calculateField",
-                                "options": {
-                                    "alias": "Used, %",
-                                    "binary": {
-                                        "left": "Used",
-                                        "operator": "/",
-                                        "reducer": "sum",
-                                        "right": "Value #A (lastNotNull)"
-                                    },
-                                    "mode": "binary",
-                                    "reduce": {
-                                        "reducer": "sum"
-                                    }
-                                }
-                            },
-                            {
-                                "id": "organize",
-                                "options": {
-                                    "excludeByName": {
-
-                                    },
-                                    "indexByName": {
-
-                                    },
-                                    "renameByName": {
-                                        "Value #A (lastNotNull)": "Size",
-                                        "Value #B (lastNotNull)": "Available",
-                                        "mountpoint": "Mounted on"
-                                    }
-                                }
-                            },
-                            {
-                                "id": "sortBy",
-                                "options": {
-                                    "fields": {
-
-                                    },
-                                    "sort": [
-                                        {
-                                            "field": "Mounted on"
-                                        }
-                                    ]
-                                }
+                                "format": "bytes",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": 0,
+                                "show": true
                             }
-                        ],
-                        "transparent": false,
-                        "type": "table"
+                        ]
                     }
                 ],
                 "repeat": null,
@@ -782,7 +665,6 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "description": "Network received (bits/s)",
                         "fill": 0,
                         "fillGradient": 0,
                         "gridPos": {
@@ -821,10 +703,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(node_network_receive_bytes_total{job=\"node-exporter\", instance=\"$instance\", device!=\"lo\"}[$__rate_interval]) * 8",
+                                "expr": "rate(node_network_receive_bytes_total{job=\"node-exporter\", instance=\"$instance\", device!=\"lo\"}[$__rate_interval])",
                                 "format": "time_series",
-                                "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}device{{`}}`}}",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{device}}",
                                 "refId": "A"
                             }
                         ],
@@ -851,7 +733,7 @@ data:
                         },
                         "yaxes": [
                             {
-                                "format": "bps",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -859,7 +741,7 @@ data:
                                 "show": true
                             },
                             {
-                                "format": "bps",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -876,7 +758,6 @@ data:
                         "dashLength": 10,
                         "dashes": false,
                         "datasource": "$datasource",
-                        "description": "Network transmitted (bits/s)",
                         "fill": 0,
                         "fillGradient": 0,
                         "gridPos": {
@@ -915,10 +796,10 @@ data:
                         "steppedLine": false,
                         "targets": [
                             {
-                                "expr": "rate(node_network_transmit_bytes_total{job=\"node-exporter\", instance=\"$instance\", device!=\"lo\"}[$__rate_interval]) * 8",
+                                "expr": "rate(node_network_transmit_bytes_total{job=\"node-exporter\", instance=\"$instance\", device!=\"lo\"}[$__rate_interval])",
                                 "format": "time_series",
-                                "intervalFactor": 1,
-                                "legendFormat": "{{`{{`}}device{{`}}`}}",
+                                "intervalFactor": 2,
+                                "legendFormat": "{{device}}",
                                 "refId": "A"
                             }
                         ],
@@ -945,7 +826,7 @@ data:
                         },
                         "yaxes": [
                             {
-                                "format": "bps",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -953,7 +834,7 @@ data:
                                 "show": true
                             },
                             {
-                                "format": "bps",
+                                "format": "bytes",
                                 "label": null,
                                 "logBase": 1,
                                 "max": null,
@@ -1052,7 +933,12 @@ data:
                 "30d"
             ]
         },
-        "timezone": "{{ .Values.grafana.defaultDashboardsTimezone }}",
+        "timezone": "Europe/Berlin",
         "title": "Node Exporter / MacOS",
         "version": 0
     }
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: nodes-darwin
