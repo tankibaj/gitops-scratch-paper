@@ -16,7 +16,7 @@ ingress-nginx:
       targetMemoryUtilizationPercentage: 0
     
     extraArgs:
-      default-ssl-certificate: "cert-manager/wildcard-local-naim-run-tls"
+      default-ssl-certificate: cert-manager/wildcard-local-naim-run-tls
   
   defaultBackend:
     enabled: true
