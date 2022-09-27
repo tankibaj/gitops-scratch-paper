@@ -1,0 +1,24 @@
+# -- https://cert-manager.io/docs/configuration/acme/#creating-a-basic-acme-issuer
+# -- https://cert-manager.io/docs/troubleshooting/acme/
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: acme-issuer
+spec:
+  acme:
+    email: mail@thenaim.com
+    server: https://acme-v02.api.letsencrypt.org/directory # -- Lets-encrypt production server
+    privateKeySecretRef:
+      name: issuer-account-key # -- The secret resource that will be used to store the account's private key.
+    solvers:
+      - dns01: # -- DNS challenge solver
+          # -- https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/
+          cloudflare:
+            email: ronikh4n@gmail.com
+            apiTokenSecretRef:
+              name: cloudflare-api-token-secret
+              key: api-token
+        selector:
+          dnsZones:
+            - 'local.naim.run'
