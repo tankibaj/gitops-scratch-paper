@@ -18,7 +18,7 @@ ingress-nginx:
       minReplicas: 2
       maxReplicas: 10
       targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 0
     
     extraArgs:
       default-ssl-certificate: cert-manager/wildcard-local-naim-run-tls
