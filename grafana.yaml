@@ -4,13 +4,13 @@ metadata:
   name: grafana
   namespace: argocd
   labels:
-    name: monitoring
+    name: observability
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: grafana
+    path: grafana/grafana
     helm:
       releaseName: grafana
       valueFiles:
