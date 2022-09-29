@@ -14,7 +14,7 @@ kube-prometheus-stack:
     # -- Create HorizontalPodAutoscaler object for deployment type
     autoscaling:
       enabled: true
-      minReplicas: 2
+      minReplicas: 1
       maxReplicas: 10
 #      metrics:
 #        - type: Resource
