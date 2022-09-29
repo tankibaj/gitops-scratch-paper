@@ -18,15 +18,15 @@ kube-prometheus-stack:
       enabled: true
       minReplicas: 2
       maxReplicas: 10
-      metrics:
-        - type: Resource
-          resource:
-            name: cpu
-            targetAverageUtilization: 70
-        - type: Resource
-          resource:
-            name: memory
-            targetAverageUtilization: 80
+#      metrics:
+#        - type: Resource
+#          resource:
+#            name: cpu
+#            targetAverageUtilization: 70
+#        - type: Resource
+#          resource:
+#            name: memory
+#            targetAverageUtilization: 80
     
     resources:
       requests:
