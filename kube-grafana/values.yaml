@@ -81,7 +81,12 @@ kube-grafana:
         uid: loki
         url: http://loki-gateway.loki.svc.cluster.local:80
         version: 1
-        
+    
+  # - Create ClusterRoles that extend the existing view, edit and admin ClusterRoles to interact with prometheus-operator CRDs
+  global:
+    rbac:
+      create: false
+      
   # -- Create default rules for monitoring the cluster
   defaultRules:
     create: false
