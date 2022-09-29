@@ -3,9 +3,12 @@ consul:
     replicas: 2 # default: 3
     storage: 1Gi # default: 10Gi
     resources:
-      requests:
-        memory: 128Mi
-        cpu: 100m
+       requests:
+         memory: 100Mi
+         cpu: 100m
+       limits:
+         memory: 128Mi
+         cpu: 150m
     
   # -- Consul UI [Optional for debug]
   ui:
