@@ -11,26 +11,6 @@ kube-prometheus-stack:
       repository: grafana/grafana
       tag: 9.1.6
     
-    # -- Create HorizontalPodAutoscaler object for deployment type
-    autoscaling:
-      enabled: true
-      minReplicas: 1
-      maxReplicas: 10
-#      metrics:
-#        - type: Resource
-#          resource:
-#            name: cpu
-#            targetAverageUtilization: 70
-#        - type: Resource
-#          resource:
-#            name: memory
-#            targetAverageUtilization: 80
-    
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-    
     defaultDashboardsTimezone: Europe/Berlin # Timezone for the default dashboards
     
     ingress:
