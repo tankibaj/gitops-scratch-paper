@@ -82,6 +82,10 @@ kube-grafana:
         url: http://loki-gateway.loki.svc.cluster.local:80
         version: 1
         
+  # -- Create default rules for monitoring the cluster
+  defaultRules:
+    create: false
+  
   # -- Deploy alertmanager
   alertmanager:
     enabled: false

@@ -12,6 +12,7 @@ spec:
     targetRevision: development
     path: kube-grafana
     helm:
+      skipCrds: true
       releaseName: kube
       valueFiles:
         - values.yaml
