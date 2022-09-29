@@ -1,6 +1,6 @@
 consul:
   server:
-    replicas: 2 # default: 3
+    replicas: 1 # default: 3
     storage: 1Gi # default: 10Gi
     resources:
        requests:
