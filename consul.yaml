@@ -4,12 +4,12 @@ metadata:
   name: consul
   namespace: argocd
   labels:
-    name: monitoring
+    name: database
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: main
+    targetRevision: development
     path: consul
     helm:
       releaseName: consul
