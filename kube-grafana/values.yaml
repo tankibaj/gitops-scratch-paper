@@ -11,8 +11,6 @@ kube-prometheus-stack:
       repository: grafana/grafana
       tag: 9.1.6
     
-    replicas: 1
-    
     # -- Create HorizontalPodAutoscaler object for deployment type
     autoscaling:
       enabled: true
