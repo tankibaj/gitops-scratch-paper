@@ -5,6 +5,11 @@ kube-prometheus-stack:
   grafana:
     enabled: true
     fullnameOverride: grafana
+  
+    # -- Overrides the Grafana image tag whose default is the chart appVersion
+    image:
+      repository: grafana/grafana
+      tag: 9.1.6
     
     defaultDashboardsTimezone: Europe/Berlin # Timezone for the default dashboards
     
