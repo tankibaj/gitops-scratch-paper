@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-grafana
+  name: grafana
   namespace: argocd
   labels:
     name: monitoring
@@ -19,7 +19,7 @@ spec:
         - secrets.enc.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-grafana
+    namespace: grafana
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
