@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress-nginx-baremetal
+  name: nginx-public
   namespace: argocd
   labels:
     name: ingress-controller
