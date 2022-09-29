@@ -12,6 +12,7 @@ consul:
     
   # -- Consul UI [Optional for debug]
   ui:
+    enabled: true
     ingress:
       enabled: true
 #      annotations: |
