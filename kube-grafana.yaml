@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-grafana
+  namespace: argocd
+  labels:
+    name: monitoring
+spec:
+  project: gitops
+  source:
+    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+    targetRevision: development
+    path: kube-grafana
+    helm:
+      releaseName: kube
+      valueFiles:
+        - values.yaml
+        - secrets.enc.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-grafana
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
