@@ -2,7 +2,7 @@ ingress-nginx:
   fullnameOverride: nginx
   controller:
     config:
-      ssl-redirect: true
+      force-ssl-redirect: "true"
     ingressClassResource:
       name: nginx-public                # -- Name of the ingressClass
       default: true                     # -- Is this the default ingressClass for the cluster
