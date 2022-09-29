@@ -4,7 +4,7 @@ metadata:
   name: prometheus-crds-appset
   namespace: argocd
   labels:
-    name: monitoring
+    name: observability
 spec:
   generators:
     - list:
@@ -21,7 +21,7 @@ spec:
     metadata:
       name: 'prometheus-crds-{{cluster}}'
       labels:
-        name: monitoring
+        name: observability
     spec:
       project: gitops
       source:

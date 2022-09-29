@@ -4,7 +4,7 @@ metadata:
   name: loki
   namespace: argocd
   labels:
-    name: logging
+    name: observability
 spec:
   project: gitops
   source:

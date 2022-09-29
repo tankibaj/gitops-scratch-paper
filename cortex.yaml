@@ -4,7 +4,7 @@ metadata:
   name: cortex
   namespace: argocd
   labels:
-    name: monitoring
+    name: observability
 spec:
   project: gitops
   source:

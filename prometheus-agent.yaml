@@ -4,7 +4,7 @@ metadata:
   name: prometheus-agent
   namespace: argocd
   labels:
-    name: monitoring
+    name: observability
 spec:
   project: gitops
   source:
