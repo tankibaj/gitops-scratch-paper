@@ -2,7 +2,7 @@ consul:
   server:
     replicas: 1 # default: 3
     storage: 1Gi # default: 10Gi
-    resources:
+    resources: # # default helm chart has very limited resources allocated https://github.com/hashicorp/consul-k8s/blob/b4fb9d1cfbb0e6bdfcfd8ef1b8f171d8e8eea9e5/charts/consul/values.yaml#L777
        requests:
          memory: 100Mi
          cpu: 100m
