@@ -26,7 +26,7 @@ kube-prometheus-stack:
         - type: Resource
           resource:
             name: memory
-            targetAverageUtilization: 70
+            targetAverageUtilization: 80
     
     resources:
       requests:
