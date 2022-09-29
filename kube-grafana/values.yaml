@@ -1,4 +1,4 @@
-kube-grafana:
+kube-prometheus-stack:
   fullnameOverride: kube # Provide a name to substitute for the full names of resources
   
   # -- Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
