@@ -43,7 +43,7 @@ kube-prometheus-stack:
       
       auth:
         # -- Set to true to disable (hide) the login form, useful if you use OAuth
-        disable_login_form: true # Defaults to false.
+        disable_login_form: false # Defaults to false.
 
       auth.generic_oauth:
         enabled: true
