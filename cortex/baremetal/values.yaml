@@ -18,7 +18,7 @@ cortex:
     ingester:
       lifecycler:
         ring:
-          replication_factor: 1
+          replication_factor: 3
           kvstore:
             store: consul
             consul:
@@ -119,8 +119,8 @@ cortex:
     
     autoscaling:
       enabled: true
-      minReplicas: 1
-      maxReplicas: 3
+      minReplicas: 3
+      maxReplicas: 5
       targetMemoryUtilizationPercentage: 75
     
     persistentVolume:
