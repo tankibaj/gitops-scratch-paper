@@ -9,7 +9,7 @@ spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: main
+    targetRevision: development
     path: cortex/aws
     helm:
       releaseName: cortex
