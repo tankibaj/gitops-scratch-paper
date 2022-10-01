@@ -1,4 +1,6 @@
 consul:
+  global:
+    name: consul
   server:
     replicas: 1 # default: 3
     storage: 1Gi # default: 10Gi
