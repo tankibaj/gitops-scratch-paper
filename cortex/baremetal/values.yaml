@@ -1,8 +1,8 @@
 cortex:
   ingress:
     enabled: true
-#    annotations:
-#      kubernetes.io/ingress.class: nginx
+    annotations:
+      kubernetes.io/ingress.class: nginx-public
     hosts:
       - host: cortex.local.naim.run
         paths:
@@ -18,7 +18,7 @@ cortex:
     ingester:
       lifecycler:
         ring:
-          replication_factor: 3
+          replication_factor: 1
           kvstore:
             store: consul
             consul:
@@ -39,12 +39,12 @@ cortex:
       # Backend storage to use. Supported backends are: s3, gcs, azure, swift and filesystem [local filesystem storage directory]
       backend: s3
       s3:
-        bucket_name: grafanalab-data # cortex-metrics-demo
-        region: eu-central-1
-        endpoint: s3.eu-central-1.amazonaws.com
+        bucket_name: cortex-metrics
+#        region: eu-central-1
+        endpoint: s3.local.naim.run
         insecure: true
-        access_key_id: AKIA4SB2R6I5RPONADTD
-        secret_access_key: 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
+        access_key_id: 0Bg7dWxVK8FKh3f8
+        secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
       # Local directory to store TSDBs in the ingesters.
       tsdb:
         dir: /data/tsdb
@@ -77,12 +77,12 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: grafanalab-data # cortex-alerts-demo
-          region: eu-central-1
-          endpoint: s3.eu-central-1.amazonaws.com
+          bucketnames: cortex-alerts
+#          region: eu-central-1
+          endpoint: s3.local.naim.run
           insecure: true
-          access_key_id: AKIA4SB2R6I5RPONADTD
-          secret_access_key: 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
+          access_key_id: 0Bg7dWxVK8FKh3f8
+          secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
     
     # -- Type of backend to use to store alertmanager configs. Supported values are: "configdb", "gcs", "s3", "local". refer to: https://cortexmetrics.io/docs/configuration/configuration-file/#alertmanager_config
     alertmanager:
@@ -90,12 +90,12 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: cortex-alerts-demo
-          region: eu-central-1
-          endpoint: s3.eu-central-1.amazonaws.com
+          bucketnames: cortex-alerts
+#          region: eu-central-1
+          endpoint: s3.local.naim.run
           insecure: true
-          access_key_id: AKIA4SB2R6I5RPONADTD
-          secret_access_key: 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
+          access_key_id: 0Bg7dWxVK8FKh3f8
+          secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
   
   
   alertmanager:
@@ -119,8 +119,8 @@ cortex:
     
     autoscaling:
       enabled: true
-      minReplicas: 3
-      maxReplicas: 30
+      minReplicas: 1
+      maxReplicas: 3
       targetMemoryUtilizationPercentage: 75
     
     persistentVolume:
