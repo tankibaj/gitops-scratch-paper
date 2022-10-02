@@ -92,7 +92,7 @@ cortex:
         s3:
           bucketnames: cortex-alerts
 #          region: eu-central-1
-          endpoint: s3.local.naim.run
+          endpoint: 172.16.100.135:9090
           insecure: true
           access_key_id: 0Bg7dWxVK8FKh3f8
           secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
