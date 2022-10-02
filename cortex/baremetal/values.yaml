@@ -18,7 +18,7 @@ cortex:
     ingester:
       lifecycler:
         ring:
-          replication_factor: 3
+          replication_factor: 1
           kvstore:
             store: consul
             consul:
@@ -112,15 +112,20 @@ cortex:
       enabled: true
       readOnlyRootFilesystem: false # allow to load/validate alertmanager rules: https://github.com/cortexproject/cortex/issues/4089
   
+  distributor:
+    enabled: true
+    replicas: 1 # Default: 2
   
   ingester:
+    enabled: true
+    replicas: 1 # Default: 3
     statefulSet:
       enabled: true
     
     autoscaling:
       enabled: true
-      minReplicas: 3
-      maxReplicas: 5
+      minReplicas: 1 # Default: 3
+      maxReplicas: 3 # Default: 30
       targetMemoryUtilizationPercentage: 75
     
     persistentVolume:
@@ -132,7 +137,14 @@ cortex:
     enabled: true
   
   
+  querier:
+    enabled: true
+    replicas: 1 # Default: 2
+  
+  
   nginx:
+    enabled: true
+    replicas: 1 # Default: 2
     config:
       # -- ref: http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
       client_max_body_size: 5M
@@ -146,14 +158,15 @@ cortex:
   store_gateway:
     persistentVolume:
       enabled: true
-      size: 2Gi # 10Gi
+      size: 2Gi
   
   
   compactor:
     persistentVolume:
       enabled: true
-      size: 5Gi # 25Gi
+      size: 5Gi
 
   
   memcached-frontend:
     enabled: true
+    replicaCount: 1 # Default: 2
