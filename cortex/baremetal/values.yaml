@@ -42,7 +42,7 @@ cortex:
         bucket_name: cortex-metrics
 #        region: eu-central-1
         endpoint: s3.local.naim.run
-        insecure: true
+        insecure: false
         access_key_id: 0Bg7dWxVK8FKh3f8
         secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
       # Local directory to store TSDBs in the ingesters.
@@ -80,7 +80,7 @@ cortex:
           bucketnames: cortex-alerts
 #          region: eu-central-1
           endpoint: s3.local.naim.run
-          insecure: true
+          insecure: false
           access_key_id: 0Bg7dWxVK8FKh3f8
           secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
     
