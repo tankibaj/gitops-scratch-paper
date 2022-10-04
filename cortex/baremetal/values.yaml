@@ -39,7 +39,7 @@ cortex:
       # Backend storage to use. Supported backends are: s3, gcs, azure, swift and filesystem [local filesystem storage directory]
       backend: s3
       s3:
-        bucket_name: cortex-metrics
+        bucket_name: metrics
 #        region: eu-central-1
         endpoint: s3.local.naim.run
         insecure: false
@@ -77,7 +77,7 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: cortex-alerts
+          bucketnames: alerts
 #          region: eu-central-1
           endpoint: s3.local.naim.run
           insecure: false
@@ -90,7 +90,7 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: cortex-alerts
+          bucketnames: alerts
 #          region: eu-central-1
           endpoint: s3.local.naim.run
           insecure: false
