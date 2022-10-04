@@ -15,7 +15,7 @@ spec:
       - dns01: # -- DNS challenge solver
           # -- https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/
           cloudflare:
-            email: ronikh4n@gmail.com
+            email: <CloudFlare Log in Email>
             apiTokenSecretRef:
               name: cloudflare-api-token-secret
               key: api-token
