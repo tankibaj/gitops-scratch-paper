@@ -28,7 +28,7 @@ spec:
       project: gitops
       source:
         repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-        targetRevision: main
+        targetRevision: development
         path: prometheus-agent/{{values.tag}}
         helm:
           skipCrds: true # https://github.com/prometheus-operator/prometheus-operator/issues/4439#issuecomment-1110279191
