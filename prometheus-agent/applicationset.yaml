@@ -39,9 +39,9 @@ spec:
                 prometheusSpec:
                   externalLabels:
                     cluster: '{{cluster}}'
-                 remoteWrite:
-                   - name: cortex
-                     url: '{{values.remoteWriteURL}}'
+                  remoteWrite:
+                    - name: cortex
+                      url: '{{values.remoteWriteURL}}'
       destination:
         server: '{{url}}'
         namespace: prometheus-agent
