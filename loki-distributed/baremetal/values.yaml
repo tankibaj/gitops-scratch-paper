@@ -172,7 +172,7 @@ loki-distributed:
     enabled: true
     replicas: 1
     autoscaling:
-      enabled: true
+      enabled: false
       minReplicas: 1
       maxReplicas: 4
     ingress:
