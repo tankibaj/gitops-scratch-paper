@@ -78,7 +78,7 @@ loki-distributed:
     ingesterConfig:
       lifecycler:
         ring:
-          replication_factor: 3 # -- Ingester replication factor per
+          replication_factor: 1 # -- Ingester replication factor per
           kvstore:
             store: consul
             prefix: "loki/"
@@ -123,11 +123,11 @@ loki-distributed:
         cache_ttl: 168h                         # Can be increased for faster performance over longer query periods, uses more disk space.
       aws:
         s3forcepathstyle: true
-        bucketnames: loki-logs-demo
-        endpoint: s3.eu-central-1.amazonaws.com
-        region: eu-central-1
-        access_key_id: AKKOERW5JKDFJIEO5J
-        secret_access_key: mwudOQnUB473OpkaJ+cpbTT
+        bucketnames: logs
+        endpoint: s3.local.naim.run
+#        region: eu-central-1
+        access_key_id: 0Bg7dWxVK8FKh3f8
+        secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
         
     
     queryrangeConfig:
@@ -150,17 +150,17 @@ loki-distributed:
   
   
   ingester:
-    replicas: 3
+    replicas: 1
     persistence:
       enabled: true
       size: 5Gi
   
   
   distributor:
-    replicas: 2
+    replicas: 1
     autoscaling:
       enabled: true
-      minReplicas: 2
+      minReplicas: 1
       maxReplicas: 4
   
   
@@ -206,17 +206,17 @@ loki-distributed:
     enabled: true
     persistence:
       enabled: true
-      size: 5Gi
+      size: 2Gi
   
   
   ruler:
     enabled: true
-    extraVolumes: # Requires if Loki runs as a single tenant mode # https://github.com/grafana/grafana/issues/42735#issuecomment-989055464
-      - name: fake
-        emptyDir: { }
-    extraVolumeMounts: # Requires if Loki runs as a single tenant mode # https://github.com/grafana/grafana/issues/42735#issuecomment-989055464
-      - name: fake
-        mountPath: /loki/rules/fake
+#    extraVolumes: # Requires if Loki runs as a single tenant mode # https://github.com/grafana/grafana/issues/42735#issuecomment-989055464
+#      - name: fake
+#        emptyDir: { }
+#    extraVolumeMounts: # Requires if Loki runs as a single tenant mode # https://github.com/grafana/grafana/issues/42735#issuecomment-989055464
+#      - name: fake
+#        mountPath: /loki/rules/fake
   
   
   memcachedFrontend:

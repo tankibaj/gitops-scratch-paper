@@ -9,8 +9,8 @@ spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: main
-    path: loki-distributed
+    targetRevision: development
+    path: loki-distributed/baremetal
     helm:
       releaseName: loki
   destination:

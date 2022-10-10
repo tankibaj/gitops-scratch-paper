@@ -1,24 +1,29 @@
 cortex:
   ingress:
     enabled: true
-#    annotations:
-#      kubernetes.io/ingress.class: nginx
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/load-balancer-name: cortex-ingress
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+      alb.ingress.kubernetes.io/ssl-redirect: '443'
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:XXXXXXXX:certificate/XXXXXXX
+      alb.ingress.kubernetes.io/backend-protocol: HTTP
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     hosts:
-      - host: cortex.local.naim.run
+      - host: cortex.aws.naim.run
         paths:
           - /
   
-  
   useConfigMap: true
   
-  
   config:
-    auth_enabled: true # Enable cortex multi-tenancy
+    auth_enabled: false
     
     ingester:
       lifecycler:
         ring:
-          replication_factor: 3
           kvstore:
             store: consul
             consul:
@@ -29,7 +34,6 @@ cortex:
       reject_old_samples_max_age: 12h
       max_series_per_metric: 200000
       ingestion_rate: 50000
-      compactor_blocks_retention_period: 168h # 7days # Delete blocks containing samples older than the specified retention period. 0 to disable.
     
     storage:
       engine: blocks
@@ -39,12 +43,10 @@ cortex:
       # Backend storage to use. Supported backends are: s3, gcs, azure, swift and filesystem [local filesystem storage directory]
       backend: s3
       s3:
-        bucket_name: companyname-cortex-metrics
+        bucket_name: cortex-metrics
         region: eu-central-1
         endpoint: s3.eu-central-1.amazonaws.com
         insecure: true
-        access_key_id: <ACCESS_KEY_ID>
-        secret_access_key: <SECRET_ACCESS_KEY>
       # Local directory to store TSDBs in the ingesters.
       tsdb:
         dir: /data/tsdb
@@ -77,12 +79,10 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: companyname-cortex-alerts
+          bucketnames: cortex-alerts
           region: eu-central-1
           endpoint: s3.eu-central-1.amazonaws.com
           insecure: true
-          access_key_id: <ACCESS_KEY_ID>
-          secret_access_key: <SECRET_ACCESS_KEY>
     
     # -- Type of backend to use to store alertmanager configs. Supported values are: "configdb", "gcs", "s3", "local". refer to: https://cortexmetrics.io/docs/configuration/configuration-file/#alertmanager_config
     alertmanager:
@@ -90,13 +90,10 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: companyname-cortex-alerts
+          bucketnames: cortex-alerts
           region: eu-central-1
           endpoint: s3.eu-central-1.amazonaws.com
           insecure: true
-          # -- You can use aws iam role instead of access key credentials
-          access_key_id: <ACCESS_KEY_ID>
-          secret_access_key: <SECRET_ACCESS_KEY>
   
   
   alertmanager:
@@ -107,7 +104,7 @@ cortex:
     
     persistentVolume:
       enabled: true
-      size: 1Gi # 2Gi
+      size: 10Gi
     
     containerSecurityContext:
       enabled: true
@@ -121,12 +118,12 @@ cortex:
     autoscaling:
       enabled: true
       minReplicas: 3
-      maxReplicas: 10
+      maxReplicas: 30
       targetMemoryUtilizationPercentage: 75
     
     persistentVolume:
       # https://cortexmetrics.io/docs/blocks-storage/production-tips/
-      size: 2Gi # 20Gi
+      size: 100Gi
   
   
   ruler:
@@ -137,24 +134,21 @@ cortex:
     config:
       # -- ref: http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
       client_max_body_size: 5M
-#      setHeaders:
-#        X-Scope-OrgID: demo
-      auth_orgs:
-        - org1
-        - org2
-        - org3
+      setHeaders:
+        X-Scope-OrgID: org1
+  
   
   store_gateway:
     persistentVolume:
       enabled: true
-      size: 10Gi
+      size: 50Gi
   
   
   compactor:
     persistentVolume:
       enabled: true
-      size: 25Gi
-
+      size: 100Gi
+  
   
   memcached-frontend:
     enabled: true
