@@ -300,8 +300,7 @@ loki-distributed:
             # Auth orgs
             {{- if .Values.gateway.auth_orgs}}
             {{- range $org := compact .Values.gateway.auth_orgs | uniq }}
-            location = /loki/api/v1/push/{{ $org }} {
-              proxy_set_header      X-Scope-OrgID {{ $org }};
+            location = /loki/api/v1/push {
               set $loki_api_v1_push_backend http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
               proxy_pass       $loki_api_v1_push_backend:3100$request_uri;
             }
