@@ -177,7 +177,7 @@ loki-distributed:
       maxReplicas: 4
     ingress:
       enabled: true
-      ingressClassName: nignx-public
+      ingressClassName: nginx-public
       hosts:
         - host: loki.local.naim.run
           paths:
