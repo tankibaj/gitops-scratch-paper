@@ -188,125 +188,116 @@ loki-distributed:
       - org1
       - org2
       - org3
-#    nginxConfig:
-#      # -- Config file contents for Nginx. Passed through the `tpl` function to allow templating
-#      # -- @default -- See values.yaml
-#      file: |
-#        worker_processes  5;  ## Default: 1
-#        error_log  /dev/stderr;
-#        pid        /tmp/nginx.pid;
-#        worker_rlimit_nofile 8192;
-#
-#        events {
-#          worker_connections  4096;  ## Default: 1024
-#        }
-#
-#        http {
-#          client_body_temp_path /tmp/client_temp;
-#          proxy_temp_path       /tmp/proxy_temp_path;
-#          fastcgi_temp_path     /tmp/fastcgi_temp;
-#          uwsgi_temp_path       /tmp/uwsgi_temp;
-#          scgi_temp_path        /tmp/scgi_temp;
-#
-#          proxy_http_version    1.1;
-#
-#          default_type application/octet-stream;
-#          log_format   {{ .Values.gateway.nginxConfig.logFormat }}
-#
-#          {{- if .Values.gateway.verboseLogging }}
-#          access_log   /dev/stderr  main;
-#          {{- else }}
-#
-#          map $status $loggable {
-#            ~^[23]  0;
-#            default 1;
-#          }
-#          access_log   /dev/stderr  main  if=$loggable;
-#          {{- end }}
-#
-#          sendfile     on;
-#          tcp_nopush   on;
-#          {{- if .Values.gateway.nginxConfig.resolver }}
-#          resolver {{ .Values.gateway.nginxConfig.resolver }};
-#          {{- else }}
-#          resolver {{ .Values.global.dnsService }}.{{ .Values.global.dnsNamespace }}.svc.{{ .Values.global.clusterDomain }};
-#          {{- end }}
-#
-#          {{- with .Values.gateway.nginxConfig.httpSnippet }}
-#          {{ . | nindent 2 }}
-#          {{- end }}
-#
-#          server {
-#            listen             8080;
-#
-#            {{- if .Values.gateway.basicAuth.enabled }}
-#            auth_basic           "Loki";
-#            auth_basic_user_file /etc/nginx/secrets/.htpasswd;
-#            {{- end }}
-#
-#            location = / {
-#              return 200 'OK';
-#              auth_basic off;
-#            }
-#
-#            location = /api/prom/push {
-#              set $api_prom_push_backend http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
-#              proxy_pass       $api_prom_push_backend:3100$request_uri;
-#            }
-#
-#            location = /api/prom/tail {
-#              set $api_prom_tail_backend http://{{ include "loki.querierFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
-#              proxy_pass       $api_prom_tail_backend:3100$request_uri;
-#              proxy_set_header Upgrade $http_upgrade;
-#              proxy_set_header Connection "upgrade";
-#            }
-#
-#            # Ruler
-#            location ~ /prometheus/api/v1/alerts.* {
-#              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-#            }
-#            location ~ /prometheus/api/v1/rules.* {
-#              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-#            }
-#            location ~ /api/prom/rules.* {
-#              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-#            }
-#            location ~ /api/prom/alerts.* {
-#              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-#            }
-#
-#            location ~ /api/prom/.* {
-#              set $api_prom_backend http://{{ include "loki.queryFrontendFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
-#              proxy_pass       $api_prom_backend:3100$request_uri;
-#            }
-#
-#            location = /loki/api/v1/push {
-#              set $loki_api_v1_push_backend http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
-#              proxy_pass       $loki_api_v1_push_backend:3100$request_uri;
-#            }
-#
-#            location = /loki/api/v1/tail {
-#              set $loki_api_v1_tail_backend http://{{ include "loki.querierFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
-#              proxy_pass       $loki_api_v1_tail_backend:3100$request_uri;
-#              proxy_set_header Upgrade $http_upgrade;
-#              proxy_set_header Connection "upgrade";
-#            }
-#
-#            location ~ /loki/api/.* {
-#              set $loki_api_backend http://{{ include "loki.queryFrontendFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
-#              proxy_pass       $loki_api_backend:3100$request_uri;
-#            }
-#
-#            {{- if .Values.gateway.auth_orgs}}
-#            {{- range $org := compact .Values.gateway.auth_orgs | uniq }}
-#            location = /loki/api/v1/push/{{ $org }} {
-#              proxy_set_header      X-Scope-OrgID {{ $org }};
-#              proxy_pass       http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-#            }
-#            {{- end }}
-#            {{- end }}
-#          }
-#        }
+    nginxConfig:
+      # -- Config file contents for Nginx. Passed through the `tpl` function to allow templating
+      # -- @default -- See values.yaml
+      file: |
+        worker_processes  5;  ## Default: 1
+        error_log  /dev/stderr;
+        pid        /tmp/nginx.pid;
+        worker_rlimit_nofile 8192;
+
+        events {
+          worker_connections  4096;  ## Default: 1024
+        }
+
+        http {
+          client_body_temp_path /tmp/client_temp;
+          proxy_temp_path       /tmp/proxy_temp_path;
+          fastcgi_temp_path     /tmp/fastcgi_temp;
+          uwsgi_temp_path       /tmp/uwsgi_temp;
+          scgi_temp_path        /tmp/scgi_temp;
+
+          proxy_http_version    1.1;
+
+          default_type application/octet-stream;
+          log_format   {{ .Values.gateway.nginxConfig.logFormat }}
+
+          {{- if .Values.gateway.verboseLogging }}
+          access_log   /dev/stderr  main;
+          {{- else }}
+
+          map $status $loggable {
+            ~^[23]  0;
+            default 1;
+          }
+          access_log   /dev/stderr  main  if=$loggable;
+          {{- end }}
+
+          sendfile     on;
+          tcp_nopush   on;
+          {{- if .Values.gateway.nginxConfig.resolver }}
+          resolver {{ .Values.gateway.nginxConfig.resolver }};
+          {{- else }}
+          resolver {{ .Values.global.dnsService }}.{{ .Values.global.dnsNamespace }}.svc.{{ .Values.global.clusterDomain }};
+          {{- end }}
+
+          {{- with .Values.gateway.nginxConfig.httpSnippet }}
+          {{ . | nindent 2 }}
+          {{- end }}
+
+          server {
+            listen             8080;
+
+            {{- if .Values.gateway.basicAuth.enabled }}
+            auth_basic           "Loki";
+            auth_basic_user_file /etc/nginx/secrets/.htpasswd;
+            {{- end }}
+
+            location = / {
+              return 200 'OK';
+              auth_basic off;
+            }
+
+            location = /api/prom/push {
+              set $api_prom_push_backend http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
+              proxy_pass       $api_prom_push_backend:3100$request_uri;
+            }
+
+            location = /api/prom/tail {
+              set $api_prom_tail_backend http://{{ include "loki.querierFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
+              proxy_pass       $api_prom_tail_backend:3100$request_uri;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+            }
+
+            # Ruler
+            location ~ /prometheus/api/v1/alerts.* {
+              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+            }
+            location ~ /prometheus/api/v1/rules.* {
+              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+            }
+            location ~ /api/prom/rules.* {
+              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+            }
+            location ~ /api/prom/alerts.* {
+              proxy_pass       http://{{ include "loki.rulerFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+            }
+
+            location ~ /api/prom/.* {
+              set $api_prom_backend http://{{ include "loki.queryFrontendFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
+              proxy_pass       $api_prom_backend:3100$request_uri;
+            }
+
+            location = /loki/api/v1/push {
+              set $loki_api_v1_push_backend http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
+              proxy_pass       $loki_api_v1_push_backend:3100$request_uri;
+            }
+
+            location = /loki/api/v1/tail {
+              set $loki_api_v1_tail_backend http://{{ include "loki.querierFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
+              proxy_pass       $loki_api_v1_tail_backend:3100$request_uri;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+            }
+
+            location ~ /loki/api/.* {
+              set $loki_api_backend http://{{ include "loki.queryFrontendFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
+              proxy_pass       $loki_api_backend:3100$request_uri;
+            }
+          }
+        }
   
 #      # -- Allows appending custom configuration to the server block
 #      serverSnippet: |
