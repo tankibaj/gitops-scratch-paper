@@ -184,6 +184,10 @@ loki-distributed:
             - path: /
               pathType: Prefix
       tls: []
+    auth_orgs:
+      - org1
+      - org2
+      - org3
     nginxConfig:
       # -- Allows appending custom configuration to the server block
       serverSnippet: |
@@ -195,10 +199,6 @@ loki-distributed:
         }
         {{- end }}
         {{- end }}
-    auth_orgs:
-      - org1
-      - org2
-      - org3
   
   
   compactor:
