@@ -1,5 +1,5 @@
 loki-distributed:
-  fullnameOverride: loki # -- Overrides the chart's computed filename
+#  fullnameOverride: loki # -- Overrides the chart's computed filename
   loki:
     containerSecurityContext:
       readOnlyRootFilesystem: false # https://github.com/grafana/loki/issues/2018
