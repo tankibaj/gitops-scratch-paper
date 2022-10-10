@@ -177,8 +177,7 @@ loki-distributed:
       maxReplicas: 4
     ingress:
       enabled: true
-#      annotations:
-#        kubernetes.io/ingress.class: nginx
+      ingressClassName: nignx-public
       hosts:
         - host: loki.local.naim.run
           paths:
