@@ -1,5 +1,5 @@
 loki-distributed:
-#  fullnameOverride: loki # -- Overrides the chart's computed filename
+  fullnameOverride: loki # -- Overrides the chart's computed filename
   loki:
     containerSecurityContext:
       readOnlyRootFilesystem: false # https://github.com/grafana/loki/issues/2018
@@ -302,7 +302,7 @@ loki-distributed:
             {{- range $org := compact .Values.gateway.auth_orgs | uniq }}
             location = /loki/api/v1/push/{{ $org }} {
               proxy_set_header      X-Scope-OrgID {{ $org }};
-              proxy_pass       http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+              proxy_pass       http://{{ include "loki.querierFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }};
             }
             {{- end }}
             {{- end }}
