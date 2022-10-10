@@ -304,6 +304,7 @@ loki-distributed:
               proxy_pass       http://{{ include "loki.distributorFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
             }
             {{- end }}
+            {{- end }}
           }
         }
   
