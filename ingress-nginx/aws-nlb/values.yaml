@@ -37,6 +37,8 @@ ingress-nginx:
         service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
         service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
         service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+        service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-XXXXXXX,subnet-XXXXXXX                 # -- (Optional for static ip) specifies the Availability Zone for NLB
+        service.beta.kubernetes.io/aws-load-balancer-eip-allocations: eipalloc-XXXXXXX,eipalloc-XXXXXXX     # -- (Optional for static ip) Internet-facing nlb only. Length must match the number of subnets.
       externalTrafficPolicy: Local
       # https://github.com/kubernetes/ingress-nginx/issues/8017#issuecomment-1226542186
       targetPorts:
