@@ -13,12 +13,12 @@ spec:
             url: https://kubernetes.default.svc
             values:
               tag: production
-              loki_endpoint: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
-          - cluster: development
-            url: https://development-cluster.local.naim.run
-            values:
-              tag: production
-              loki_endpoint: https://loki.local.naim.run/loki/api/v1/push
+              loki_endpoint: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push/org1
+#          - cluster: development
+#            url: https://development-cluster.local.naim.run
+#            values:
+#              tag: production
+#              loki_endpoint: https://loki.local.naim.run/loki/api/v1/push
   template:
     metadata:
       name: 'promtail-{{cluster}}'
