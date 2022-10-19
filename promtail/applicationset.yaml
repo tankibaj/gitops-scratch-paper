@@ -20,6 +20,7 @@ spec:
 #            values:
 #              tag: production
 #              loki_endpoint: https://loki.local.naim.run/loki/api/v1/push
+#              loki_tenant_id: org2
   template:
     metadata:
       name: 'promtail-{{cluster}}'
