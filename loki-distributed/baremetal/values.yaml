@@ -97,11 +97,11 @@ loki-distributed:
   
     limitsConfig:
       ingestion_rate_mb: 16
-      ingestion_burst_size_mb: 18
+      ingestion_burst_size_mb: 20
       enforce_metric_name: false
-      reject_old_samples: true
+      reject_old_samples: false                  # -- Whether or not old samples will be rejected | Default: true
       reject_old_samples_max_age: 168h
-      retention_period: 168h    # 7days         # Retention to apply for the store, if the retention is enabled on the compactor side.
+      retention_period: 744h    # 31days         # -- Retention to apply for the store, if the retention is enabled on the compactor side.
       max_cache_freshness_per_query: 10m
       split_queries_by_interval: 15m
     
