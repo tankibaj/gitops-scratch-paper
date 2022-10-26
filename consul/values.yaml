@@ -17,12 +17,9 @@ consul:
     enabled: true
     ingress:
       enabled: true
-#      annotations: |
-#        'kubernetes.io/ingress.class': nginx-public
-#        'nginx.ingress.kubernetes.io/force-ssl-redirect': "true"
       ingressClassName: nginx-public
-      pathType: Prefix # ImplementationSpecific
+      pathType: Prefix
       hosts:
         - host: consul.local.naim.run
           paths:
-            - / # /*
+            - /
