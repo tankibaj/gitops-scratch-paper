@@ -45,6 +45,13 @@ ingress-nginx:
       targetPorts:
         http: http
         https: special
+    
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabels:
+          release: kube-prometheus
   
   defaultBackend:
     enabled: true
