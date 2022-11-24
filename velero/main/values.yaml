@@ -27,19 +27,23 @@ velero:
       name: aws
       config:
         region: us-east-1
-    # -- Set true for backup all pod volumes without having to apply annotation on the pod when used restic Default: false. Other option: false.
+    # -- Set true for backup all pod volumes without having to apply annotation on the pod when used restic | Default: false
     defaultVolumesToRestic: true
   
   credentials:
     useSecret: false
   
-  # Whether to create backupstoragelocation crd, if false => do not create a default backup location
+  # Whether to create backupstoragelocation crd, if false => do not create a default backup location | Default: true
+  # -- BackupStorageLocation: https://velero.io/docs/v1.9/locations/
   backupsEnabled: true
   
-  # -- Whether to create volumesnapshotlocation crd, if false => disable snapshot feature
+  # -- Whether to create volumesnapshotlocation crd, if false => disable snapshot feature | Default: true
+  # -- VolumeSnapshotLocation: https://velero.io/docs/v1.9/locations/
   snapshotsEnabled: false
   
-  # -- Whether to deploy the restic daemonset.
+  # -- Whether to deploy the restic daemonset | Default: false
+  # -- Enable if you’re using EFS, AzureFile, NFS, emptyDir, local, or any other volume type that doesn’t have a native snapshot concept.
+  # -- https://velero.io/docs/v1.3.2/restic/
   deployRestic: true
   
   restic:
@@ -48,7 +52,7 @@ velero:
   
   # -- Backup schedules to create.
   schedules:
-    daily-backup:
+    daily-backup-for-foo-application:
       disabled: false
       # -- Daily at 1AM
       schedule: "0 01 * * *"
@@ -60,3 +64,16 @@ velero:
         # -- Namespaces to include in the backup (use '*' for all namespaces)
         includedNamespaces:
           - foo
+    daily-backup-for-multiple-namespace:
+      disabled: false
+      # -- Daily at 2AM
+      schedule: "0 02 * * *"
+      # -- Specifies whether to use OwnerReferences on backups created by this Schedule. Notice: if set to true, when schedule is deleted, backups will be deleted too.
+      useOwnerReferencesInBackup: false
+      template:
+        # -- Backup retention period
+        ttl: "240h"
+        # -- Namespaces to include in the backup (use '*' for all namespaces)
+        includedNamespaces:
+          - foo
+          - bar
