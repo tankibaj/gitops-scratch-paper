@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-workflows-appset
+  namespace: argocd
+  labels:
+    name: workflows
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: management
+            url: https://kubernetes.default.svc
+            values:
+              tag: main
+#          - cluster: development
+#            url: https://development-cluster.local.naim.run
+#            values:
+#              tag: development
+  template:
+    metadata:
+      name: 'argo-workflows-{{cluster}}'
+      labels:
+        name: workflows
+    spec:
+      project: gitops
+      source:
+        repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+        targetRevision: development
+        path: argo-workflows/{{values.tag}}
+        helm:
+          releaseName: argo-workflows
+          valueFiles:
+            - values.yaml
+      destination:
+        server: '{{url}}'
+        namespace: argo
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true

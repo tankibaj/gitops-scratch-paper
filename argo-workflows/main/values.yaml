@@ -1,0 +1,20 @@
+argo-workflows:
+  fullnameOverride: argo-workflows
+
+  crds:
+    # -- Keep CRDs on chart uninstall
+    keep: false
+
+  controller:
+    # -- Specify all namespaces where this workflow controller instance will manage
+    # workflows. This controls where the service account and RBAC resources will
+    # be created. Only valid when singleNamespace is false.
+    workflowNamespaces:
+      - argo
+
+  server:
+    ingress:
+      enabled: true
+      ingressClassName: nginx-public
+      hosts:
+        - workflows.local.naim.run
