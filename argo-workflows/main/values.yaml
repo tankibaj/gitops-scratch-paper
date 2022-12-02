@@ -13,8 +13,41 @@ argo-workflows:
       - argo
 
   server:
+    # -- Extra arguments to provide to the Argo server binary, such as for disabling authentication.
+    extraArgs:
+      - --auth-mode=sso
+    # -- Ingress configuration.
     ingress:
       enabled: true
       ingressClassName: nginx-public
       hosts:
         - workflows.local.naim.run
+    # -- SSO configuration when SSO is specified as a server auth mode. SSO is activated by adding --auth-mode=sso
+    sso:
+      # The root URL of the OIDC identity provider.
+      issuer: https://sso.local.naim.run/auth/realms/internal
+      # Name of a secret and a key in it to retrieve the app OIDC client ID from.
+      clientId:
+        name: argo-server-sso
+        key: argo-workflows
+      # Name of a secret and a key in it to retrieve the app OIDC client secret from.
+#      clientSecret:
+#        name: argo-server-sso
+#        key: client-secret
+      # The OIDC redirect URL. Should be in the form <argo-root-url>/oauth2/callback.
+      redirectUrl: https://workflows.local.naim.run/oauth2/callback
+      rbac:
+        enabled: true
+        # When present, restricts secrets the server can read to a given list.
+        # You can use it to restrict the server to only be able to access the
+        # service account token secrets that are associated with service accounts
+        # used for authorization.
+        secretWhitelist: [ ]
+      # Scopes requested from the SSO ID provider.  The 'groups' scope requests
+      # group membership information, which is usually used for authorization
+      # decisions.
+      scopes:
+        - openid
+        - profile
+        - email
+        - groups
