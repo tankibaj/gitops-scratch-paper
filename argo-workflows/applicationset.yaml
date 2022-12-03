@@ -32,7 +32,6 @@ spec:
           releaseName: argo-workflows
           valueFiles:
             - values.yaml
-            - secrets.enc.yaml
       destination:
         server: '{{url}}'
         namespace: argo
