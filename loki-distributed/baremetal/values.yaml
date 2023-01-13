@@ -179,7 +179,7 @@ loki-distributed:
       enabled: true
       ingressClassName: public
       hosts:
-        - host: loki.local.naim.run
+        - host: logs.local.naim.run
           paths:
             - path: /
               pathType: Prefix

@@ -3,9 +3,9 @@ cortex:
     enabled: true
     ingressClass:
       enabled: true
-      name: nginx-public
+      name: public
     hosts:
-      - host: cortex.local.naim.run
+      - host: metrics.local.naim.run
         paths:
           - /
   
