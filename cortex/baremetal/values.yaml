@@ -95,8 +95,8 @@ cortex:
 #          region: eu-central-1
           endpoint: s3.local.naim.run
           insecure: false
-          access_key_id: 0Bg7dWxVK8FKh3f8
-          secret_access_key: zEnIWIJ2ezQUnirZA4v34pMUV3OkTHSU
+          access_key_id: m5OVYpWHiClJuOfG
+          secret_access_key: 8mjgGqxGQ1VJJ9VpCibvTUKZbSMKFnpf
   
   
   alertmanager:
