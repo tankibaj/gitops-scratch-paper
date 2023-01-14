@@ -85,6 +85,11 @@ kube-prometheus-stack:
         version: 1
       - name: Loki
         access: proxy
+        jsonData:
+          httpHeaderName1: 'X-Scope-OrgID'
+          tlsSkipVerify: true
+        secureJsonData:
+          httpHeaderValue1: 'org1'
         editable: true
         type: loki
         uid: loki
