@@ -6,10 +6,10 @@ kube-prometheus-stack:
     enabled: true
     fullnameOverride: grafana
   
-    # -- Overrides the Grafana v8.5.3 to v9.1.6
+    # -- Overrides the Grafana 8.5.3 to 9.1.6
     image:
       repository: grafana/grafana
-      tag: 9.1.6
+      tag: 9.3.1
     
     defaultDashboardsTimezone: Europe/Berlin # Timezone for the default dashboards
     
