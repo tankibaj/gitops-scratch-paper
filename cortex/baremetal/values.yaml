@@ -25,7 +25,7 @@ cortex:
             consul:
               host: consul-server.consul.svc:8500
     
-    # https://github.com/cortexproject/cortex/blob/master/docs/configuration/config-file-reference.md#limits_config
+    # -- https://github.com/cortexproject/cortex/blob/master/docs/configuration/config-file-reference.md#limits_config
     limits:
       reject_old_samples_max_age: 12h
       max_series_per_metric: 200000
@@ -35,18 +35,18 @@ cortex:
     storage:
       engine: blocks
     
-    # https://cortexmetrics.io/docs/configuration/configuration-file/#blocks_storage_config
+    # -- https://cortexmetrics.io/docs/configuration/configuration-file/#blocks_storage_config
     blocks_storage:
       # Backend storage to use. Supported backends are: s3, gcs, azure, swift and filesystem [local filesystem storage directory]
       backend: s3
       s3:
         bucket_name: metrics
-#        region: eu-central-1
+        # region: eu-central-1
         endpoint: s3.local.naim.run
         insecure: false
         access_key_id: m5OVYpWHiClJuOfG
         secret_access_key: 8mjgGqxGQ1VJJ9VpCibvTUKZbSMKFnpf
-      # Local directory to store TSDBs in the ingesters.
+      # -- Local directory to store TSDBs in the ingesters.
       tsdb:
         dir: /data/tsdb
         # TSDB blocks retention in the ingester before a block is removed. This should
@@ -58,7 +58,7 @@ cortex:
         bucket_index:
           enabled: true
     
-    # https://github.com/cortexproject/cortex/blob/master/docs/configuration/config-file-reference.md#distributor_config
+    # -- https://github.com/cortexproject/cortex/blob/master/docs/configuration/config-file-reference.md#distributor_config
     distributor:
       ha_tracker:
         enable_ha_tracker: true
@@ -78,8 +78,8 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: alertrules
-#          region: eu-central-1
+          bucketnames: alert-rules
+          # region: eu-central-1
           endpoint: s3.local.naim.run
           insecure: false
           access_key_id: m5OVYpWHiClJuOfG
@@ -91,8 +91,8 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: alertrules
-#          region: eu-central-1
+          bucketnames: alert-rules
+          # region: eu-central-1
           endpoint: s3.local.naim.run
           insecure: false
           access_key_id: m5OVYpWHiClJuOfG
