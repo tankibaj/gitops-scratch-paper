@@ -78,7 +78,7 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: alert-rules
+          bucketnames: alertrules
           # region: eu-central-1
           endpoint: s3.local.naim.run
           insecure: false
@@ -91,7 +91,7 @@ cortex:
       storage:
         type: s3
         s3:
-          bucketnames: alert-rules
+          bucketnames: alertrules
           # region: eu-central-1
           endpoint: s3.local.naim.run
           insecure: false
