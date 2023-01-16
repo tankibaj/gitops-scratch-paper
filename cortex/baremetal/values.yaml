@@ -78,6 +78,7 @@ cortex:
       storage:
         type: s3
         s3:
+          s3forcepathstyle: true
           bucketnames: alertrules
           # region: eu-central-1
           endpoint: s3.local.naim.run
@@ -91,6 +92,7 @@ cortex:
       storage:
         type: s3
         s3:
+          s3forcepathstyle: true
           bucketnames: alertrules
           # region: eu-central-1
           endpoint: s3.local.naim.run
