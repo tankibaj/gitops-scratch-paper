@@ -9,7 +9,7 @@ spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    path: harbor-high-availability
+    path: harbor/harbor-high-availability
     targetRevision: main
     helm:
       releaseName: harbor
