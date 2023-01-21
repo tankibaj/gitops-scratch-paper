@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: build-and-push-docker-image
+spec:
+  entrypoint: build-and-push
+  templates:
+  - name: build-and-push
+    steps:
+    - - name: checkout-code
+        template: git-clone
+        arguments:
+          parameters:
+          - name: repository
+            value: https://github.com/tankibaj/argocd-with-helm-sops.git
+      - name: build-image
+        template: build-docker-image
+        arguments:
+          parameters:
+          - name: repository
+            value: thenaim/test-image-of-workflows
+          - name: tag
+            value: latest
+      - name: push-image
+        template: push-docker-image
+        arguments:
+          parameters:
+          - name: repository
+            value: thenaim/test-image-of-workflows
+          - name: tag
+            value: latest
+  - name: git-clone
+    container:
+      image: alpine/git
+      command: [ sh, -c ]
+      args: [ "git clone {{inputs.parameters.repository}} repo" ]
+  - name: build-docker-image
+    container:
+      image: docker:stable-dind
+      command: [ sh, -c ]
+      args: [ "docker build -t {{inputs.parameters.repository}}:{{inputs.parameters.tag}} repo" ]
+  - name: push-docker-image
+    container:
+      image: docker:stable-dind
+      command: [ sh, -c ]
+      args: [ "docker push {{inputs.parameters.repository}}:{{inputs.parameters.tag}}" ]
