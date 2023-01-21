@@ -9,10 +9,11 @@ spec:
     steps:
     - - name: checkout-code
         template: git-clone
-        arguments:
+        inputs:
           parameters:
-          - name: repository
-            value: https://github.com/tankibaj/argocd-with-helm-sops.git
+            - name: repository
+              value: https://github.com/tankibaj/argocd-with-helm-sops.git
+
       - name: build-image
         template: build-docker-image
         arguments:
