@@ -1,9 +1,12 @@
 argo-workflows:
   fullnameOverride: argo-workflows
 
+  ## Custom resource configuration
   crds:
+    # -- Install and upgrade CRDs
+    install: true
     # -- Keep CRDs on chart uninstall
-    keep: false
+    keep: true
 
   controller:
     # -- Specify all namespaces where this workflow controller instance will manage
@@ -21,7 +24,7 @@ argo-workflows:
     # -- Ingress configuration.
     ingress:
       enabled: true
-      ingressClassName: nginx-public
+      ingressClassName: public
       hosts:
         - workflows.local.naim.run
     # -- SSO configuration when SSO is specified as a server auth mode. SSO is activated by adding --auth-mode=sso

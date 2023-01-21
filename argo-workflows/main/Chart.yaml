@@ -16,5 +16,5 @@ appVersion: "3.4.4"
 
 dependencies:
 - name: argo-workflows
-  version: "0.22.0"
+  version: "0.22.8"
   repository: "https://argoproj.github.io/argo-helm"
