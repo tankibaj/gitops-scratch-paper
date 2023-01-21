@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: argo-workflows-components
+  name: argo-workflows-components-appset
   namespace: argo
   labels:
     name: workflows
