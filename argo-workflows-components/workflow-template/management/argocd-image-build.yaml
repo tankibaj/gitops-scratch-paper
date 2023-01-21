@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: argocd-image-build
+spec:
+  inputs:
+    parameters:
+    - name: source
+      description: The source code repository and build context
+      default: { }
+    - name: image
+      description: The name of the image to be built
+      default: ""
+    - name: buildArgs
+      description: Additional build-time variables
+      default: { }
+  outputs:
+    parameters:
+    - name: image
+      description: The built image
+  container:
+    image: argoproj/argocd-image-builder:v1.3.0
+    command:
+    - /bin/bash
+    - -c
+    - |
+      argocd-image-builder build $(inputs.parameters.source) $(inputs.parameters.image) --build-arg $(inputs.parameters.buildArgs)

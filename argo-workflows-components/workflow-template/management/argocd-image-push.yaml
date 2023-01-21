@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: argocd-image-push
+spec:
+  inputs:
+    parameters:
+    - name: image
+      description: The image to be pushed
+      default: ""
+    - name: registry
+      description: The registry to push the image to
+      default: { }
+    - name: pushArgs
+      description: Additional push-time variables
+      default: { }
+  container:
+    image: argoproj/argocd-image-pusher:v1.3.0
+    command:
+    - /bin/bash
+    - -c
+    - |
+      argocd-image-pusher push $(inputs.parameters.image) $(inputs.parameters.registry) --push-arg $(inputs.parameters.pushArgs)

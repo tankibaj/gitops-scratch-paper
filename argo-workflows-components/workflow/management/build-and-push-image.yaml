@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: build-and-push-image
+spec:
+  entrypoint: build-and-push-image
+  templates:
+  - name: build-and-push-image
+    steps:
+    - name: build-image
+      template: argocd-image-build
+      inputs:
+        source:
+          repoURL: https://github.com/tankibaj/argocd-with-helm-sops.git
+          path: .
+        image: thenaim/my-image-test:latest
+    - name: push-image
+      template: argocd-image-push
+      inputs:
+        image: thenaim/my-image-test:latest
+        registry:
+          url: https://index.docker.io/v1/
+          credentials:
+            username: $(inputs.secrets.docker-hub-username.username)
+            password: $(inputs.secrets.docker-hub-password.password)
