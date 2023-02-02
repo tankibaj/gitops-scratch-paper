@@ -1,0 +1,6 @@
+namespaces:
+  - prod
+  - staging
+  - qa
+
+name: hulk
