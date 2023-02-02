@@ -3,6 +3,8 @@ kind: ApplicationSet
 metadata:
   name: demo-helm-common-chart
   namespace: argocd
+  labels:
+    name: demo
 spec:
   generators:
     - git:
@@ -16,6 +18,8 @@ spec:
       namespace: argocd
       # you can use the path strings with / delimiter as variables
       name: "{{path[2]}}-{{path.basename}}"
+      labels:
+        name: demo
     spec:
       project: gitops
       source:
