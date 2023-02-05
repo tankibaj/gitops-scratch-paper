@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: prometheus-operator-appset
+  namespace: argocd
+  labels:
+    name: observability
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: management
+            url: https://kubernetes.default.svc
+            values:
+              remoteWriteURL: http://cortex-nginx.cortex.svc:80/api/v1/push/org1
+          - cluster: development
+            url: https://172.16.100.69:16443
+            values:
+              remoteWriteURL: https://cortex.local.naim.run/api/prom/push/org2
+  template:
+    metadata:
+      name: 'prometheus-operator-{{cluster}}'
+      labels:
+        name: observability
+    spec:
+      project: gitops
+      source:
+        repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+        targetRevision: development
+        path: prometheus/operator
+        helm:
+          skipCrds: true # https://github.com/prometheus-operator/prometheus-operator/issues/4439#issuecomment-1110279191
+          releaseName: kube-prometheus
+          values: |
+            kube-prometheus-stack:
+              prometheus:
+                prometheusSpec:
+                  externalLabels:
+                    cluster: '{{cluster}}'
+                  remoteWrite:
+                    - name: cortex
+                      url: '{{values.remoteWriteURL}}'
+      destination:
+        server: '{{url}}'
+        namespace: prometheus-agent
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
