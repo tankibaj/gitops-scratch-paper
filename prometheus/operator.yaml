@@ -42,7 +42,7 @@ spec:
                       url: '{{values.remoteWriteURL}}'
       destination:
         server: '{{url}}'
-        namespace: prometheus-agent
+        namespace: prometheus
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
