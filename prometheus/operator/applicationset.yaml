@@ -18,7 +18,7 @@ spec:
             url: https://172.16.100.69:16443
             values:
               tag: main
-              remoteWriteURL: https://cortex.local.naim.run/api/prom/push/org2
+              remoteWriteURL: https://metrics.local.naim.run/api/prom/push/org1 #org2
   template:
     metadata:
       name: 'prometheus-operator-{{cluster}}'
