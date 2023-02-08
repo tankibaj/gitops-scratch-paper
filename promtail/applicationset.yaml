@@ -9,7 +9,7 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: in-cluster
+          - cluster: management
             url: https://kubernetes.default.svc
             values:
               tag: main
