@@ -4,7 +4,7 @@ metadata:
   name: promtail-appset
   namespace: argocd
   labels:
-    name: logging
+    name: observability
 spec:
   generators:
     - list:
@@ -15,17 +15,17 @@ spec:
               tag: main
               loki_endpoint: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
               loki_tenant_id: org1
-#          - cluster: development
-#            url: https://development-cluster.local.naim.run
-#            values:
-#              tag: production
-#              loki_endpoint: https://logs.local.naim.run/loki/api/v1/push
-#              loki_tenant_id: org2
+          - cluster: development
+            url: https://172.16.100.69:16443
+            values:
+              tag: main
+              loki_endpoint: https://logs.local.naim.run/loki/api/v1/push
+              loki_tenant_id: org1
   template:
     metadata:
       name: 'promtail-{{cluster}}'
       labels:
-        name: logging
+        name: observability
     spec:
       project: gitops
       source:
