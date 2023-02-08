@@ -10,9 +10,13 @@ spec:
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: argo-workflows
+    path: argo-workflows/main
+    helm:
+      releaseName: argo-workflows
+      valueFiles:
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: argo
   syncPolicy:
     automated: { }

@@ -1,13 +1,5 @@
 ```bash
-kubectl apply -f cloudflare-api-token-secret.yaml
-```
-
-```bash
-kubectl apply -f clusterissuer.yaml
-```
-
-```bash
-kubectl apply -f certificate.yaml
+kubectl apply -k kustomization.yaml
 ```
 
 ```bash

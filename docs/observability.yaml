@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../consul.yaml
+  - ../cortex-baremetal.yaml
+  - ../prometheus-crds.yaml
+  - ../prometheus-operator.yaml
+  - ../loki-distributed-baremetal.yaml
+  - ../promtail.yaml
+  - ../grafana-kube.yaml

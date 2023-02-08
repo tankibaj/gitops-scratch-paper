@@ -6,3 +6,4 @@ This repository contains all the GitOps-y stuff that I'm testing with. Most thin
 - [Ingress Nginx Controller](docs/ingress-nginx.md)
 - [Harbor](docs/harbor.md)
 - [PostgreSQL](docs/postgres.md)
+- [Argo Workflows](docs/argo-workflows.md)
