@@ -6,29 +6,21 @@ metadata:
 spec:
   description: ArgoCD GitOps
   sourceRepos:
-    - https://github.com/tankibaj/gitops-scratch-paper.git
+#    - https://github.com/tankibaj/gitops-scratch-paper.git
+    - '*'
   destinations:
     - name: in-cluster
       server: https://kubernetes.default.svc
       namespace: '*'
+#    - name: development
+#      server: https://172.16.100.69:16443
+#      namespace: argo
+#    - name: development
+#      server: https://172.16.100.69:16443
+#      namespace: kube-system
     - name: development
       server: https://172.16.100.69:16443
       namespace: '*'
-#    - name: in-cluster
-#      server: https://kubernetes.default.svc
-#      namespace: argocd # namespace: '*'
-#    - name: in-cluster
-#      server: https://kubernetes.default.svc
-#      namespace: kube-system
-#    - name: in-cluster
-#      server: https://kubernetes.default.svc
-#      namespace: monitoring
-#    - name: in-cluster
-#      server: https://kubernetes.default.svc
-#      namespace: central-monitoring
-#    - name: in-cluster
-#      server: https://kubernetes.default.svc
-#      namespace: mimir
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
