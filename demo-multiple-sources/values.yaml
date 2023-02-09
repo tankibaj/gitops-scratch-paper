@@ -4,13 +4,13 @@ fullnameOverride: grafana
 defaultDashboardsTimezone: Europe/Berlin
 
 ingress:
-  enabled: false
+  enabled: true
   ingressClassName: public
 #  annotations:
 #    kubernetes.io/tls-acme: "true"
 #    cert-manager.io/cluster-issuer: letsencrypt
   hosts:
-    - grafana.local.naim.run
+    - demo-multiple-sources.local.naim.run
   path: /
   pathType: Prefix
 

@@ -20,7 +20,7 @@ spec:
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
       targetRevision: development
   destination:
-    server: https://kubernetes.default.svc
+    server: https://172.16.100.69:16443
     namespace: demo-multiple-sources
   syncPolicy:
     syncOptions:
