@@ -1,0 +1,81 @@
+fullnameOverride: grafana
+
+# Timezone for the default dashboards
+defaultDashboardsTimezone: Europe/Berlin
+
+ingress:
+  enabled: false
+  ingressClassName: public
+#  annotations:
+#    kubernetes.io/tls-acme: "true"
+#    cert-manager.io/cluster-issuer: letsencrypt
+  hosts:
+    - grafana.local.naim.run
+  path: /
+  pathType: Prefix
+
+sidecar:
+  dashboards:
+    enabled: true
+    label: grafana_dashboard
+  datasources:
+    enabled: true
+    label: grafana_datasource
+
+grafana.ini:
+  server:
+    #domain: grafana.local.naim.run
+    root_url: https://grafana.local.naim.run
+
+  auth:
+    # -- Set to true to disable (hide) the login form, useful if you use OAuth
+    disable_login_form: true # Defaults to false.
+
+  auth.generic_oauth:
+    enabled: true
+    name: Keycloak
+    allow_sign_up: true
+    client_id: grafana
+    scopes: openid profile email groups
+    auth_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/auth
+    token_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/token
+    api_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/userinfo
+    role_attribute_path: contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'developer') && 'Editor' || 'Viewer'
+
+## Configure additional grafana datasource's (passed through tpl)
+## ref: http://docs.grafana.org/administration/provisioning/#datasources
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Cortex
+        access: proxy
+        jsonData:
+          httpHeaderName1: 'X-Scope-OrgID'
+          tlsSkipVerify: true
+        secureJsonData:
+          httpHeaderValue1: 'org1'
+        editable: true
+        type: prometheus
+        uid: cortex
+        url: http://cortex-nginx.cortex.svc.cluster.local:80/api/prom/
+        version: 1
+      - name: Alertmanager
+        access: proxy
+        jsonData:
+          httpHeaderName1: 'X-Scope-OrgID'
+          tlsSkipVerify: true
+        secureJsonData:
+          httpHeaderValue1: 'org1'
+        editable: true
+        type: alertmanager
+        uid: alertmanager
+        url: http://cortex-nginx.cortex.svc.cluster.local:80/api/prom/alertmanager/ # http://cortex-alertmanager.cortex.svc.cluster.local:8080/api/prom/alertmanager/
+        version: 1
+      - name: Loki
+        access: proxy
+        editable: true
+        type: loki
+        uid: loki
+        url: http://loki-gateway.loki.svc.cluster.local:80
+        version: 1
