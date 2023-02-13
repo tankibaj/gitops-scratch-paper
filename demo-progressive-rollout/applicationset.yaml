@@ -33,13 +33,13 @@ spec:
               operator: In
               values:
                 - qa
-          #maxUpdate: 0      # if 0, no matched applications will be updated
+          maxUpdate: 0      # if 0, no matched applications will be updated
         - matchExpressions:
             - key: envLabel
               operator: In
               values:
                 - prod
-          #maxUpdate: 10%    # maxUpdate supports both integer and percentage string values (rounds down, but floored at 1 Application for >0%)
+          maxUpdate: 10%    # maxUpdate supports both integer and percentage string values (rounds down, but floored at 1 Application for >0%)
   goTemplate: true
   template:
     metadata:
@@ -58,7 +58,7 @@ spec:
               - $values/demo-progressive-rollout/values-{{.env}}.yaml
             values: |
               image:
-                tag: 0.2
+                tag: 0.1
         - ref: values
           repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
           targetRevision: development
