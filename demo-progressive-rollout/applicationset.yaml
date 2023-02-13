@@ -15,7 +15,7 @@ spec:
           - cluster: staging
             url: https://172.16.100.70:16443
             env: env-qa
-          - cluster: engineering-prod
+          - cluster: production
             url: https://kubernetes.default.svc
             env: env-prod
   strategy:

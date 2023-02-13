@@ -21,6 +21,9 @@ spec:
     - name: development
       server: https://172.16.100.69:16443
       namespace: '*'
+    - name: development
+      server: https://172.16.100.70:16443
+      namespace: '*'
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
