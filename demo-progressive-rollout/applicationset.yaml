@@ -33,13 +33,13 @@ spec:
               operator: In
               values:
                 - qa
-          #maxUpdate: 0      # if 0, no matched applications will be updated
+          maxUpdate: 0      # if 0, no matched applications will be updated
         - matchExpressions:
             - key: envLabel
               operator: In
               values:
                 - prod
-          #maxUpdate: 10%    # maxUpdate supports both integer and percentage string values (rounds down, but floored at 1 Application for >0%)
+          maxUpdate: 10%    # maxUpdate supports both integer and percentage string values (rounds down, but floored at 1 Application for >0%)
   goTemplate: true
   template:
     metadata:
