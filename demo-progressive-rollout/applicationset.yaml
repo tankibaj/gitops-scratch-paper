@@ -57,5 +57,9 @@ spec:
         server: '{{.url}}'
         namespace: guestbook
       syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
         syncOptions:
+          - ApplyOutOfSyncOnly=true
           - CreateNamespace=true
