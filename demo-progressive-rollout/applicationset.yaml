@@ -10,10 +10,10 @@ spec:
     - list:
         elements:
           - cluster: development
-            url: https://172.16.100.69
+            url: https://172.16.100.69:16443
             env: env-dev
           - cluster: staging
-            url: https://172.16.100.70
+            url: https://172.16.100.70:16443
             env: env-qa
           - cluster: engineering-prod
             url: https://kubernetes.default.svc
