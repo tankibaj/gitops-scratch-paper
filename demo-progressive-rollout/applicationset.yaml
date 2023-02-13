@@ -58,7 +58,7 @@ spec:
               - $values/demo-progressive-rollout/values-{{.env}}.yaml
             values: |
               image:
-                tag: 0.2
+                tag: 0.1
         - ref: values
           repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
           targetRevision: development
