@@ -48,7 +48,7 @@ spec:
         envLabel: '{{.env}}'
         name: demo
     spec:
-      project: my-project
+      project: gitops
       source:
         repoURL: https://github.com/argoproj/argocd-example-apps.git
         targetRevision: HEAD
