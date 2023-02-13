@@ -19,7 +19,7 @@ spec:
             url: https://kubernetes.default.svc
             env: env-prod
   strategy:
-    type: RollingSync
+    type: RollingUpdate
     rollingSync:
       steps:
         - matchExpressions:
