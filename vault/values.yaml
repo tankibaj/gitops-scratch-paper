@@ -33,7 +33,6 @@ server:
       storage "s3" {
         bucket = "vault"
         endpoint = "s3.local.naim.run"
-        region = "us-east-1"
         access_key = "m5OVYpWHiClJuOfG"
         secret_key = "8mjgGqxGQ1VJJ9VpCibvTUKZbSMKFnpf"
         s3_force_path_style = "true"
