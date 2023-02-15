@@ -1,11 +1,13 @@
 server:
+  ingress:
+    enabled: true
+    ingressClassName: "public"
 #  extraEnvironmentVars:
 #    BUCKET: vault
 #    ENDPOINT: s3.local.naim.run
 #    REGION: us-east-1 # -- Default: us-east-1
 #    S3_FORCE_PATH_STYLE: true # -- Default: false
 #    DISABLE_SSL: true # -- Default: false
-
   dataStorage:
     enabled: false
 
