@@ -2,6 +2,9 @@ server:
   ingress:
     enabled: true
     ingressClassName: "public"
+    hosts:
+      - host: vault.local.naim.run
+        paths: [ ]
 #  extraEnvironmentVars:
 #    BUCKET: vault
 #    ENDPOINT: s3.local.naim.run
