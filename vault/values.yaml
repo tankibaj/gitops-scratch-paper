@@ -1,28 +1,36 @@
 server:
-  extraEnvironmentVars:
-    BUCKET: vault
-    ENDPOINT: s3.local.naim.run
-    REGION: us-east-1 # -- Default: us-east-1
-    S3_FORCE_PATH_STYLE: true # -- Default: false
-    DISABLE_SSL: true # -- Default: false
+#  extraEnvironmentVars:
+#    BUCKET: vault
+#    ENDPOINT: s3.local.naim.run
+#    REGION: us-east-1 # -- Default: us-east-1
+#    S3_FORCE_PATH_STYLE: true # -- Default: false
+#    DISABLE_SSL: true # -- Default: false
+
+  dataStorage:
+    enabled: false
+
+  dev:
+    enabled: false
+
+  standalone:
+    enabled: false
 
   ha:
     enabled: true
     replicas: 3
     config: |
       ui = true
-      
       listener "tcp" {
         tls_disable = 1
         address = "[::]:8200"
         cluster_address = "[::]:8201"
       }
       storage "s3" {
-        bucket = "{{ env "BUCKET" }}"
-        endpoint = "{{ env "ENDPOINT" }}"
-        region = "{{ env "REGION" }}"
-        access_key = "{{ env "ACCESS_KEY" }}"
-        secret_key = "{{ env "SECRET_KEY" }}"
-        s3_force_path_style = "{{ env "S3_FORCE_PATH_STYLE" }}"
-        disable_ssl = "{{ env "DISABLE_SSL" }}"
+        bucket = "vault"
+        endpoint = "s3.local.naim.run"
+        region = "us-east-1"
+        access_key = "m5OVYpWHiClJuOfG"
+        secret_key = "8mjgGqxGQ1VJJ9VpCibvTUKZbSMKFnpf"
+        s3_force_path_style = "true"
+        disable_ssl = "true"
       }

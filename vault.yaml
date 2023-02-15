@@ -15,7 +15,7 @@ spec:
         releaseName: vault
         valueFiles:
           - $values/vault/values.yaml
-          - $values/vault/secrets.enc.yaml
+#          - $values/vault/secrets.enc.yaml
     - ref: values
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
       targetRevision: development
