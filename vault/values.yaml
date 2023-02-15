@@ -5,14 +5,12 @@ server:
     hosts:
       - host: vault.local.naim.run
         paths: [ ]
-#  extraEnvironmentVars:
-#    BUCKET: vault
-#    ENDPOINT: s3.local.naim.run
-#    REGION: us-east-1 # -- Default: us-east-1
-#    S3_FORCE_PATH_STYLE: true # -- Default: false
-#    DISABLE_SSL: true # -- Default: false
+
   dataStorage:
-    enabled: false
+    enabled: true
+
+  auditStorage:
+    enabled: true
 
   dev:
     enabled: false
@@ -23,18 +21,11 @@ server:
   ha:
     enabled: true
     replicas: 3
-    config: |
-      ui = true
-      listener "tcp" {
-        tls_disable = 1
-        address = "[::]:8200"
-        cluster_address = "[::]:8201"
-      }
-      storage "s3" {
-        bucket = "vault"
-        endpoint = "s3.local.naim.run"
-        access_key = "m5OVYpWHiClJuOfG"
-        secret_key = "8mjgGqxGQ1VJJ9VpCibvTUKZbSMKFnpf"
-        s3_force_path_style = "true"
-        disable_ssl = "true"
-      }
+    raft:
+      enabled: true
+      setNodeId: true
+
+# Vault UI
+ui:
+  enabled: true
+  serviceType: "LoadBalancer"
