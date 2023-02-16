@@ -83,5 +83,4 @@ ui:
   enabled: true
   serviceType: "LoadBalancer"
   externalPort: 8200
-  loadBalancerSourceRanges:
-    loadBalancerIP: 172.16.100.198
+  loadBalancerIP: 172.16.100.198
