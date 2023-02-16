@@ -21,16 +21,6 @@ injector:
 
 
 server:
-  auditStorage:
-    enabled: false
-
-  standalone:
-    enabled: false
-
-#  image:
-#    repository: "hashicorp/vault"
-#    tag: "1.6.3"
-
   resources:
     requests:
       memory: 256Mi
@@ -39,12 +29,6 @@ server:
       memory: 512Mi
       cpu: 400m
 
-  affinity: ""
-
-  readinessProbe:
-    enabled: true
-    path: "/v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204"
-
   ingress:
     enabled: true
     ingressClassName: "public"
@@ -52,16 +36,20 @@ server:
       - host: vault.local.naim.run
         paths: [ ]
 
-#  extraEnvironmentVars:
-##    VAULT_CACERT: "/vault/userconfig/vault-server-tls/vault.ca"
-#    VAULT_ADDR: "https://127.0.0.1:8200"
-
-  ha:
+  readinessProbe:
     enabled: true
-    replicas: 3
-    raft:
-      enabled: false
+    path: "/v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204"
 
+  affinity: ""
+
+  dataStorage:
+    enabled: false
+
+  auditStorage:
+    enabled: false
+
+  standalone:
+    enabled: true
     config: |
       ui = true
       
@@ -76,6 +64,28 @@ server:
       }
       
       service_registration "kubernetes" {}
+    
+
+#  ha:
+#    enabled: true
+#    replicas: 3
+#    raft:
+#      enabled: false
+#
+#    config: |
+#      ui = true
+#
+#      listener "tcp" {
+#        tls_disable = 1
+#        address = "[::]:8200"
+#        cluster_address = "[::]:8201"
+#      }
+#      storage "consul" {
+#        path = "vault"
+#        address = "HOST_IP:8500"
+#      }
+#
+#      service_registration "kubernetes" {}
 
 
 # Vault UI
@@ -83,4 +93,4 @@ ui:
   enabled: true
   serviceType: "LoadBalancer"
   externalPort: 8200
-#  loadBalancerIP: 172.16.100.201
+  loadBalancerIP: 172.16.100.201
