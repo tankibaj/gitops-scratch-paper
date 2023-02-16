@@ -1,0 +1,56 @@
+server:
+  # For HA configuration and because we need to manually init the vault,
+  # we need to define custom readiness/liveness Probe settings
+  readinessProbe:
+    enabled: true
+    path: "/v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204"
+
+  livenessProbe:
+    enabled: true
+    path: "/v1/sys/health?standbyok=true"
+    initialDelaySeconds: 60
+
+  ingress:
+    enabled: true
+    ingressClassName: "public"
+    hosts:
+      - host: vault.local.naim.run
+        paths: [ ]
+
+  dataStorage:
+    enabled: false
+
+  auditStorage:
+    enabled: false
+
+  dev:
+    enabled: false
+
+  standalone:
+    enabled: false
+
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: false
+      setNodeId: false
+    config: |
+      ui = true
+      
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+      storage "consul" {
+        path = "vault"
+        address = "consul-server.consul.svc:8500"
+      }
+      
+      service_registration "kubernetes" {}
+
+# Vault UI
+ui:
+  enabled: true
+  serviceType: "LoadBalancer"

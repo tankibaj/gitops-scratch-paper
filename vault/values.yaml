@@ -1,14 +1,49 @@
+# Vault Helm Chart Value Overrides
+global:
+  enabled: true
+  tlsDisable: true
+
+injector:
+  enabled: true
+  # Use the Vault K8s Image https://github.com/hashicorp/vault-k8s/
+#  image:
+#    repository: "hashicorp/vault-k8s"
+#    tag: "0.9.0"
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+  affinity: ""
+
+
 server:
-  # For HA configuration and because we need to manually init the vault,
-  # we need to define custom readiness/liveness Probe settings
+  auditStorage:
+    enabled: false
+
+  standalone:
+    enabled: false
+
+#  image:
+#    repository: "hashicorp/vault"
+#    tag: "1.6.3"
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 200m
+    limits:
+      memory: 512Mi
+      cpu: 400m
+
+  affinity: ""
+
   readinessProbe:
     enabled: true
     path: "/v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204"
-
-  livenessProbe:
-    enabled: true
-    path: "/v1/sys/health?standbyok=true"
-    initialDelaySeconds: 60
 
   ingress:
     enabled: true
@@ -17,40 +52,41 @@ server:
       - host: vault.local.naim.run
         paths: [ ]
 
-  dataStorage:
-    enabled: false
-
-  auditStorage:
-    enabled: false
-
-  dev:
-    enabled: false
-
-  standalone:
-    enabled: false
-
   ha:
     enabled: true
     replicas: 3
     raft:
-      enabled: false
-      setNodeId: false
+      enabled: true
+      setNodeId: true
+      config: |
+        ui = true
+
+        listener "tcp" {
+          tls_disable = true
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+
+        storage "raft" {
+          path = "/vault/data"
+        }
+
+        service_registration "kubernetes" {}
+
     config: |
       ui = true
-      
+
       listener "tcp" {
-        tls_disable = 1
+        tls_disable = true
         address = "[::]:8200"
         cluster_address = "[::]:8201"
       }
-      storage "consul" {
-        path = "vault"
-        address = "consul-server.consul.svc:8500"
-      }
-      
+
       service_registration "kubernetes" {}
+
 
 # Vault UI
 ui:
   enabled: true
   serviceType: "LoadBalancer"
+  externalPort: 8200
