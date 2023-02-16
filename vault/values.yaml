@@ -52,6 +52,10 @@ server:
       - host: vault.local.naim.run
         paths: [ ]
 
+#  extraEnvironmentVars:
+##    VAULT_CACERT: "/vault/userconfig/vault-server-tls/vault.ca"
+#    VAULT_ADDR: "https://127.0.0.1:8200"
+
   ha:
     enabled: true
     replicas: 3
@@ -69,6 +73,23 @@ server:
 
         storage "raft" {
           path = "/vault/data"
+          retry_join {
+            leader_api_addr = "https://vault-0.vault-internal:8200"
+          }
+          retry_join {
+            leader_api_addr = "https://vault-1.vault-internal:8200"
+          }
+          retry_join {
+            leader_api_addr = "https://vault-2.vault-internal:8200"
+          }
+          autopilot {
+            cleanup_dead_servers = "true"
+            last_contact_threshold = "200ms"
+            last_contact_failure_threshold = "10m"
+            max_trailing_logs = 250000
+            min_quorum = 5
+            server_stabilization_time = "10s"
+          }
         }
 
         service_registration "kubernetes" {}
