@@ -12,6 +12,7 @@ spec:
       chart: vault
       targetRevision: v0.23.0
       helm:
+        version: v3
         releaseName: vault
         valueFiles:
           - $values/vault/values.yaml
@@ -25,3 +26,8 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      jsonPointers:
+        - /webhooks
