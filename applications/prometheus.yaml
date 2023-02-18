@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -11,6 +12,26 @@ spec:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
     path: components/prometheus
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated: { }
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-crds-appset
+  namespace: argocd
+  labels:
+    name: observability
+spec:
+  project: gitops
+  source:
+    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+    targetRevision: development
+    path: components/prometheus/crds
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

@@ -23,9 +23,6 @@ spec:
     spec:
       project: gitops
       sources:
-        - repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-          targetRevision: development
-          path: components/prometheus/crds
         - repoURL: https://prometheus-community.github.io/helm-charts
           chart: kube-prometheus-stack
           targetRevision: 35.5.1
@@ -52,4 +49,3 @@ spec:
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
-          - Replace=true
