@@ -32,8 +32,7 @@ spec:
             version: v3
             releaseName: promtail
             values: |
-              promtail:
-                config:
+              config:
                   clients:
                     - url: '{{endpoint}}'
                       tenant_id: '{{tenant_id}}'
