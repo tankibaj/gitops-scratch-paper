@@ -11,14 +11,10 @@ spec:
         elements:
           - cluster: management
             url: https://kubernetes.default.svc
-            values:
-              tag: main
-              remoteWriteURL: http://cortex-nginx.cortex.svc:80/api/v1/push/org1
+            remoteWriteURL: http://cortex-nginx.cortex.svc:80/api/v1/push/org1
           - cluster: development
             url: https://172.16.100.69:16443
-            values:
-              tag: main
-              remoteWriteURL: https://metrics.local.naim.run/api/v1/push/org1 # if cortex multi tenancy is disabled: https://metrics.local.naim.run/api/prom/push
+            remoteWriteURL: https://metrics.local.naim.run/api/v1/push/org1 # if cortex multi tenancy is disabled: https://metrics.local.naim.run/api/prom/push
   template:
     metadata:
       name: 'prometheus-operator-{{cluster}}'
@@ -27,6 +23,9 @@ spec:
     spec:
       project: gitops
       sources:
+        - repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+          targetRevision: development
+          path: components/prometheus/crds
         - repoURL: https://prometheus-community.github.io/helm-charts
           chart: kube-prometheus-stack
           targetRevision: 35.5.1
@@ -35,16 +34,15 @@ spec:
             releaseName: kube-prometheus
             skipCrds: true # https://github.com/prometheus-operator/prometheus-operator/issues/4439#issuecomment-1110279191
             values: |
-              kube-prometheus-stack:
-                prometheus:
+              prometheus:
                   prometheusSpec:
                     externalLabels:
                       cluster: '{{cluster}}'
                     remoteWrite:
                       - name: cortex
-                        url: '{{values.remoteWriteURL}}'
+                        url: '{{remoteWriteURL}}'
             valueFiles:
-              - $values/components/prometheus-test/values.yaml
+              - $values/components/prometheus/values.yaml
         - ref: values
           repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
           targetRevision: development
