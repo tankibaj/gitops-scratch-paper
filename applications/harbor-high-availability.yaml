@@ -1,21 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cortex
+  name: harbor
   namespace: argocd
   labels:
-    name: observability
+    name: harbor
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: development
-    path: cortex/aws
+    path: components/harbor/harbor-high-availability
+    targetRevision: main
     helm:
-      releaseName: cortex
+      releaseName: harbor
+      valueFiles:
+        - values.yaml
+        - secrets.enc.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: cortex
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    namespace: harbor
+#  syncPolicy:
+#    automated: { }

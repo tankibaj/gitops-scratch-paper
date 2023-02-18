@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: grafana
+  name: loki
   namespace: argocd
   labels:
     name: observability
@@ -10,16 +10,12 @@ spec:
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: grafana/grafana-kube
+    path: components/loki-distributed/baremetal
     helm:
-      skipCrds: true
-      releaseName: kube
-      valueFiles:
-        - values.yaml
-        - secrets.enc.yaml
+      releaseName: loki
   destination:
     server: https://kubernetes.default.svc
-    namespace: grafana
+    namespace: loki
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

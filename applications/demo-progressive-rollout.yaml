@@ -1,22 +1,19 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-workflows
+  name: guestbook-appset
   namespace: argocd
   labels:
-    name: workflows
+    name: demo
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: argo-workflows/main
-    helm:
-      releaseName: argo-workflows
-      valueFiles:
-        - values.yaml
+    path: components/demo-progressive-rollout
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo
-  syncPolicy:
-    automated: { }
+    namespace: argocd
+#  syncPolicy:
+#    automated: { }

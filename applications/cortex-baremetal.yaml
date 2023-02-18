@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-operator
+  name: cortex
   namespace: argocd
   labels:
     name: observability
@@ -10,9 +10,12 @@ spec:
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: prometheus/operator
+    path: components/cortex/baremetal
+    helm:
+      releaseName: cortex
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: cortex
   syncPolicy:
-    automated: { }
+    syncOptions:
+      - CreateNamespace=true

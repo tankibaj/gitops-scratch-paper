@@ -1,21 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: consul
+  name: promtail
   namespace: argocd
   labels:
-    name: database
+    name: observability
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: consul
-    helm:
-      releaseName: consul
+    path: components/promtail
   destination:
     server: https://kubernetes.default.svc
-    namespace: consul
+    namespace: argocd
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    automated: { }

@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: ingress-nginx/aws-nlb
+    path: components/ingress-nginx/aws-nlb
     helm:
       releaseName: nginx
   destination:

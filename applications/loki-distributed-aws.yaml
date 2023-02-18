@@ -1,18 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-workflows-components
+  name: loki
   namespace: argocd
   labels:
-    name: workflows
+    name: observability
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: development
-    path: argo-workflows-components
+    targetRevision: main
+    path: components/loki-distributed/aws
+    helm:
+      releaseName: loki
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: loki
   syncPolicy:
-    automated: { }
+    syncOptions:
+      - CreateNamespace=true

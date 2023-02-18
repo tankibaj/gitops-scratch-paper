@@ -1,21 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: velero
   namespace: argocd
   labels:
-    name: cert-manager
+    name: velero
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: cert-manager/main
-    helm:
-      releaseName: cert-manager
+    path: components/velero
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager
+    namespace: argocd
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    automated: { }

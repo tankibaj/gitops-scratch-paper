@@ -1,19 +1,21 @@
----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: guestbook-appset
+  name: cert-manager
   namespace: argocd
   labels:
-    name: demo
+    name: cert-manager
 spec:
   project: gitops
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: development
-    path: demo-progressive-rollout
+    path: components/cert-manager/main
+    helm:
+      releaseName: cert-manager
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
-#  syncPolicy:
-#    automated: { }
+    namespace: cert-manager
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

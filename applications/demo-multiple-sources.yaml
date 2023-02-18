@@ -14,8 +14,8 @@ spec:
       helm:
         releaseName: grafana
         valueFiles:
-          - $values/demo-multiple-sources/values.yaml
-          - $values/demo-multiple-sources/secrets.enc.yaml
+          - $values/components/demo-multiple-sources/values.yaml
+          - $values/components/demo-multiple-sources/secrets.enc.yaml
     - ref: values
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
       targetRevision: development
