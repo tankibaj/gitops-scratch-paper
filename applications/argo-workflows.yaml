@@ -7,16 +7,20 @@ metadata:
     name: workflows
 spec:
   project: gitops
-  source:
-    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: development
-    path: components/argo-workflows/main
-    helm:
-      releaseName: argo-workflows
-      valueFiles:
-        - values.yaml
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: vault
+      targetRevision: 0.22.8
+      helm:
+        version: v3
+        releaseName: argo-workflows
+        valueFiles:
+          - $values/components/argo-workflows/values.yaml
+    - ref: values
+      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: development
   destination:
     server: https://kubernetes.default.svc
     namespace: argo
-  syncPolicy:
-    automated: { }
+#  syncPolicy:
+#    automated: { }
