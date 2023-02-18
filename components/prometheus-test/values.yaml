@@ -1,0 +1,89 @@
+fullnameOverride: prometheus # Provide a name to substitute for the full names of resources
+
+# -- Configuration for alertmanager instance
+alertmanager:
+  enabled: false
+
+# -- Configuration for grafana instance
+grafana:
+  enabled: false
+
+# -- Component scraping the kube api server
+kubeApiServer:
+  enabled: false
+
+# -- Component scraping the kubelet and kubelet-hosted cAdvisor
+kubelet:
+  enabled: true
+
+# -- Disable Controller metrics
+kubeControllerManager:
+  enabled: false
+
+# -- Component scraping coreDns. Use either this or kubeDns
+coreDns:
+  enabled: false
+
+# -- Component scraping kubeDns. Use either this or coreDns
+kubeDns:
+  enabled: false
+
+# -- Component scraping etcd
+kubeEtcd:
+  enabled: false
+
+# -- Component scraping kube scheduler
+kubeScheduler:
+  enabled: false
+
+# -- Component scraping kube proxy
+kubeProxy:
+  enabled: false
+
+# -- Component scraping kube state metrics
+kubeStateMetrics:
+  enabled: true
+
+# -- Configuration for kube-state-metrics
+kube-state-metrics:
+  fullnameOverride: kube-state-metrics
+
+# -- Deploy node exporter as a daemonset to all nodes
+nodeExporter:
+  enabled: true
+
+# -- Configuration for prometheus-node-exporter
+prometheus-node-exporter:
+  fullnameOverride: node-exporter
+
+# -- Configuration for Prometheus Operator
+prometheusOperator:
+  enabled: true
+  admissionWebhooks: # https://github.com/prometheus-community/helm-charts/issues/418#issuecomment-740578727
+    failurePolicy: Ignore
+  # -- If true, the operator will create and maintain a service for scraping kubelets
+  kubeletService:
+    enabled: true
+
+# -- Configuration for Prometheus instance
+prometheus:
+  enabled: true
+  prometheusSpec:
+    # -- External labels to add to any time series or alerts when communicating with external systems
+    #      externalLabels:
+    #        cluster: clustername # eg: development | production
+    # -- Remote Write all the scrapped data to Cortex side with specific header parameter
+    #      remoteWrite:
+    #        - name: cortex
+    #          url: http://cortex-nginx.cortex.svc:80/api/v1/push/org1 # http://cortex-nginx.cortex.svc:80/api/prom/push # https://cortex.local.naim.run/api/prom/push/org2
+    # -- Enable/Disable Grafana dashboards provisioning for prometheus remote write feature
+    remoteWriteDashboards: true
+    # -- How long to retain metrics
+    retention: 1d
+    # -- Configure Persistent Volume for Prometheus storage
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 5Gi

@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: prometheus-operator-appset
+  namespace: argocd
+  labels:
+    name: observability
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: management
+            url: https://kubernetes.default.svc
+            values:
+              tag: main
+              remoteWriteURL: http://cortex-nginx.cortex.svc:80/api/v1/push/org1
+          - cluster: development
+            url: https://172.16.100.69:16443
+            values:
+              tag: main
+              remoteWriteURL: https://metrics.local.naim.run/api/v1/push/org1 # if cortex multi tenancy is disabled: https://metrics.local.naim.run/api/prom/push
+  template:
+    metadata:
+      name: 'prometheus-operator-{{cluster}}'
+      labels:
+        name: observability
+    spec:
+      project: gitops
+      sources:
+        - repoURL: https://prometheus-community.github.io/helm-charts
+          chart: kube-prometheus-stack
+          targetRevision: 35.5.1
+          helm:
+            version: v3
+            releaseName: kube-prometheus
+            skipCrds: true # https://github.com/prometheus-operator/prometheus-operator/issues/4439#issuecomment-1110279191
+            values: |
+              kube-prometheus-stack:
+                prometheus:
+                  prometheusSpec:
+                    externalLabels:
+                      cluster: '{{cluster}}'
+                    remoteWrite:
+                      - name: cortex
+                        url: '{{values.remoteWriteURL}}'
+            valueFiles:
+              - $values/components/prometheus-test/values.yaml
+        - ref: values
+          repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+          targetRevision: development
+      destination:
+        server: '{{url}}'
+        namespace: prometheus
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
