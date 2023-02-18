@@ -1,0 +1,170 @@
+fullnameOverride: kube # Provide a name to substitute for the full names of resources
+
+# -- Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+grafana:
+  enabled: true
+  fullnameOverride: grafana
+
+  # -- Overrides the Grafana 8.5.3 to 9.1.6
+  image:
+    repository: grafana/grafana
+    tag: 9.3.1
+
+  defaultDashboardsTimezone: Europe/Berlin # Timezone for the default dashboards
+
+  ingress:
+    enabled: true
+    ingressClassName: public
+    hosts:
+      - grafana.local.naim.run
+    path: / # /*
+    pathType: Prefix # ImplementationSpecific
+
+  sidecar:
+    # -- Overrides the sidecar v1.15.6 to v1.19.2
+    image:
+      repository: quay.io/kiwigrid/k8s-sidecar
+      tag: 1.19.2
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      multicluster:
+        global:
+          enabled: true
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: false # Disable default kube-prometheus-stack datasource
+
+  grafana.ini:
+    server:
+      #        domain: grafana.local.naim.run
+      root_url: https://grafana.local.naim.run
+
+    auth:
+      # -- Set to true to disable (hide) the login form, useful if you use OAuth
+      disable_login_form: false # Defaults to false.
+
+    auth.generic_oauth:
+      enabled: true
+      name: Keycloak
+      allow_sign_up: true
+      client_id: grafana
+      scopes: openid profile email groups
+      auth_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/auth
+      token_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/token
+      api_url: https://sso.local.naim.run/auth/realms/internal/protocol/openid-connect/userinfo
+      role_attribute_path: contains(groups[*], 'admin') && 'Admin' || contains(groups[*], 'developer') && 'Editor' || 'Viewer'
+
+  # -- Configure additional grafana datasources (passed through tpl)
+  # -- ref: http://docs.grafana.org/administration/provisioning/#datasources
+  additionalDataSources:
+    - name: Cortex
+      access: proxy
+      jsonData:
+        httpHeaderName1: 'X-Scope-OrgID'
+        tlsSkipVerify: true
+      secureJsonData:
+        httpHeaderValue1: 'org1'
+      editable: true
+      type: prometheus
+      uid: cortex
+      url: http://cortex-nginx.cortex.svc.cluster.local:80/api/prom/
+      version: 1
+    - name: Alertmanager
+      access: proxy
+      jsonData:
+        httpHeaderName1: 'X-Scope-OrgID'
+        tlsSkipVerify: true
+      secureJsonData:
+        httpHeaderValue1: 'org1'
+      editable: true
+      type: alertmanager
+      uid: alertmanager
+      url: http://cortex-nginx.cortex.svc.cluster.local:80/api/prom/alertmanager/ # http://cortex-alertmanager.cortex.svc.cluster.local:8080/api/prom/alertmanager/
+      version: 1
+    - name: Loki
+      access: proxy
+      jsonData:
+        httpHeaderName1: 'X-Scope-OrgID'
+        tlsSkipVerify: true
+      secureJsonData:
+        httpHeaderValue1: 'org1'
+      editable: true
+      type: loki
+      uid: loki
+      url: http://loki-gateway.loki.svc.cluster.local:80
+      version: 1
+
+  # -- If true, a ServiceMonitor CRD is created for a prometheus operator
+  serviceMonitor:
+    enabled: false
+
+# - Create ClusterRoles that extend the existing view, edit and admin ClusterRoles to interact with prometheus-operator CRDs
+global:
+  rbac:
+    create: false
+
+# -- Create default rules for monitoring the cluster
+defaultRules:
+  create: false
+
+# -- Deploy alertmanager
+alertmanager:
+  enabled: false
+
+# -- Component scraping the kube api server
+kubeApiServer:
+  enabled: false
+
+
+# -- Component scraping the kubelet and kubelet-hosted cAdvisor
+kubelet:
+  enabled: false
+
+
+# -- Disable Controller metrics
+kubeControllerManager:
+  enabled: false
+
+
+# -- Component scraping coreDns. Use either this or kubeDns
+coreDns:
+  enabled: false
+
+
+# -- Component scraping kubeDns. Use either this or coreDns
+kubeDns:
+  enabled: false
+
+
+# -- Component scraping etcd
+kubeEtcd:
+  enabled: false
+
+
+# -- Component scraping kube scheduler
+kubeScheduler:
+  enabled: false
+
+
+# -- Component scraping kube proxy
+kubeProxy:
+  enabled: false
+
+
+#-- Component scraping kube state metrics
+kubeStateMetrics:
+  enabled: false
+
+# -- Deploy node exporter as a daemonset to all nodes
+nodeExporter:
+  enabled: false
+
+
+# -- Manages Prometheus and Alertmanager components
+prometheusOperator:
+  enabled: false
+
+# -- Deploy a Prometheus instance
+prometheus:
+  enabled: false

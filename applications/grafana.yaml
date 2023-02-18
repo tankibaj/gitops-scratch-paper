@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -7,18 +8,52 @@ metadata:
     name: observability
 spec:
   project: gitops
-  source:
-    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: development
-    path: components/grafana/grafana
-    helm:
-      releaseName: grafana
-      valueFiles:
-        - values.yaml
-        - secrets.enc.yaml
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 35.5.1
+      helm:
+        version: v3
+        releaseName: grafana
+        valueFiles:
+          - $values/components/kube-grafana/values.yaml
+          - $values/components/kube-grafana/secrets.enc.yaml
+    - ref: values
+      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: development
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+
+#---
+#apiVersion: argoproj.io/v1alpha1
+#kind: Application
+#metadata:
+#  name: grafana
+#  namespace: argocd
+#  labels:
+#    name: observability
+#spec:
+#  project: gitops
+#  sources:
+#    - repoURL: https://grafana.github.io/helm-charts
+#      chart: grafana
+#      targetRevision: 6.36.2
+#      helm:
+#        version: v3
+#        releaseName: grafana
+#        valueFiles:
+#          - $values/components/grafana/values.yaml
+#          - $values/components/grafana/secrets.enc.yaml
+#    - ref: values
+#      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+#      targetRevision: development
+#  destination:
+#    server: https://kubernetes.default.svc
+#    namespace: grafana
+#  syncPolicy:
+#    syncOptions:
+#      - CreateNamespace=true
