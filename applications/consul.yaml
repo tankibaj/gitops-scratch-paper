@@ -7,12 +7,18 @@ metadata:
     name: database
 spec:
   project: gitops
-  source:
-    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    targetRevision: development
-    path: components/consul
-    helm:
-      releaseName: consul
+  sources:
+    - repoURL: https://helm.releases.hashicorp.com
+      chart: consul
+      targetRevision: 0.48.0
+      helm:
+        version: v3
+        releaseName: consul
+        valueFiles:
+          - $values/components/consul/values.yaml
+    - ref: values
+      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: development
   destination:
     server: https://kubernetes.default.svc
     namespace: consul
