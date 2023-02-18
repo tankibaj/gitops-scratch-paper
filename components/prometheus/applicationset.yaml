@@ -17,7 +17,7 @@ spec:
             remoteWriteURL: https://metrics.local.naim.run/api/v1/push/org1 # if cortex multi tenancy is disabled: https://metrics.local.naim.run/api/prom/push
   template:
     metadata:
-      name: 'prometheus-operator-{{cluster}}'
+      name: 'prometheus-{{cluster}}'
       labels:
         name: observability
     spec:
