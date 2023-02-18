@@ -16,8 +16,8 @@ spec:
         version: v3
         releaseName: grafana
         valueFiles:
-          - $values/components/kube-grafana/values.yaml
-          - $values/components/kube-grafana/secrets.enc.yaml
+          - $values/components/grafana/kube-grafana/values.yaml
+          - $values/components/grafana/kube-grafana/secrets.enc.yaml
     - ref: values
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
       targetRevision: development
