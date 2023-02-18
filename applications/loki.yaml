@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+  labels:
+    name: observability
+spec:
+  project: gitops
+  sources:
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: loki-distributed
+      targetRevision: 0.53.2
+      helm:
+        version: v3
+        releaseName: loki
+        valueFiles:
+          - $values/components/loki/baremetal-values.yaml
+#          - $values/components/loki/eks-values.yaml
+          - $values/components/loki/secrets.enc.yaml
+    - ref: values
+      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: development
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: loki
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
