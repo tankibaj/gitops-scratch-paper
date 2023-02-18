@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: promtail-appset
+  name: promtail
   namespace: argocd
   labels:
     name: observability
@@ -11,16 +11,12 @@ spec:
         elements:
           - cluster: management
             url: https://kubernetes.default.svc
-            values:
-              tag: main
-              loki_endpoint: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
-              loki_tenant_id: org1
+            endpoint: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+            tenant_id: org1
           - cluster: development
             url: https://172.16.100.69:16443
-            values:
-              tag: main
-              loki_endpoint: https://logs.local.naim.run/loki/api/v1/push
-              loki_tenant_id: org1
+            endpoint: https://logs.local.naim.run/loki/api/v1/push
+            tenant_id: org1
   template:
     metadata:
       name: 'promtail-{{cluster}}'
@@ -28,20 +24,26 @@ spec:
         name: observability
     spec:
       project: gitops
-      source:
-        repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-        targetRevision: development
-        path: promtail/{{values.tag}}
-        helm:
-          releaseName: promtail
-          values: |
-            promtail:
-              config:
-                clients:
-                  - url: '{{values.loki_endpoint}}'
-                    tenant_id: '{{values.loki_tenant_id}}'
-                    external_labels:
-                      cluster: '{{cluster}}'
+      sources:
+        - repoURL: https://grafana.github.io/helm-charts
+          chart: promtail
+          targetRevision: 6.8.3
+          helm:
+            version: v3
+            releaseName: promtail
+            values: |
+              promtail:
+                config:
+                  clients:
+                    - url: '{{endpoint}}'
+                      tenant_id: '{{tenant_id}}'
+                      external_labels:
+                        cluster: '{{cluster}}'
+            valueFiles:
+              - $values/components/promtail/values.yaml
+        - ref: values
+          repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+          targetRevision: development
       destination:
         server: '{{url}}'
         namespace: promtail

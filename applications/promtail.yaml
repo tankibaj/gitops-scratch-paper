@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: promtail
+  name: promtail-appset
   namespace: argocd
   labels:
     name: observability
