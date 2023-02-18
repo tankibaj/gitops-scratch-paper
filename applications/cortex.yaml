@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cortex
+  namespace: argocd
+  labels:
+    name: observability
+spec:
+  project: gitops
+  sources:
+    - repoURL: https://cortexproject.github.io/cortex-helm-chart
+      chart: cortex
+      targetRevision: 1.6.0
+      helm:
+        version: v3
+        releaseName: cortex
+        valueFiles:
+          - $values/components/cortex/baremetal-values.yaml
+#          - $values/components/cortex/eks-values.yaml
+    - ref: values
+      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: development
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cortex
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
