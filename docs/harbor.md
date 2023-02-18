@@ -7,7 +7,7 @@
 Create a postgres client pod on the Kubernetes cluster to login into the database.
 
 ```bash
-export POSTGRES_HOST=db-registry.local.naim.run
+export POSTGRES_HOST=postgres.local.naim.run
 export POSTGRES_USER=postgres
 export POSTGRES_PASSWORD=<passowrd>
 
@@ -56,6 +56,6 @@ sops -e harbor/secrets.default.yaml > harbor/secrets.enc.yaml
 #### Harbor Installation
 
 ```bash
-kubectl apply -f harbor.yaml
+kubectl apply -f ../applications/harbor.yaml
 ```
 

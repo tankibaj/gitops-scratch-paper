@@ -22,5 +22,5 @@ kubectl -n argo get secrets argo-server-sso -o jsonpath="{.data.client-secret}" 
 ## Installation
 
 ```bash
-kubectl apply -f argo-workflows.yaml
+kubectl apply -f ../applications/argo-workflows.yaml
 ```

@@ -4,5 +4,5 @@ PostgreSQL (Postgres) is an open source object-relational database known for rel
 ## Installation
 
 ```bash
-kubectl apply -f postgres.yaml
+kubectl apply -f ../applications/postgres.yaml
 ```

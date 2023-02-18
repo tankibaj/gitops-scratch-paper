@@ -9,9 +9,9 @@ Cortex and Loki require Key-Value store (KVS) to store the ring. It can use trad
 
 #### Alert and Rule
 
-- [Alertmanager](../cortex/cortex-alert-rules/alertmanager.md)
+- [Alertmanager](cortex-alert-rules/alertmanager.md)
 
-- [Rules](../cortex/cortex-alert-rules/rules.md)
+- [Rules](cortex-alert-rules/rules.md)
 
 
 ## Prometheus
