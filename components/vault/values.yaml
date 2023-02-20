@@ -48,30 +48,8 @@ server:
   auditStorage:
     enabled: false
 
-  standalone:
-    enabled: true
-    config: |
-      ui = true
-      
-      listener "tcp" {
-        tls_disable = 1
-        address = "[::]:8200"
-        cluster_address = "[::]:8201"
-      }
-      storage "consul" {
-        path = "vault"
-        address = "HOST_IP:8500"
-      }
-      
-      service_registration "kubernetes" {}
-    
-
-#  ha:
+#  standalone:
 #    enabled: true
-#    replicas: 3
-#    raft:
-#      enabled: false
-#
 #    config: |
 #      ui = true
 #
@@ -86,6 +64,28 @@ server:
 #      }
 #
 #      service_registration "kubernetes" {}
+    
+
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: false
+
+    config: |
+      ui = true
+
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+      storage "consul" {
+        path = "vault"
+        address = "HOST_IP:8500"
+      }
+
+      service_registration "kubernetes" {}
 
 
 # Vault UI
