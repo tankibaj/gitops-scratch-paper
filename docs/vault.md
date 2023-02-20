@@ -93,7 +93,7 @@ Verify all the Vault pods are running and ready.
 kubectl -n vault get pods
 ```
 
-**Example output:**
+Example output:
 
 ```text
 NAME                                    READY   STATUS    RESTARTS   AGE
@@ -107,7 +107,7 @@ vault-agent-injector-5945fb98b5-vzbqv   1/1     Running   0          5m50s
 
 ## Vault CLI client
 
-### Create a variable named `VAULT_ROOT_KEY` and `VAULT_ADDR` to capture the Vault root token and endpoint.
+Create a variable named `VAULT_ROOT_KEY` and `VAULT_ADDR` to capture the Vault root token and endpoint.
 
 ```bash
 VAULT_ROOT_KEY=$(cat vault-keys.json | jq -r ".root_token")
@@ -117,12 +117,99 @@ VAULT_ROOT_KEY=$(cat vault-keys.json | jq -r ".root_token")
 export VAULT_ADDR=https://vault.local.naim.run
 ```
 
-### Vault is now ready for you
+Vault is now ready for you. Lets check vault status:
 
 ```bash
 vault status
 ```
 
+
+
+## Secrets Engines
+
+Secrets engines are Vault components which store, generate or encrypt secrets.
+
+### Enable a secrets engine
+
+To get started, enable a new KV secrets engine at the path `secret`. Each path is completely isolated and cannot talk to other paths. For example, a KV secrets engine enabled at `foo` has no ability to communicate with a KV secrets engine enabled at `bar`.
+
+```bash
+vault secrets enable -path=secret kv-v2
+```
+
+To verify our success and get more information about the secrets engine, use the `vault secrets list` command:
+
+```bash
+vault secrets list
+```
+
+**Output**
+
+```text
+Path          Type         Accessor              Description
+----          ----         --------              -----------
+cubbyhole/    cubbyhole    cubbyhole_245571c4    per-token private secret storage
+identity/     identity     identity_6c094184     identity store
+kv/           kv           kv_e5b3a51e           n/a
+secret/       kv           kv_9b6a980c           n/a
+sys/          system       system_f45198e2       system endpoints used for control, policy and debugging
+```
+
+### Create a secret
+
+Create a secret at path `secret/webapp/config` with a `username` and `password`.
+
+```bash
+vault kv put secret/webapp/config username="static-user" password="static-password"
+```
+
+**Output**
+
+```text
+====== Secret Path ======
+secret/data/webapp/config
+
+======= Metadata =======
+Key                Value
+---                -----
+created_time       2023-02-20T23:14:58.455587859Z
+custom_metadata    <nil>
+deletion_time      n/a
+destroyed          false
+version            1
+```
+
+Verify that the secret is defined at the path `secret/webapp/config`.
+
+```bash
+vault kv get secret/webapp/config
+```
+
+**Output**
+
+```text
+====== Secret Path ======
+secret/data/webapp/config
+
+======= Metadata =======
+Key                Value
+---                -----
+created_time       2023-02-20T23:14:58.455587859Z
+custom_metadata    <nil>
+deletion_time      n/a
+destroyed          false
+version            1
+
+====== Data ======
+Key         Value
+---         -----
+password    static-password
+username    static-user
+```
+
+
+
+<br/>
 
 
 ## Next steps
@@ -140,6 +227,8 @@ https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-minikube-r
 https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-minikube-consul
 
 https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-minikube-tls
+
+https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-secrets-engines
 
 Then you deployed a web application that authenticated and requested a secret directly from Vault. Explore how pods can retrieve secrets through the [Vault Injector service via annotations](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-sidecar)or secrets [mounted on ephemeral volumes](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
 
