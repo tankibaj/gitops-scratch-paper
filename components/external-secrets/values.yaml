@@ -1,0 +1,21 @@
+# -- If set, install and upgrade CRDs through helm chart.
+installCRDs: true
+
+fullnameOverride: "external-secrets"
+
+serviceAccount:
+  # -- Specifies whether a service account should be created.
+  create: true
+  # -- Annotations to add to the service account.
+  annotations: {}
+
+serviceMonitor:
+  # -- Specifies whether to create a ServiceMonitor resource for collecting Prometheus metrics
+  enabled: false
+  # -- Additional labels
+  additionalLabels: {}
+
+metrics:
+  service:
+    # -- Enable if you use another monitoring tool than Prometheus to scrape the metrics
+    enabled: false
