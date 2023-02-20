@@ -114,7 +114,7 @@ VAULT_ROOT_KEY=$(cat vault-keys.json | jq -r ".root_token")
 ```
 
 ```bash
-VAULT_ADDR=https://vault.local.naim.run
+export VAULT_ADDR=https://vault.local.naim.run
 ```
 
 ### Vault is now ready for you
