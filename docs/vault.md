@@ -1,3 +1,18 @@
+Table of Contents
+=================
+
+* [Vault by HashiCorp](#vault-by-hashicorp)
+  * [Initialize Vault](#initialize-vault)
+  * [Vault CLI client](#vault-cli-client)
+    * [Root Token](#root-token)
+    * [User Token](#user-token)
+  * [Secrets Engines](#secrets-engines)
+    * [Enable a secrets engine](#enable-a-secrets-engine)
+    * [Create a secret](#create-a-secret)
+  * [Configure Kubernetes authentication](#configure-kubernetes-authentication)
+  * [Docu](#docu)
+
+
 # Vault by HashiCorp
 Vault secures, stores, and tightly controls access to tokens, passwords, certificates, API keys, and other secrets in modern computing.
 
@@ -233,7 +248,7 @@ sys/          system       system_f45198e2       system endpoints used for contr
 
 ---
 
-# ****Configure Kubernetes authentication****
+## Configure Kubernetes authentication
 
 **TODO:**
 
