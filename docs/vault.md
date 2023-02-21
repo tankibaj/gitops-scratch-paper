@@ -147,7 +147,7 @@ kubectl apply -f ../applications/vault.yaml
     vault login
     ```
 
-
+---
 ## Secrets Engines
 
 Secrets engines are Vault components which store, generate or encrypt secrets.
