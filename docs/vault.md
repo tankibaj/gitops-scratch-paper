@@ -4,7 +4,7 @@ Vault secures, stores, and tightly controls access to tokens, passwords, certifi
 ```bash
 kubectl apply -f ../applications/vault.yaml
 ```
-
+---
 ## Initialize Vault
 
 - Display all the pods within the `vault` namespace
