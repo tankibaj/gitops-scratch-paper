@@ -10,9 +10,7 @@ spec:
     - list:
         elements:
           - cluster: management
-            url: https://kubernetes.default.svc
           - cluster: development
-            url: https://172.16.100.69:16443
   template:
     metadata:
       name: 'prometheus-crds-{{cluster}}'
@@ -25,7 +23,7 @@ spec:
           targetRevision: development
           path: components/prometheus/crds/kustomization
       destination:
-        server: '{{url}}'
+        name: '{{cluster}}'
         namespace: prometheus
       syncPolicy:
         syncOptions:
