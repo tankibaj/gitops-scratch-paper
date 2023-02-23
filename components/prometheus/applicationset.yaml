@@ -10,10 +10,8 @@ spec:
     - list:
         elements:
           - cluster: management
-            url: https://kubernetes.default.svc
             remoteWriteURL: http://cortex-nginx.cortex.svc:80/api/v1/push/org1
           - cluster: development
-            url: https://172.16.100.69:16443
             remoteWriteURL: https://metrics.local.naim.run/api/v1/push/org1 # if cortex multi tenancy is disabled: https://metrics.local.naim.run/api/prom/push
   template:
     metadata:
@@ -44,7 +42,7 @@ spec:
           repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
           targetRevision: development
       destination:
-        server: '{{url}}'
+        name: '{{cluster}}'
         namespace: prometheus
       syncPolicy:
         syncOptions:
