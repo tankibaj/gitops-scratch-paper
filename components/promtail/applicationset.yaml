@@ -10,11 +10,9 @@ spec:
     - list:
         elements:
           - cluster: management
-            url: https://kubernetes.default.svc
             endpoint: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
             tenant_id: org1
           - cluster: development
-            url: https://172.16.100.69:16443
             endpoint: https://logs.local.naim.run/loki/api/v1/push
             tenant_id: org1
   template:
@@ -44,7 +42,7 @@ spec:
           repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
           targetRevision: development
       destination:
-        server: '{{url}}'
+        name: '{{cluster}}'
         namespace: promtail
       syncPolicy:
         syncOptions:
