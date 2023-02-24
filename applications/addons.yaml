@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     path: components/addons
-    targetRevision: HEAD
+    targetRevision: development
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
