@@ -1,0 +1,9 @@
+aws-load-balancer-controller:
+  fullnameOverride: aws-load-balancer-controller
+
+  serviceAccount:
+    create: true
+    name: aws-load-balancer-controller
+    annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::XXXXXXXXXXXX:role/eks-development-irsa-load-balancer-controller}
+
+  clusterName: eks-development

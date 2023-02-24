@@ -1,0 +1,17 @@
+external-dns:
+  fullnameOverride: external-dns
+
+  serviceAccount:
+    create: true
+    annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::XXXXXXXXXXXX:role/eks-staging-irsa-external-dns}
+    name: "external-dns"
+
+  sources:
+    - service
+    - ingress
+
+  policy: sync
+  registry: txt
+  txtOwnerId: "eks-staging"
+  domainFilters: [staging.aws.naim.run]
+  provider: aws

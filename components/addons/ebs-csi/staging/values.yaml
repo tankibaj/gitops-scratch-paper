@@ -1,0 +1,15 @@
+aws-ebs-csi-driver:
+  fullnameOverride: aws-ebs-csi-driver
+
+  controller:
+    serviceAccount:
+      create: true
+      name: ebs-csi-controller-sa
+      annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::XXXXXXXXXXXX:role/eks-staging-irsa-ebs-csi}
+
+  storageClasses:
+   - name: ebs
+     annotations:
+       storageclass.kubernetes.io/is-default-class: "true"
+     volumeBindingMode: Immediate
+     reclaimPolicy: Delete # Retain

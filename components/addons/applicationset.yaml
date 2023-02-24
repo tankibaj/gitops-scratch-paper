@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: addons
+  namespace: argocd
+  labels:
+    name: addons
+spec:
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - cluster: development
+                - cluster: staging
+          - git:
+              repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+              revision: development
+              directories:
+                - path: 'addons/*'
+  template:
+    metadata:
+      name: '{{path.basename}}-{{cluster}}'
+      labels:
+        name: addons
+    spec:
+      project: gitops
+      source:
+        repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+        targetRevision: development
+        path: '{{path}}/{{cluster}}'
+        helm:
+          releaseName: '{{path.basename}}'
+      destination:
+        name: '{{cluster}}'
+        namespace: addons-test

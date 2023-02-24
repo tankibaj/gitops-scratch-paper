@@ -1,0 +1,22 @@
+aws-efs-csi-driver:
+  fullnameOverride: aws-efs-csi-driver
+
+  controller:
+    serviceAccount:
+      create: true
+      name: efs-csi-controller-sa
+      annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::XXXXXXXXXXXX:role/eks-development-irsa-efs-csi}
+
+  storageClasses:
+    - name: efs
+      annotations:
+        storageclass.kubernetes.io/is-default-class: "false"
+      parameters:
+        provisioningMode: efs-ap
+        fileSystemId: fs-83284jewje92332048
+        directoryPerms: "700"
+        gidRangeStart: "1000"
+        gidRangeEnd: "2000"
+        basePath: "/dynamic_provisioning"
+      reclaimPolicy: Delete
+      volumeBindingMode: Immediate

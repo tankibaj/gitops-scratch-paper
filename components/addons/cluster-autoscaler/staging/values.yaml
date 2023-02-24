@@ -1,0 +1,21 @@
+cluster-autoscaler:
+  fullnameOverride: cluster-autoscaler
+  
+  image:
+    tag: v1.23.0
+  
+  autoDiscovery:
+    cloudProviders: aws
+    clusterName: eks-staging
+
+  awsRegion: eu-central-1
+
+  extraArgs:
+    skip-nodes-with-system-pods: true
+
+  rbac:
+    create: true
+    serviceAccount:
+      create: true
+      name: "cluster-autoscaler"
+      annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::XXXXXXXXXXXX:role/eks-staging-irsa-cluster-autoscaler}
