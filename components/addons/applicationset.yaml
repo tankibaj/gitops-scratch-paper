@@ -17,7 +17,7 @@ spec:
               repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
               revision: development
               directories:
-                - path: 'addons/*'
+                - path: 'components/addons/*'
   template:
     metadata:
       name: '{{path.basename}}-{{cluster}}'
