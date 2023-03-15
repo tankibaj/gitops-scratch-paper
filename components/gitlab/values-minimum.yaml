@@ -35,6 +35,8 @@ nginx-ingress:
 # Save resources, only 3 CPU
 prometheus:
   install: false
+shared-secrets:
+  enabled: false
 gitlab-runner:
   install: false
 # Reduce replica counts, reducing CPU & memory requirements
