@@ -14,9 +14,6 @@ global:
     domain: local.naim.run
     externalIP: 172.16.100.195
     https: false # Default value: true
-    ssh: ~
-    gitlab: git.local.naim.run
-    registry: registry.local.naim.run
   # Disable Rails bootsnap cache (temporary)
   rails:
     bootsnap:
