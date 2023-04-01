@@ -13,12 +13,48 @@ config:
   repositories:
     - owner: tankibaj
       name: release-test
+    - owner: kubernetes
+      name: kubernetes
     - owner: argoproj
       name: argo-cd
     - owner: go-gitea
       name: gitea
     - owner: goharbor
       name: harbor
+    - owner: vmware-tanzu
+      name: velero
+    - owner: kubernetes
+      name: ingress-nginx
+    - owner: grafana
+      name: grafana
+    - owner: grafana
+      name: loki
+    - owner: grafana
+      name: mimir
+    - owner: prometheus
+      name: prometheus
+    - owner: prometheus-operator
+      name: prometheus-operator
+    - owner: cortexproject
+      name: cortex
+    - owner: cert-manager
+      name: cert-manager
+    - owner: keycloak
+      name: keycloak
+    - owner: traefik
+      name: traefik
+    - owner: jellyfin
+      name: jellyfin
+    - owner: hashicorp
+      name: vault
+    - owner: hashicorp
+      name: consul
+    - owner: hashicorp
+      name: terraform
+    - owner: external-secrets
+      name: external-secrets
+    - owner: n8n-io
+      name: n8n
 
 serviceAccount:
   create: false
