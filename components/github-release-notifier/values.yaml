@@ -9,7 +9,7 @@ image:
   tag: 0.0.2
 
 config:
-  checkInterval: "60" # 2 hours by default
+  checkInterval: "7200" # 2 hours by default
   repositories:
     - owner: tankibaj
       name: release-test
