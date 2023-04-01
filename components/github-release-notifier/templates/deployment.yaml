@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "github-release-notifier.fullname" . }}
+  labels:
+    {{- include "github-release-notifier.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "github-release-notifier.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "github-release-notifier.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "github-release-notifier.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DISCORD_WEBHOOK_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "github-release-notifier.fullname" . }}-config
+                  key: DISCORD_WEBHOOK_URL
+            - name: CHECK_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "github-release-notifier.fullname" . }}-config
+                  key: CHECK_INTERVAL
+            - name: REPOSITORIES
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "github-release-notifier.fullname" . }}-config
+                  key: REPOSITORIES
+          {{- if .Values.secrets.githubToken }}
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "github-release-notifier.fullname" . }}-github-token
+                  key: github_token
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

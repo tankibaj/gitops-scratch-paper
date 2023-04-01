@@ -1,0 +1,39 @@
+nameOverride: ""
+fullnameOverride: "github-release-notifier"
+
+replicaCount: 1
+
+image:
+  repository: thenaim/github-release-notifier
+  pullPolicy: IfNotPresent
+  tag: 0.0.2
+
+config:
+  checkInterval: "60" # 2 hours by default
+  repositories:
+    - owner: tankibaj
+      name: release-test
+    - owner: argoproj
+      name: argo-cd
+    - owner: go-gitea
+      name: gitea
+    - owner: goharbor
+      name: harbor
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

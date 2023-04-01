@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: github-release-notifier
+  namespace: argocd
+  labels:
+    name: github-release-notifier
+spec:
+  project: gitops
+  source:
+    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+    path: components/github-release-notifier
+    targetRevision: main
+    helm:
+      releaseName: github-release-notifier
+      valueFiles:
+        - values.yaml
+        - secrets.enc.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: github-release-notifier
+  syncPolicy:
+    automated: { }

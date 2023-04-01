@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "github-release-notifier.fullname" . }}-config
+  labels:
+    {{- include "github-release-notifier.labels" . | nindent 4 }}
+data:
+  DISCORD_WEBHOOK_URL: {{ .Values.config.discordWebhookUrl }}
+  CHECK_INTERVAL: "{{ .Values.config.checkInterval }}"
+  REPOSITORIES: |-
+      {{- range $repo := .Values.config.repositories }}
+      {{ $repo.owner }}, {{ $repo.name }}
+      {{- end }}
