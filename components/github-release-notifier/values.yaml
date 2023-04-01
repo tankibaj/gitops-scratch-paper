@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: thenaim/github-release-notifier
   pullPolicy: IfNotPresent
-  tag: 0.0.2
+  tag: v1.0.0
 
 config:
   checkInterval: "7200" # 2 hours by default
