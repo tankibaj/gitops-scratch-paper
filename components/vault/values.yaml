@@ -89,8 +89,8 @@ server:
 
 
 # Vault UI
-ui:
-  enabled: true
-  serviceType: "LoadBalancer"
-  externalPort: 8200
-  loadBalancerIP: 172.16.100.201
+#ui:
+#  enabled: true
+#  serviceType: "LoadBalancer"
+#  externalPort: 8200
+#  loadBalancerIP: 172.16.100.201

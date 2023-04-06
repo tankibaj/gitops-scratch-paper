@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Check if the required environment variables are set
+if [[ -z "$POSTGRES_ENDPOINT" ]] || [[ -z "$POSTGRES_USERNAME" ]] || [[ -z "$POSTGRES_PASSWORD" ]] || [[ -z "$POSTGRES_DATABASE" ]] || [[ -z "$VAULT_USER_PASSWORD" ]]; then
+  echo "Error: Required environment variables are not set. Exiting."
+  exit 1
+fi
+
+POD_NAME="postgres-client"
+
+# Create a Kubernetes deployment with a PostgreSQL client pod
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $POD_NAME
+spec:
+  containers:
+  - name: postgres-client
+    image: postgres:latest
+    command: ["sleep"]
+    args: ["infinity"]
+    env:
+    - name: PGPASSWORD
+      value: $POSTGRES_PASSWORD
+EOF
+
+# Wait for the PostgreSQL client pod to be ready
+kubectl wait --for=condition=Ready pod/$POD_NAME --timeout=60s || { echo "Error: PostgreSQL client pod was not ready. Exiting."; exit 1; }
+
+# Create a temporary file with the actual VAULT_USER_PASSWORD
+temp_file=$(mktemp)
+cp init.sql "$temp_file"
+
+# Check the OS and use appropriate sed syntax
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  sed -i "" "s/<VAULT_PASSWORD>/$VAULT_USER_PASSWORD/g" "$temp_file"
+else
+  sed -i "s/<VAULT_PASSWORD>/$VAULT_USER_PASSWORD/g" "$temp_file"
+fi
+
+# Execute init.sql on the running PostgreSQL client pod
+kubectl cp "$temp_file" $POD_NAME:/init.sql
+kubectl exec $POD_NAME -- psql -h $POSTGRES_ENDPOINT -U $POSTGRES_USERNAME -d $POSTGRES_DATABASE -f /init.sql || { echo "Error: Init SQL command failed. Exiting."; exit 1; }
+
+# Remove the temporary file
+rm -f "$temp_file"
+
+# Connect to the vault_db database
+POSTGRES_DATABASE="vault_db"
+
+# Execute table.sql on the running PostgreSQL client pod
+kubectl cp table.sql $POD_NAME:/table.sql
+kubectl exec $POD_NAME -- psql -h $POSTGRES_ENDPOINT -U $POSTGRES_USERNAME -d $POSTGRES_DATABASE -f /table.sql || { echo "Error: Table SQL command failed. Exiting."; exit 1; }
+
+# Clean up the PostgreSQL client pod
+kubectl delete pod $POD_NAME
