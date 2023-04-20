@@ -53,8 +53,6 @@ config:
       name: terraform
     - owner: external-secrets
       name: external-secrets
-    - owner: n8n-io
-      name: n8n
 
 serviceAccount:
   create: false
