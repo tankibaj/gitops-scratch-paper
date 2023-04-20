@@ -43,8 +43,6 @@ config:
       name: keycloak
     - owner: traefik
       name: traefik
-    - owner: jellyfin
-      name: jellyfin
     - owner: hashicorp
       name: vault
     - owner: hashicorp
