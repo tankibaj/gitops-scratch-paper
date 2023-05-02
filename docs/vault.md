@@ -1,280 +1,91 @@
-Table of Contents
-=================
+# HashiCorp Vault
 
-* [Vault by HashiCorp](#vault-by-hashicorp)
-  * [Initialize Vault](#initialize-vault)
-  * [Vault CLI client](#vault-cli-client)
-    * [Root Token](#root-token)
-    * [User Token](#user-token)
-  * [Secrets Engines](#secrets-engines)
-    * [Enable a secrets engine](#enable-a-secrets-engine)
-    * [Create a secret](#create-a-secret)
-  * [Configure Kubernetes authentication](#configure-kubernetes-authentication)
-  * [Docu](#docu)
+HashiCorp Vault is a secrets management tools that provides a secure, centralized way to store, access, and manage sensitive information like API keys, passwords, tokens, and encryption keys. Vault is designed to help organizations minimize the risk of data breaches and simplify the process of managing secrets across distributed systems and applications.
 
+## Prepare Storage Backend
 
-# Vault by HashiCorp
-Vault secures, stores, and tightly controls access to tokens, passwords, certificates, API keys, and other secrets in modern computing.
+You can either choose `HashiCorp Consul` or `PostgreSQL` as a [storage backend for HashiCorp Vault](https://developer.hashicorp.com/vault/docs/configuration/storage).
+- [Consul Storage Backend](consul.md)
+- [PostgreSQL Storage Backend](prepare-database/vault-postgres-storage-backend)
 
-```bash
-kubectl apply -f ../applications/vault.yaml
-```
----
 ## Initialize Vault
 
-- Display all the pods within the `vault` namespace
+- Initialize `vault-0` with one key share and one key threshold
+  ```bash
+  kubectl -n vault exec vault-0 -- vault operator init \
+      -key-shares=1 \
+      -key-threshold=1 \
+      -format=json > vault-keys.json
+  ```
+  > NOTE: A single key share and a single key threshold are not recommended in Vault production.
+
+- Create a variable of vault unseal key
+  ```bash
+  VAULT_UNSEAL_KEY=$(jq -r ".unseal_keys_b64[]" vault-keys.json)
+  ```
+  
+- Unseal Vault
+  ```bash
+  kubectl -n vault exec vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY
+  kubectl -n vault exec vault-1 -- vault operator unseal $VAULT_UNSEAL_KEY
+  kubectl -n vault exec vault-2 -- vault operator unseal $VAULT_UNSEAL_KEY
+  ```
+
+<br/>
+
+## Vault CLI Authentication
+
+- Install Vault
+
+  ```bash
+  brew install vault
+  ```
+
+- Set a variable of vault url
 
     ```bash
-    kubectl -n vault get pods
+    export VAULT_ADDR=https://$(kubectl get ingress -n vault -o=jsonpath='{.items[0].spec.rules[0].host}')
     ```
 
-- Initialize vault-0 with one key share and one key threshold.
+- Set a variable of vault root token
 
     ```bash
-    kubectl -n vault exec vault-0 -- vault operator init \
-        -key-shares=1 \
-        -key-threshold=1 \
-        -format=json > vault-keys.json
+   export VAULT_TOKEN=$(cat vault-keys.json | jq -r ".root_token")
     ```
 
-  The `[operator init](https://developer.hashicorp.com/vault/docs/commands/operator/init)` command generates a root key that it disassembles into key shares `-key-shares=1` and then sets the number of key shares required to unseal Vault `-key-threshold=1`. These key shares are written to the output as unseal keys in JSON format `-format=json`. Here the output is redirected to a file named `cluster-keys.json`.
-
-- Display the unseal key found in `vault-keys.json`.
-
-    ```bash
-    jq -r ".unseal_keys_b64[]" vault-keys.json
-    ```
-
-  **Insecure operation:** Do not run an unsealed Vault in production with a single key share and a single key threshold. This approach is only used here to simplify the unsealing process for this demonstration.
-
-- Create a variable named `VAULT_UNSEAL_KEY` to capture the Vault unseal key.
-
-    ```bash
-    VAULT_UNSEAL_KEY=$(jq -r ".unseal_keys_b64[]" vault-keys.json)
-    ```
-
-  After initialization, Vault is configured to know where and how to access the storage, but does not know how to decrypt any of it. [Unsealing](https://developer.hashicorp.com/vault/docs/concepts/seal#unsealing) is the process of constructing the root key necessary to read the decryption key to decrypt the data, allowing access to the Vault.
-
-- Unseal Vault running on the `vault-0` pod.
-
-    ```bash
-    kubectl -n vault exec vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY
-    ```
-
-  **Insecure operation:** Providing the unseal key with the command writes the key to your shell’s history. This approach is only used here to simplify the unsealing process for this demonstration.
-
-  The `operator unseal` command reports that Vault is initialized and unsealed.
-
-  **Example output:**
-
-    ```
-    Key             Value
-    ---             -----
-    Seal Type       shamir
-    Initialized     true
-    Sealed          false
-    Total Shares    1
-    Threshold       1
-    Version         1.12.1
-    Build Date      2022-10-27T12:32:05Z
-    Storage Type    consul
-    Cluster Name    vault-cluster-d6d53090
-    Cluster ID      4b8727be-c2f0-2400-c92e-d2a730cfaec7
-    HA Enabled      true
-    HA Cluster      https://vault-0.vault-internal:8201
-    HA Mode         active
-    Active Since    2023-02-19T05:40:07.135944348Z
-    ```
-
-  The Vault server is initialized and unsealed.
-
-- Unseal Vault running on the `vault-1` pod.
-
-    ```bash
-    kubectl -n vault exec vault-1 -- vault operator unseal $VAULT_UNSEAL_KEY
-    ```
-
-- Unseal Vault running on the `vault-2` pod.
-
-    ```bash
-    kubectl -n vault exec vault-2 -- vault operator unseal $VAULT_UNSEAL_KEY
-    ```
-
-- Verify all the Vault pods are running and ready.
-
-    ```bash
-    kubectl -n vault get pods
-    ```
-
-  Example output:
-
-    ```
-    NAME                                    READY   STATUS    RESTARTS   AGE
-    vault-0                                 1/1     Running   0          5m49s
-    vault-1                                 1/1     Running   0          5m48s
-    vault-2                                 1/1     Running   0          5m47s
-    vault-agent-injector-5945fb98b5-vzbqv   1/1     Running   0          5m50s
-    ```
-
-
----
-
-## Vault CLI client
-
-### Root Token
-
-- Set environment variables. This will configure the Vault client to talk to the vault server.
-
-    ```bash
-    export VAULT_ADDR=https://vault.local.naim.run
-    ```
-
-- Create a variable named `VAULT_ROOT_KEY` to capture the Vault root token and endpoint.
-
-    ```bash
-    VAULT_ROOT_KEY=$(cat vault-keys.json | jq -r ".root_token")
-    ```
-
-- Vault is now ready for you. Lets check vault status:
+- Check vault cluster status
 
     ```bash
     vault status
     ```
+  
+## Vault Configuration (optional)
 
+### Secret Engine
 
-### User Token
+- Enable a `KV secrets engine` version2 at the path `secrets/`. The `kv` secrets engine is used to store arbitrary secrets within the configured physical storage for Vault.
+  ```bash
+  vault secrets enable -path=secrets -version=2 kv
+  ```
+- Verify secrets engine
+  ```bash
+  vault secrets list
+  ```
 
-- Set environment variables. This will configure the Vault client to talk to the vault server.
-
-    ```bash
-    export VAULT_ADDR=https://vault.local.naim.run
-    ```
-
-- To interact with Vault, you must provide a valid token. Setting this environment variable is a way to provide the token to Vault via CLI.
-
-    ```bash
-    export VAULT_TOKEN="hvs.6j4cuewowBGit65rheNoceI7"
-    ```
-
-- Authenticate with Vault
-
-    ```bash
-    vault login
-    ```
-
----
-## Secrets Engines
-
-Secrets engines are Vault components which store, generate or encrypt secrets.
-
-### Enable a secrets engine
-
-To get started, enable a new KV secrets engine at the path `secret`. Each path is completely isolated and cannot talk to other paths. For example, a KV secrets engine enabled at `foo` has no ability to communicate with a KV secrets engine enabled at `bar`.
-
-```bash
-vault secrets enable -path=secret kv-v2
-```
-
-To verify our success and get more information about the secrets engine, use the `vault secrets list` command:
-
-```bash
-vault secrets list
-```
-
-**Output**
-
-```
-Path          Type         Accessor              Description
-----          ----         --------              -----------
-cubbyhole/    cubbyhole    cubbyhole_245571c4    per-token private secret storage
-identity/     identity     identity_6c094184     identity store
-kv/           kv           kv_e5b3a51e           n/a
-secret/       kv           kv_9b6a980c           n/a
-sys/          system       system_f45198e2       system endpoints used for control, policy and debugging
-```
-
-### Create a secret
-
-- Create a secret at path `secret/webapp/config` with a `username` and `password`.
-
-    ```bash
-    vault kv put secret/webapp/config username="static-user" password="static-password"
-    ```
-
-  **Output**
-
-    ```
-    ====== Secret Path ======
-    secret/data/webapp/config
-    
-    ======= Metadata =======
-    Key                Value
-    ---                -----
-    created_time       2023-02-20T23:14:58.455587859Z
-    custom_metadata    <nil>
-    deletion_time      n/a
-    destroyed          false
-    version            1
-    ```
-
-- Verify that the secret is defined at the path `secret/webapp/config`.
-
-    ```bash
-    vault kv get secret/webapp/config
-    ```
-
-  **Output**
-
-    ```
-    ====== Secret Path ======
-    secret/data/webapp/config
-    
-    ======= Metadata =======
-    Key                Value
-    ---                -----
-    created_time       2023-02-20T23:14:58.455587859Z
-    custom_metadata    <nil>
-    deletion_time      n/a
-    destroyed          false
-    version            1
-    
-    ====== Data ======
-    Key         Value
-    ---         -----
-    password    static-password
-    username    static-user
-    ```
-
-
----
-
-## Configure Kubernetes authentication
-
-**TODO:**
-
-[Vault Installation to Minikube via Helm with Consul | Vault | HashiCorp Developer](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-minikube-consul#configure-kubernetes-authentication)
-
----
-
-## Docu
-
-You launched Vault in high-availability mode. Learn more about the Vault Helm chart by reading the documentations:
-
-[kubernetes-amazon-eks](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-amazon-eks)
-
-[kubernetes-google-cloud-gke](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-google-cloud-gke)
-
-[kubernetes/kubernetes-azure-aks](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-azure-aks)
-
-[kubernetes-minikube-raft](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-minikube-raft)
-
-[kubernetes-minikube-consul](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-minikube-consul)
-
-[kubernetes-minikube-tls](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-minikube-tls)
-
-[getting-started-authentication](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-authentication)
-
-[getting-started-secrets-engines](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-secrets-engines)
-[kubernetes-external-vault | agent mode](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-external-vault)
-
-Then you deployed a web application that authenticated and requested a secret directly from Vault. Explore how pods can retrieve secrets through the [Vault Injector service via annotations](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-sidecar)or secrets [mounted on ephemeral volumes](https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-secret-store-driver).
+### Secrets
+- List secrets
+  ```bash
+  vault kv list secret
+  ```
+- Set a secret name variable
+   ```bash
+   VAUL_SECRET_NAME=mySecret
+   ```
+- Create or update secret
+   ```bash
+   vault kv put -mount=secrets ${VAUL_SECRET_NAME} username=foo password=bar
+   ```
+- Fetch secret
+  ```bash
+  vault kv get secret/${VAUL_SECRET_NAME}
+  ```
