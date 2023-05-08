@@ -1,0 +1,15 @@
+replicaCount: 1
+
+busybox:
+  image:
+    repository: busybox
+    tag: 1.34.0
+    pullPolicy: IfNotPresent
+
+secret:
+  name: mysecret
+#  data:
+#    mykey: myvalue
+
+nameOverride: ""
+fullnameOverride: ""

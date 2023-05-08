@@ -1,0 +1,6 @@
+apiVersion: v2
+name: debug-kubernetes-secrets
+description: A Helm chart for Kubernetes to debug secrets using a busybox container
+type: application
+version: 0.1.0
+appVersion: 1.0.0
