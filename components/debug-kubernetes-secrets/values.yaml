@@ -1,3 +1,5 @@
+fullnameOverride: debug-kubernetes-secrets
+
 replicaCount: 1
 
 busybox:
@@ -12,4 +14,3 @@ secret:
 #    mykey: myvalue
 
 nameOverride: ""
-fullnameOverride: ""
