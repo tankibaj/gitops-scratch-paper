@@ -1,16 +1,17 @@
 fullnameOverride: debug-kubernetes-secrets
+nameOverride: ""
 
 replicaCount: 1
 
-busybox:
+container:
+  name: alpine-whale
   image:
-    repository: busybox
-    tag: 1.34.0
+    repository: alpine-whale
+    tag: curl
     pullPolicy: IfNotPresent
 
 secret:
-  name: mysecret
+  name: whale-secret
 #  data:
-#    mykey: myvalue
-
-nameOverride: ""
+#    username: super-user
+#    password: my_decrypted_password

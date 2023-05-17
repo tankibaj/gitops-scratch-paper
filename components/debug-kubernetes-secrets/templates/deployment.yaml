@@ -13,10 +13,10 @@ spec:
         app: {{ include "debug-kubernetes-secrets.name" . }}
     spec:
       containers:
-        - name: busybox
-          image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
-          imagePullPolicy: {{ .Values.busybox.image.pullPolicy }}
-          command: ["sh", "-c", "cat /mnt/secrets/mykey && sleep 3600"]
+        - name: "{{ .Values.container.name }}
+          image: "{{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}"
+          imagePullPolicy: {{ .Values.container.image.pullPolicy }}
+          command: ["sh", "-c", "cat /mnt/secrets/password && sleep 3600"]
           volumeMounts:
             - name: secret-volume
               mountPath: /mnt/secrets
