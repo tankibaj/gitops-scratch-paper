@@ -4,7 +4,7 @@ nameOverride: ""
 replicaCount: 1
 
 container:
-  name: alpine-whale
+  name: thenaim/alpine-whale
   image:
     repository: alpine-whale
     tag: curl
