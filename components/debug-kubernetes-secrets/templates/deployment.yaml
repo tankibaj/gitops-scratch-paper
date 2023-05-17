@@ -13,7 +13,7 @@ spec:
         app: {{ include "debug-kubernetes-secrets.name" . }}
     spec:
       containers:
-        - name: "{{ .Values.container.name }}
+        - name: "{{ .Values.container.name }}"
           image: "{{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}"
           imagePullPolicy: {{ .Values.container.image.pullPolicy }}
           command: ["sh", "-c", "cat /mnt/secrets/password && sleep 3600"]
