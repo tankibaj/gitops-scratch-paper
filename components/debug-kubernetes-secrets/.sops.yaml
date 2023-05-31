@@ -1,2 +1,4 @@
 creation_rules:
-  - kms: "arn:aws:kms:eu-central-1:600643987062:alias/sops"
+  - encrypted_regex: "^(data|stringData)$"
+#    path_regex: \.enc\.yaml$
+    kms: "arn:aws:kms:eu-central-1:600643987062:alias/sops"
