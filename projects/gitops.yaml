@@ -9,7 +9,7 @@ spec:
 #    - https://github.com/tankibaj/gitops-scratch-paper.git
     - '*'
   destinations:
-    - name: in-cluster
+    - name: management
       server: https://kubernetes.default.svc
       namespace: '*'
 #    - name: development
