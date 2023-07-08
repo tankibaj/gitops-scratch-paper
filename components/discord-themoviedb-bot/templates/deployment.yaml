@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "discord-themoviedb-bot.fullname" . }}
+  labels:
+    {{- include "discord-themoviedb-bot.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "discord-themoviedb-bot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "discord-themoviedb-bot.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DISCORD_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.secrets.discord.create }}discord-bot-secret{{ else }}{{ .Values.secrets.discord.existing_secret_name }}{{ end }}
+                  key: discord_bot_token
+            - name: THEMOVIEDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.secrets.themoviedb.create }}themoviedb-secret{{ else }}{{ .Values.secrets.themoviedb.existing_secret_name }}{{ end }}
+                  key: themoviedb_api_key
+            - name: DISCORD_MESSAGE_DELETE_AFTER
+              value: "{{ .Values.config.discord.message_delete_after }}"

@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: discord-themoviedb-bot
+  namespace: argocd
+  labels:
+    name: discord-bot
+spec:
+  project: gitops
+  source:
+    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+    path: components/discord-themoviedb-bot
+    targetRevision: development
+    helm:
+      releaseName: discord-themoviedb-bot
+      valueFiles:
+        - values.yaml
+        - secrets.enc.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: discord-themoviedb-bot
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+#    automated: { }

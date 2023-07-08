@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: thenaim/discord-themoviedb-bot
+  pullPolicy: IfNotPresent
+  tag: v1.0.0
+
+secrets:
+  discord:
+    create: true
+  themoviedb:
+    create: true
+
+config:
+  discord:
+    message_delete_after: 60 # -- in seconds
