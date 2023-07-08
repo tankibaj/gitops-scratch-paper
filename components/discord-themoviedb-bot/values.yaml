@@ -2,8 +2,8 @@ replicaCount: 1
 
 image:
   repository: thenaim/discord-themoviedb-bot
-  pullPolicy: Always
-  tag: v1.0.0
+  pullPolicy: IfNotPresent
+  tag: v1.1.1
 
 secrets:
   discord:
