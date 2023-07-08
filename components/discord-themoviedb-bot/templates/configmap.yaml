@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "discord-themoviedb-bot.fullname" . }}-config
+  labels:
+    {{- include "discord-themoviedb-bot.labels" . | nindent 4 }}
+data:
+  message_delete_after: "{{ .Values.config.discord.message_delete_after }}"

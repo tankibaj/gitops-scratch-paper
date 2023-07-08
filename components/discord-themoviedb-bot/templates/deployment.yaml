@@ -30,4 +30,7 @@ spec:
                   name: {{ if .Values.secrets.themoviedb.create }}themoviedb-secret{{ else }}{{ .Values.secrets.themoviedb.existing_secret_name }}{{ end }}
                   key: themoviedb_api_key
             - name: DISCORD_MESSAGE_DELETE_AFTER
-              value: "{{ .Values.config.discord.message_delete_after }}"
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "discord-themoviedb-bot.fullname" . }}-config
+                  key: message_delete_after
