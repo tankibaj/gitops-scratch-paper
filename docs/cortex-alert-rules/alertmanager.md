@@ -36,3 +36,9 @@ cortextool alertmanager get \
 --address=${ALERTMANAGER_URL} \
 --id=fake
 ```
+
+### 3. Trigger an alert to test
+
+```bash
+curl -H "Content-Type: application/json" -d '[{"labels":{"alertname":"TestAlert", "severity":"warning"}}]' http://127.0.0.1:8001/api/v1/alerts
+```

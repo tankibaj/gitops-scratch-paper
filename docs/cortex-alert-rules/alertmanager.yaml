@@ -7,7 +7,10 @@ global:
   smtp_auth_password: '<secret>'
 
 route:
-  group_by: ['alertname', 'cluster', 'service']
+  group_by:
+    - alertname
+    - cluster
+    - service
   receiver: none
   routes:
     - matchers:
@@ -15,7 +18,7 @@ route:
       receiver: devops
     
 receivers:
-  - name: devops
+  - name: devops-team
     email_configs:
       - to: 'person@local.naim.run'
       - to: 'devops-team@local.naim.run'
