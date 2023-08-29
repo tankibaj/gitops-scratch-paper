@@ -10,13 +10,14 @@ spec:
   sources:
     - repoURL: https://kubernetes.github.io/ingress-nginx
       chart: ingress-nginx
-      targetRevision: 4.2.4 #4.2.3
+      targetRevision: 4.7.1 #4.2.4
       helm:
         version: v3
         releaseName: nginx
         valueFiles:
           - $values/components/nginx/baremetal-values.yaml
-#          - $values/components/nginx/eks-values.yaml
+#          - $values/components/nginx/eks_values_chart_v4.2.4.yaml
+#          - $values/components/nginx/eks_values_chart_v4.7.1.yaml
     - ref: values
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
       targetRevision: development
