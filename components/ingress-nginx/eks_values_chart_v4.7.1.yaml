@@ -2,9 +2,10 @@ ingress-nginx:
   fullnameOverride: nginx
   controller:
     config:
-      use-forwarded-headers: "true"
-      use-http2: "true"
-      use-proxy-protocol: "true"
+      use-forwarded-headers: "true"     # -- Enables the use of the X-Forwarded-* headers to populate information about the client connection (e.g. X-Forwarded-For).
+      use-http2: "true"                 # -- Enables HTTP/2 support.
+      use-proxy-protocol: "true"        # -- Enables the PROXY protocol to receive client connection (real IP address) information passed through proxy servers and load balancers such as HAProxy and Amazon Elastic Load Balancer (ELB).
+      force-ssl-redirect: "true"        # -- Sets the global value of redirects (308) to HTTPS if the server has a default TLS certificate. default: "false"
 
     ingressClassResource:
       name: nginx-public                # -- Name of the ingressClass
@@ -45,7 +46,6 @@ ingress-nginx:
         # -- Elastic IP Addresses
         service.beta.kubernetes.io/aws-load-balancer-eip-allocations: eipalloc-5fb4844084,eipalloc-0d539c9c7795c,eipalloc-0e5fb465ccdb
       targetPorts:
-#        http: http
         https: 80
 
     metrics:
@@ -53,7 +53,7 @@ ingress-nginx:
       serviceMonitor:
         enabled: true
         additionalLabels:
-          release: kube-prometheus
+          release: prometheus
 
   defaultBackend:
     enabled: true
