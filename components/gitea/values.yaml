@@ -1,0 +1,66 @@
+image:
+  rootless: true
+
+ingress:
+  enabled: true
+#  className: public
+  hosts:
+    - host: git.local.naim.run
+#      paths:
+#        - path: /
+#          pathType: Prefix
+
+persistence:
+  enabled: true
+#  claimName: data-gitea-0
+#  size: 8Gi
+#  accessModes:
+#    - ReadWriteOnce
+#  storageClass: ebs
+
+gitea:
+#  metrics:
+#    enabled: true
+#    serviceMonitor:
+#      enabled: true
+#      additionalLabels:
+#        release: kube-prometheus
+  config: # https://docs.gitea.io/en-us/config-cheat-sheet/
+    server:
+      ROOT_URL: https://git.local.naim.run
+      DOMAIN: git.local.naim.run
+#      SSH_DOMAIN: git.local.naim.run
+      DISABLE_SSH: true
+    service:
+      DISABLE_REGISTRATION: false
+#      ENABLE_NOTIFY_MAIL: true
+#    database:
+#      DB_TYPE: postgres
+#      HOST: db.local.naim.run:5432
+#      NAME: gitea
+#      USER: gitea
+#    mailer:
+#      ENABLED: true
+#      FROM: gitea@local.naim.run
+#      SMTP_ADDR: email-smtp.eu-central-1.amazonaws.com
+#      SMTP_PORT: 587
+#      USER: 'xxxxxxxxx'
+    # Actions CI
+    actions:
+      ENABLED: true
+      DEFAULT_ACTIONS_URL: 'https://gitea.com:' # -- Default address to get action plugins, e.g. the default value means downloading from “https://gitea.com/actions/checkout” for “uses: actions/checkout@v3”
+
+redis-cluster:
+  enabled: true
+
+postgresql-ha:
+  enabled: false
+
+postgresql:
+  enabled: true
+
+mysql:
+  enabled: false
+
+mariadb:
+  enabled: false

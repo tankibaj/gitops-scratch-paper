@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  description: Project for platform resources
+  sourceRepos:
+#    - https://github.com/tankibaj/gitops-scratch-paper.git
+    - '*'
+  destinations:
+    - name: management
+      server: https://kubernetes.default.svc
+      namespace: '*'
+#    - name: development
+#      server: https://172.16.100.69:16443
+#      namespace: argo
+#    - name: development
+#      server: https://172.16.100.69:16443
+#      namespace: kube-system
+    - name: development
+      server: https://172.16.100.69:16443
+      namespace: '*'
+    - name: development
+      server: https://172.16.100.70:16443
+      namespace: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    
