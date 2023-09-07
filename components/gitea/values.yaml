@@ -51,7 +51,7 @@ gitea:
       DEFAULT_ACTIONS_URL: 'https://gitea.com:' # -- Default address to get action plugins, e.g. the default value means downloading from “https://gitea.com/actions/checkout” for “uses: actions/checkout@v3”
 
 redis-cluster:
-  enabled: false
+  enabled: true
 
 postgresql-ha:
   enabled: false
