@@ -16,6 +16,7 @@ spec:
         releaseName: gitea
         valueFiles:
           - $values/components/gitea/values.yaml
+          - $values/components/gitea/secrets.enc.yaml
     - ref: values
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
       targetRevision: development
