@@ -7,6 +7,12 @@ crds:
   # -- Keep CRDs on chart uninstall
   keep: false
 
+# -- Restrict Argo to operate only in a single namespace (the namespace of the
+# Helm release) by apply Roles and RoleBindings instead of the Cluster
+# equivalents, and start workflow-controller with the --namespaced flag. Use it
+# in clusters with strict access policy.
+singleNamespace: false
+
 controller:
   # -- Specify all namespaces where this workflow controller instance will manage
   # workflows. This controls where the service account and RBAC resources will
