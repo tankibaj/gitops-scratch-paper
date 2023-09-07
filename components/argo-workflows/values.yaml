@@ -28,6 +28,7 @@ server:
       - workflows.local.naim.run
   # -- SSO configuration when SSO is specified as a server auth mode. SSO is activated by adding --auth-mode=sso
   sso:
+    enabled: true
     # The root URL of the OIDC identity provider.
     issuer: https://sso.local.naim.run/auth/realms/internal
     # Name of a secret and a key in it to retrieve the app OIDC client ID from.
@@ -51,3 +52,4 @@ server:
       - profile
       - email
       - groups
+    insecureSkipVerify: true
