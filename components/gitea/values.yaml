@@ -6,9 +6,9 @@ ingress:
 #  className: public
   hosts:
     - host: git.local.naim.run
-#      paths:
-#        - path: /
-#          pathType: Prefix
+      paths:
+        - path: /
+          pathType: Prefix
 
 persistence:
   enabled: true
