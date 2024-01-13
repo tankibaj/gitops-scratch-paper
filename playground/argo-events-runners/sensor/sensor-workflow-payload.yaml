@@ -32,9 +32,17 @@ spec:
                         - name: path
                         - name: image
                     container:
-                      image: docker/whalesay:latest
-                      command: [cowsay]
-                      args: ["{{inputs.parameters.repo}} {{inputs.parameters.branch}} {{inputs.parameters.path}} {{inputs.parameters.image}}"]
+                      - name: whalesay
+                        image: docker/whalesay:latest
+                        command: [cowsay]
+                        args: ["{{inputs.parameters.repo}} {{inputs.parameters.branch}} {{inputs.parameters.path}} {{inputs.parameters.image}}"]
+                      - name: webhook-handler
+                        image: busybox
+                        command: ["sh", "-c", "echo $WEBHOOK_PAYLOAD"]
+                        env:
+                          - name: WEBHOOK_PAYLOAD
+                            valueFrom:
+                              event: "push-event" # Extracting the event payload
                 arguments:
                   parameters:
                     - name: repo
