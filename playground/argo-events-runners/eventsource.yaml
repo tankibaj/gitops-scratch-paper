@@ -38,6 +38,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: webhook
+                name: webhook-gitea-eventsource-svc
                 port:
                   number: 12000
