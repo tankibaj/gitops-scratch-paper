@@ -5,7 +5,7 @@ metadata:
 #  namespace: argo-events-runners
 rules:
   - apiGroups: ["argoproj.io"]
-    resources: ["workflows"]
+    resources: ["workflows", "workflowtemplates", "cronworkflows", "clusterworkflowtemplates"]
     verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
   - apiGroups: [""]
     resources: ["pods", "pods/exec"]
