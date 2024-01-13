@@ -13,7 +13,7 @@ spec:
     path: playground/argo-events-with-workflow
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-events-with-workflow
+    namespace: argo-events-workflow
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
