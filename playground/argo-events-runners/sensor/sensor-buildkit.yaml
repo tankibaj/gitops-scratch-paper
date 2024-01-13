@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: sensor-buildkit
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa # buildkit-sa
+  dependencies:
+    - name: example-event
+      eventSourceName: eventsource-webhook
+      eventName: playground-gitea
+  triggers:
+    - template:
+        name: workflow-trigger
+        argoWorkflow:
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: buildkit-
+              spec:
+                workflowTemplateRef:
+                  name: buildkit

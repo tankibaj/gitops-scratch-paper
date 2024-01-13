@@ -13,3 +13,7 @@ resources:
   - rbac-argo-workflow/rolebinding-workflow-operator.yaml
   - rbac-argo-workflow/serviceaccount-workflow-operate.yaml
   - sensor/sensor-workflow.yaml
+
+# -- Buildkit
+  - workflow-template/buildkit.yaml
+  - sensor/sensor-buildkit.yaml
