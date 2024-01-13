@@ -18,7 +18,7 @@ spec:
           - $values/components/argo-workflows/values.yaml
     - ref: values
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-      targetRevision: development
+      targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: argo
