@@ -39,3 +39,8 @@ spec:
                       image: docker/whalesay
                       command: ["cowsay"]
                       args: ["{{inputs.parameters.webhook-payload}}"]
+          parameters:  # Explicitly define parameters to pass from the event to the workflow
+            - src:
+                dependencyName: test-dep
+                dataKey: body  # Assuming the payload is in the 'body' of the event
+              dest: spec.arguments.parameters.0.value
