@@ -31,11 +31,11 @@ spec:
                         - name: branch
                         - name: path
                         - name: image
-                    container:
-#                      - name: whalesay
-#                        image: docker/whalesay:latest
-#                        command: [cowsay]
-#                        args: ["{{inputs.parameters.repo}} {{inputs.parameters.branch}} {{inputs.parameters.path}} {{inputs.parameters.image}}"]
+                    containers:
+                      - name: whalesay
+                        image: docker/whalesay:latest
+                        command: [cowsay]
+                        args: ["{{inputs.parameters.repo}} {{inputs.parameters.branch}} {{inputs.parameters.path}} {{inputs.parameters.image}}"]
                       - name: webhook-handler
                         image: busybox
                         command: ["sh", "-c", "echo $WEBHOOK_PAYLOAD"]
