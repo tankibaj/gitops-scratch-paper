@@ -4,6 +4,7 @@ metadata:
   name: webhook-gitea
 spec:
   service:
+    name: webhook
     ports:
       - port: 12000
         targetPort: 12000
