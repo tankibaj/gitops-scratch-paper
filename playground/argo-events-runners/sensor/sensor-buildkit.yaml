@@ -37,7 +37,7 @@ spec:
           parameters: # Explicitly define parameters to pass from the event to the workflow
             - src:
                 dependencyName: build-event
-                dataKey: body.repository.full_name
+                dataKey: body.repository.clone_url
               dest: spec.arguments.parameters.0.value
             - src:
                 dependencyName: build-event
