@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
   name: gitea-sensor
-  namespace: argo-events-workflow
 spec:
   dependencies:
     - name: push-event
@@ -22,7 +21,6 @@ spec:
               kind: Job
               metadata:
                 name: gitea-job
-                namespace: argo-events-workflow
               spec:
                 template:
                   spec:
