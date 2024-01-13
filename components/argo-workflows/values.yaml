@@ -21,11 +21,10 @@ controller:
     - argo
 
 server:
-  # -- Extra arguments to provide to the Argo server binary, such as for disabling authentication.
-  # -- Fix: SSO Issue --> https://github.com/argoproj/argo-workflows/issues/6634#issuecomment-1118012324
-  extraArgs:
-    - --auth-mode=sso
-    - --auth-mode=server
+  # -- A list of supported authentication modes. Available values are `server`, `client`, or `sso`. If you provide sso, please configure `.Values.server.sso` as well.
+  ## Ref: https://argoproj.github.io/argo-workflows/argo-server-auth-mode/
+  authModes: ["server", "sso"]
+
   # -- Ingress configuration.
   ingress:
     enabled: true
