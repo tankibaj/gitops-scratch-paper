@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - eventsource.yaml
   - sensor.yaml
+  - webhook.yaml
