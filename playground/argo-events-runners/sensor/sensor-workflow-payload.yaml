@@ -28,19 +28,30 @@ spec:
                 entrypoint: whalesay
                 arguments:
                   parameters:
-                    - name: webhook-payload
-                      value: "{{ toJson . }}"  # Capture the entire event payload
+                    - name: repo
+                      value: ""  # Placeholder, will be replaced by the event data by parameter mapping below
+                    - name: branch
+                      value: ""  # Placeholder, will be replaced by the event data by parameter mapping below
+                    - name: path
+                      value: "."
+                    - name: image
+                      value: "thenaim/whalesay:latest"
                 templates:
                   - name: whalesay
                     inputs:
                       parameters:
-                        - name: webhook-payload
+                        - name: repo
+                        - name: branch
                     container:
                       image: docker/whalesay
-                      command: ["cowsay"]
-                      args: ["{{inputs.parameters.webhook-payload}}"]
-          parameters:  # Explicitly define parameters to pass from the event to the workflow
+                      command: [ "cowsay" ]
+                      args: [ "Repo: {{inputs.parameters.repo}}, Branch: {{inputs.parameters.branch}}, Path: {{inputs.parameters.path}}, Image: {{inputs.parameters.image}}" ]
+          parameters: # Explicitly define parameters to pass from the event to the workflow
             - src:
                 dependencyName: test-dep
-                dataKey: body  # Assuming the payload is in the 'body' of the event
+                dataKey: body.repository.full_name
               dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: test-dep
+                dataKey: body.ref
+              dest: spec.arguments.parameters.1.value
