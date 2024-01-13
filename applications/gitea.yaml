@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: https://dl.gitea.io/charts
       chart: gitea
-      targetRevision: 9.2.1
+      targetRevision: 10.0.2
       helm:
         version: v3
         releaseName: gitea
