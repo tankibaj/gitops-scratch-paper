@@ -68,7 +68,7 @@ spec:
               parameters:
                 - name: path
                   value: "{{workflow.parameters.path}}"
-            depends: "clone"
+#            depends: "clone"
 #          - name: build
 #            template: build
 #            arguments:
@@ -126,12 +126,14 @@ spec:
             name: work
         workingDir: /work/{{inputs.parameters.path}}
         image: alpine:3.12
-        command:
-          - |
-            ls -la
-            ls -la /root/
-            cp /root/.git-credentials/ /work/.git-credentials
-            cat /work/.git-credentials
+        env:
+          - name: GIT_ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: git-credentials
+                key: token
+        command: [ sh, -c ]
+        args: [ "echo $GIT_ACCESS_TOKEN"]
 #    - name: build
 #      inputs:
 #        parameters:
