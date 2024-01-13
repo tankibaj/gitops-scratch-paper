@@ -35,7 +35,7 @@ server:
   sso:
     enabled: true
     # The root URL of the OIDC identity provider.
-    issuer: https://sso.local.naim.run/auth/realms/internal
+    issuer: https://sso.local.naim.run/realms/internal
     # Name of a secret and a key in it to retrieve the app OIDC client ID from.
     #    kubectl -n argo create secret generic argo-server-sso \
     #    --from-literal=client-id=argo-workflows \
