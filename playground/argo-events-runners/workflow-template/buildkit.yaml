@@ -90,23 +90,32 @@ spec:
         parameters:
           - name: repo
           - name: branch
+#          - name: secretname
       container:
         volumeMounts:
           - mountPath: /work
             name: work
         image: alpine/git:v2.26.2
+        env:
+          - name: GIT_ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: git-credentials
+                key: token
         workingDir: /work
+        command: [ sh, -c ]
+        args: [ "echo $GIT_ACCESS_TOKEN | git clone --branch '{{inputs.parameters.branch}}' '{{inputs.parameters.repo}}' ." ]
         # Do a shallow clone, which is the fastest way to clone, by using the
         # --depth, --branch, and --single-branch options
-        args:
-          - clone
-          - --depth
-          - "1"
-          - --branch
-          - "{{inputs.parameters.branch}}"
-          - --single-branch
-          - "{{inputs.parameters.repo}}"
-          - .
+#        args:
+#          - clone
+#          - --depth
+#          - "1"
+#          - --branch
+#          - "{{inputs.parameters.branch}}"
+#          - --single-branch
+#          - "{{inputs.parameters.repo}}"
+#          - .
     - name: list-workspace
       inputs:
           parameters:
@@ -118,9 +127,11 @@ spec:
         workingDir: /work/{{inputs.parameters.path}}
         image: alpine:3.12
         command:
-          - ls
-          - -l
-          - -a
+          - |
+            ls -la
+            ls -la /root/
+            cp /root/.git-credentials/ /work/.git-credentials
+            cat /work/.git-credentials
 #    - name: build
 #      inputs:
 #        parameters:

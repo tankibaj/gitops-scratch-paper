@@ -10,3 +10,5 @@ kubectl logs --follow $(kubectl get pods | grep webhook | awk '{print $1}')
 kubectl logs --follow $(kubectl get pods | grep sensor | awk '{print $1}')
 
 kubectl logs --follow $(kubectl get jobs | grep gitea | awk '{print $1}')
+
+kubectl create secret generic git-credentials --from-literal=token=ba99eabcac3bb3bd87c795db092e084d94329f61
