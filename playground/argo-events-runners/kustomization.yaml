@@ -6,8 +6,10 @@ resources:
   - eventsource.yaml
 #  - sensor.yaml
 
+
+# -- Webhook Workflow
 # -- RBAC and ServiceAccount for the sensor
   - rbac-argo-workflow/role-workflow-operator.yaml
   - rbac-argo-workflow/rolebinding-workflow-operator.yaml
   - rbac-argo-workflow/serviceaccount-workflow-operate.yaml
-  - sensor-webhook.yaml
+  - sensor-webhook-workflow.yaml
