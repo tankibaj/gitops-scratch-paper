@@ -22,5 +22,24 @@ spec:
                 generateName: buildkit-
               spec:
                 serviceAccountName: operate-workflow-sa
+                arguments:
+                  parameters:
+                    - name: repo
+                      value: ""  # Placeholder, will be replaced by the event data by parameter mapping below
+                    - name: branch
+                      value: ""  # Placeholder, will be replaced by the event data by parameter mapping below
+                    - name: path
+                      value: "."
+                    - name: image
+                      value: "thenaim/whalesay:latest"
                 workflowTemplateRef:
                   name: buildkit
+          parameters: # Explicitly define parameters to pass from the event to the workflow
+            - src:
+                dependencyName: test-dep
+                dataKey: body.repository.full_name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: test-dep
+                dataKey: body.ref
+              dest: spec.arguments.parameters.1.value

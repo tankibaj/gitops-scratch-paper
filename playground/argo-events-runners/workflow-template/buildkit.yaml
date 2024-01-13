@@ -62,22 +62,29 @@ spec:
                   value: "{{workflow.parameters.repo}}"
                 - name: branch
                   value: "{{workflow.parameters.branch}}"
-          - name: build
-            template: build
+          - name: list-workspace
+            template: list-workspace
             arguments:
               parameters:
                 - name: path
                   value: "{{workflow.parameters.path}}"
             depends: "clone"
-          - name: image
-            template: image
-            arguments:
-              parameters:
-                - name: path
-                  value: "{{workflow.parameters.path}}"
-                - name: image
-                  value: "{{workflow.parameters.image}}"
-            depends: "build"
+#          - name: build
+#            template: build
+#            arguments:
+#              parameters:
+#                - name: path
+#                  value: "{{workflow.parameters.path}}"
+#            depends: "clone"
+#          - name: image
+#            template: image
+#            arguments:
+#              parameters:
+#                - name: path
+#                  value: "{{workflow.parameters.path}}"
+#                - name: image
+#                  value: "{{workflow.parameters.image}}"
+#            depends: "build"
     - name: clone
       inputs:
         parameters:
@@ -100,64 +107,78 @@ spec:
           - --single-branch
           - "{{inputs.parameters.repo}}"
           - .
-    - name: build
+    - name: list-workspace
       inputs:
-        parameters:
+          parameters:
           - name: path
       container:
-        image: golang:1.13
         volumeMounts:
           - mountPath: /work
             name: work
         workingDir: /work/{{inputs.parameters.path}}
-        env:
-          # Because this is not a Gomodule, we must turn modules off.
-          - name: GO111MODULE
-            value: "off"
+        image: alpine:3.12
         command:
-          - go
-        args:
-          - build
-          - -v
-          - -o
-          - argosay
-          - ./...
-    - name: image
-      inputs:
-        parameters:
-          - name: path
-          - name: image
-      # Mount the configuration so we can push the image.
-      # This should create the /.docker/config.json file.
-      volumes:
-        - name: docker-config
-          secret:
-            secretName: docker-config
-      container:
-        readinessProbe:
-          exec:
-            command: [ sh, -c, "buildctl debug workers" ]
-        image: moby/buildkit:v0.9.3-rootless
-        volumeMounts:
-          - name: work
-            mountPath: /work
-          - name: docker-config
-            mountPath: /.docker
-        workingDir: /work/{{inputs.parameters.path}}
-        env:
-          - name: BUILDKITD_FLAGS
-            value: --oci-worker-no-process-sandbox
-          - name: DOCKER_CONFIG
-            value: /.docker
-        command:
-          - buildctl-daemonless.sh
-        args:
-          - build
-          - --frontend
-          - dockerfile.v0
-          - --local
-          - context=.
-          - --local
-          - dockerfile=.
-          - --output
-          - type=image,name=docker.io/{{inputs.parameters.image}},push=true
+          - ls
+          - -l
+          - -a
+#    - name: build
+#      inputs:
+#        parameters:
+#          - name: path
+#      container:
+#        image: golang:1.13
+#        volumeMounts:
+#          - mountPath: /work
+#            name: work
+#        workingDir: /work/{{inputs.parameters.path}}
+#        env:
+#          # Because this is not a Gomodule, we must turn modules off.
+#          - name: GO111MODULE
+#            value: "off"
+#        command:
+#          - go
+#        args:
+#          - build
+#          - -v
+#          - -o
+#          - argosay
+#          - ./...
+#    - name: image
+#      inputs:
+#        parameters:
+#          - name: path
+#          - name: image
+#      # Mount the configuration so we can push the image.
+#      # This should create the /.docker/config.json file.
+#      volumes:
+#        - name: docker-config
+#          secret:
+#            secretName: docker-config
+#      container:
+#        readinessProbe:
+#          exec:
+#            command: [ sh, -c, "buildctl debug workers" ]
+#        image: moby/buildkit:v0.9.3-rootless
+#        volumeMounts:
+#          - name: work
+#            mountPath: /work
+#          - name: docker-config
+#            mountPath: /.docker
+#        workingDir: /work/{{inputs.parameters.path}}
+#        env:
+#          - name: BUILDKITD_FLAGS
+#            value: --oci-worker-no-process-sandbox
+#          - name: DOCKER_CONFIG
+#            value: /.docker
+#        command:
+#          - buildctl-daemonless.sh
+#        args:
+#          - build
+#          - --frontend
+#          - dockerfile.v0
+#          - --local
+#          - context=.
+#          - --local
+#          - dockerfile=.
+#          - --output
+#          - type=image,name=docker.io/{{inputs.parameters.image}},push=true
