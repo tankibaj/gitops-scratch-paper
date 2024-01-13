@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: https://argoproj.github.io/argo-helm
       chart: argo-workflows
-      targetRevision: 0.33.1
+      targetRevision: 0.40.5
       helm:
         version: v3
         releaseName: argo-workflows
@@ -22,5 +22,5 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argo
-#  syncPolicy:
-#    automated: { }
+  syncPolicy:
+    automated: { }
