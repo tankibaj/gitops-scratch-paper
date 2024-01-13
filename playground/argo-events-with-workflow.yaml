@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: main
-    path: components/playground/argo-events-with-workflow
+    path: playground/argo-events-with-workflow
   destination:
     server: https://kubernetes.default.svc
     namespace: argo-events-with-workflow
