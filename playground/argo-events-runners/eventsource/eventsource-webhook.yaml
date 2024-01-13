@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
 metadata:
-  name: webhook-gitea
+  name: eventsource-webhook
 spec:
   service:
     name: webhook
@@ -38,6 +38,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: webhook-gitea-eventsource-svc
+                name: eventsource-webhook-eventsource-svc
                 port:
                   number: 12000

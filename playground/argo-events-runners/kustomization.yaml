@@ -3,8 +3,8 @@ kind: Kustomization
 
 resources:
   - eventbus.yaml
-  - eventsource.yaml
-#  - sensor.yaml
+  - eventsource/eventsource-webhook.yaml
+#  - sensor/sensor-job.yaml
 
 
 # -- Webhook Workflow
@@ -12,4 +12,4 @@ resources:
   - rbac-argo-workflow/role-workflow-operator.yaml
   - rbac-argo-workflow/rolebinding-workflow-operator.yaml
   - rbac-argo-workflow/serviceaccount-workflow-operate.yaml
-  - sensor-webhook-workflow.yaml
+  - sensor/sensor-workflow.yaml

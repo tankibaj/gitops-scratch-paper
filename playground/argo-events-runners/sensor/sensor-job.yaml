@@ -5,7 +5,7 @@ metadata:
 spec:
   dependencies:
     - name: push-event-for-gitea # This is the name of the dependency
-      eventSourceName: webhook-gitea # This is the name of the event source
+      eventSourceName: eventsource-webhook # This is the name of the event source
       eventName: playground-gitea # This is the name of the event in the event source
   triggers:
     - template:

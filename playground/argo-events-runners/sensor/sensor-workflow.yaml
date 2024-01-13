@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: webhook
+  name: sensor-workflow
 spec:
   template:
     serviceAccountName: operate-workflow-sa
   dependencies:
     - name: test-dep
-      eventSourceName: webhook-gitea # This is the name of the event source
+      eventSourceName: eventsource-webhook # This is the name of the event source
       eventName: playground-gitea # This is the name of the event in the event source
   triggers:
     - template:

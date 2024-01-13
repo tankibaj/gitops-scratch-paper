@@ -1,0 +1,12 @@
+
+curl -X POST -H "Content-Type: application/json" -d '{"key1":"value1", "key2":"value2"}' https://gitea-webhook.local.naim.run/push
+
+curl -X POST -H "Content-Type: application/json" -d '{"message": "Hello from webhook!"}' https://gitea-webhook.local.naim.run/push
+
+
+
+kubectl logs --follow $(kubectl get pods | grep webhook | awk '{print $1}')
+
+kubectl logs --follow $(kubectl get pods | grep sensor | awk '{print $1}')
+
+kubectl logs --follow $(kubectl get jobs | grep gitea | awk '{print $1}')
