@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: ssensor-workflow-payload
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa
+  dependencies:
+    - name: test-dep
+      eventSourceName: eventsource-webhook # This is the name of the event source
+      eventName: playground-gitea # This is the name of the event in the event source
+  triggers:
+    - template:
+        name: webhook-workflow-trigger
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: webhook-
+              spec:
+                serviceAccountName: operate-workflow-sa
+                entrypoint: whalesay
+                templates:
+                  - name: whalesay
+                    inputs:
+                      parameters:
+                        - name: repo
+                        - name: branch
+                        - name: path
+                        - name: image
+                    container:
+                      image: docker/whalesay:latest
+                      command: [cowsay]
+                      args: ["{{inputs.parameters.repo}} {{inputs.parameters.branch}} {{inputs.parameters.path}} {{inputs.parameters.image}}"]
+                arguments:
+                  parameters:
+                    - name: repo
+                      value: "{{events.test-dep.repo}}"
+                    - name: branch
+                      value: "{{events.test-dep.branch}}"
+                    - name: path
+                      value: "{{events.test-dep.path}}"
+                    - name: image
+                      value: "{{events.test-dep.image}}"

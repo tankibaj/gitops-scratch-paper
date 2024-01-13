@@ -15,5 +15,6 @@ resources:
 #  - sensor/sensor-workflow.yaml
 
 # -- Buildkit
-  - workflow-template/buildkit.yaml
-  - sensor/sensor-buildkit.yaml
+#  - workflow-template/buildkit.yaml
+#  - sensor/sensor-buildkit.yaml
+  - sensor-workflow-payload.yaml
