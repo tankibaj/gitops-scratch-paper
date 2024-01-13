@@ -13,6 +13,7 @@ spec:
     - template:
         name: workflow-trigger
         argoWorkflow:
+          operation: submit # This is the key addition
           source:
             resource:
               apiVersion: argoproj.io/v1alpha1
