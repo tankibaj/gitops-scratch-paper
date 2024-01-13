@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: ssensor-workflow-payload
+  name: sensor-workflow-payload
 spec:
   template:
     serviceAccountName: operate-workflow-sa
   dependencies:
     - name: test-dep
-      eventSourceName: eventsource-webhook # This is the name of the event source
-      eventName: playground-gitea # This is the name of the event in the event source
+      eventSourceName: eventsource-webhook
+      eventName: playground-gitea
   triggers:
     - template:
         name: webhook-workflow-trigger
@@ -23,28 +23,16 @@ spec:
               spec:
                 serviceAccountName: operate-workflow-sa
                 entrypoint: whalesay
+                arguments:
+                  parameters:
+                    - name: webhook-payload
+                      value: "{{toJson .}}"  # Capture the entire event payload
                 templates:
                   - name: whalesay
                     inputs:
                       parameters:
-                        - name: repo
-                        - name: branch
-                        - name: path
-                        - name: image
+                        - name: webhook-payload
                     container:
                       image: busybox
-                      command: [ "sh", "-c", "echo $WEBHOOK_PAYLOAD" ]
-                      env:
-                        - name: WEBHOOK_PAYLOAD
-                          valueFrom:
-                            event: "push-event" # Extracting the event payload
-                arguments:
-                  parameters:
-                    - name: repo
-                      value: "{{events.test-dep.repo}}"
-                    - name: branch
-                      value: "{{events.test-dep.branch}}"
-                    - name: path
-                      value: "{{events.test-dep.path}}"
-                    - name: image
-                      value: "{{events.test-dep.image}}"
+                      command: ["sh", "-c"]
+                      args: ["echo 'Payload: {{inputs.parameters.webhook-payload}}'"]
