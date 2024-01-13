@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-events-with-workflow
+  namespace: argocd
+  labels:
+    name: argo-events
+spec:
+  project: gitops
+  source:
+    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+    targetRevision: main
+    path: components/playground/argo-events-with-workflow
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-events-with-workflow
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+#    automated: { }

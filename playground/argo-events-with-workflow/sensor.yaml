@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: gitea-sensor
+  namespace: argo-events-workflow
+spec:
+  dependencies:
+    - name: push-event
+      eventSourceName: gitea-webhook
+      eventName: gitea-push-event
+  triggers:
+    - template:
+        name: gitea-trigger
+        k8s:
+          group: batch
+          version: v1
+          resource: jobs
+          operation: create
+          source:
+            resource:
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitea-job
+                namespace: argo-events-workflow
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: webhook-handler
+                        image: busybox
+                        command: ["sh", "-c", "echo $WEBHOOK_PAYLOAD"]
+                        env:
+                          - name: WEBHOOK_PAYLOAD
+                            valueFrom:
+                              event: "push-event" # Extracting the event payload
+                    restartPolicy: Never
