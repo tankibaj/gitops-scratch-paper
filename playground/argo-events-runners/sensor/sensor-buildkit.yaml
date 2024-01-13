@@ -6,7 +6,7 @@ spec:
   template:
     serviceAccountName: operate-workflow-sa # buildkit-sa
   dependencies:
-    - name: example-event
+    - name: build-event
       eventSourceName: eventsource-webhook
       eventName: playground-gitea
   triggers:
@@ -36,10 +36,10 @@ spec:
                   name: buildkit
           parameters: # Explicitly define parameters to pass from the event to the workflow
             - src:
-                dependencyName: test-dep
+                dependencyName: build-event
                 dataKey: body.repository.full_name
               dest: spec.arguments.parameters.0.value
             - src:
-                dependencyName: test-dep
+                dependencyName: build-event
                 dataKey: body.ref
               dest: spec.arguments.parameters.1.value
