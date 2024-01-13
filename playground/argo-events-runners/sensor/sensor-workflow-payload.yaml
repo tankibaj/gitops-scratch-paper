@@ -42,6 +42,8 @@ spec:
                       parameters:
                         - name: repo
                         - name: branch
+                        - name: path
+                        - name: image
                     container:
                       image: docker/whalesay
                       command: [ "cowsay" ]
