@@ -13,6 +13,9 @@ spec:
     - template:
         name: webhook-workflow-trigger
         k8s:
+          group: argoproj.io
+          version: v1alpha1
+          resource: workflows
           operation: create
           source:
             resource:
@@ -26,13 +29,13 @@ spec:
                 arguments:
                   parameters:
                     - name: webhook-payload
-                      value: "{{toJson .}}"  # Capture the entire event payload
+                      value: "{{ toJson . }}"  # Capture the entire event payload
                 templates:
                   - name: whalesay
                     inputs:
                       parameters:
                         - name: webhook-payload
                     container:
-                      image: busybox
-                      command: ["sh", "-c"]
-                      args: ["echo 'Payload: {{inputs.parameters.webhook-payload}}'"]
+                      image: docker/whalesay
+                      command: ["cowsay"]
+                      args: ["{{inputs.parameters.webhook-payload}}"]
