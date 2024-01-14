@@ -86,7 +86,7 @@ spec:
                   value: "{{workflow.parameters.path}}"
                 - name: image
                   value: "{{workflow.parameters.image}}"
-#            depends: "build"
+            depends: "clone"
 
     # -- Git Checkout --
     - name: clone
