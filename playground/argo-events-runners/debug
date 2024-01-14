@@ -12,3 +12,9 @@ kubectl logs --follow $(kubectl get pods | grep sensor | awk '{print $1}')
 kubectl logs --follow $(kubectl get jobs | grep gitea | awk '{print $1}')
 
 kubectl create secret generic git-credentials --from-literal=token=ba99eabcac3bb3bd87c795db092e084d94329f61
+
+
+export DOCKER_USERNAME=nahmmed
+export DOCKER_TOKEN=sPD75Aj7Wo4at8neTzqFsOc0M4v7RiNh
+export DOCKER_URL=***
+kubectl create secret generic docker-config --from-literal="config.json={\"auths\": {\"$(echo -n $DOCKER_URL)\": {\"auth\": \"$(echo -n $DOCKER_USERNAME:$DOCKER_TOKEN|base64)\"}}}"

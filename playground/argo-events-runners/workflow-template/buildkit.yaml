@@ -17,7 +17,8 @@
 #
 #    export DOCKER_USERNAME=******
 #    export DOCKER_TOKEN=******
-#    kubectl create secret generic docker-config --from-literal="config.json={\"auths\": {\"https://index.docker.io/v1/\": {\"auth\": \"$(echo -n $DOCKER_USERNAME:$DOCKER_TOKEN|base64)\"}}}"
+#    export DOCKER_URL=https://index.docker.io/v1/
+#    kubectl create secret generic docker-config --from-literal="config.json={\"auths\": {\"$(echo -n $DOCKER_URL)\": {\"auth\": \"$(echo -n $DOCKER_USERNAME:$DOCKER_TOKEN|base64)\"}}}"
 #
 # REFERENCES:
 #
