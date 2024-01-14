@@ -30,16 +30,18 @@ kind: WorkflowTemplate
 metadata:
   name: buildkit
 spec:
-#  arguments:
-#    parameters:
-#      - name: repo
-#        value: https://github.com/argoproj/argo-workflows
-#      - name: branch
-#        value: main
-#      - name: path
-#        value: test/e2e/images/argosay/v2
-#      - name: image
-#        value: alexcollinsintuit/argosay:v2
+  arguments:
+    parameters:
+      - name: repo
+        value: https://github.com/argoproj/argo-workflows
+      - name: branch
+        value: main
+      - name: path
+        value: test/e2e/images/argosay/v2
+      - name: image
+        value: alexcollinsintuit/argosay:v2
+      - name: gitCredentials
+        value: git-credentials
   entrypoint: main
   # We use a volume claim template so that we can have a shared workspace.
   volumeClaimTemplates:
