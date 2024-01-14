@@ -49,6 +49,8 @@ gitea:
     actions:
       ENABLED: true
       DEFAULT_ACTIONS_URL: 'https://gitea.com:' # -- Default address to get action plugins, e.g. the default value means downloading from “https://gitea.com/actions/checkout” for “uses: actions/checkout@v3”
+    webhook: # -- https://docs.gitea.com/administration/config-cheat-sheet#webhook-webhook
+      ALLOWED_HOST_LIST: private,external
 
 redis-cluster:
   enabled: true
