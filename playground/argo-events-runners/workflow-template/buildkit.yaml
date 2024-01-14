@@ -99,7 +99,7 @@ spec:
         volumeMounts:
           - mountPath: /work
             name: work
-        image: alpine/git:v2.26.2
+        image: alpine/git:v2.43.0
         env:
           - name: GIT_ACCESS_TOKEN
             valueFrom:
@@ -203,5 +203,5 @@ spec:
           - dockerfile=.
           - --output
           - type=image,name=docker.io/{{inputs.parameters.image}},push=false
-        securityContext:
+        securityContext: # This is required to run as rootless. https://github.com/moby/buildkit/issues/2441#issuecomment-962437048
           privileged: true
