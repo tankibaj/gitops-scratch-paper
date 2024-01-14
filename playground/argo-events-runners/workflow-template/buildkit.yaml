@@ -85,6 +85,8 @@ spec:
 #                - name: image
 #                  value: "{{workflow.parameters.image}}"
 #            depends: "build"
+
+    # -- Git Checkout Definition --
     - name: clone
       inputs:
         parameters:
@@ -104,18 +106,12 @@ spec:
                 key: token
         workingDir: /work
         command: [ sh, -c ]
-        args: [ "git clone -c http.extraHeader=\"Authorization: Bearer $GIT_ACCESS_TOKEN\" --branch '{{inputs.parameters.branch}}' '{{inputs.parameters.repo}}' ." ]
-        # Do a shallow clone, which is the fastest way to clone, by using the
-        # --depth, --branch, and --single-branch options
-#        args:
-#          - clone
-#          - --depth
-#          - "1"
-#          - --branch
-#          - "{{inputs.parameters.branch}}"
-#          - --single-branch
-#          - "{{inputs.parameters.repo}}"
-#          - .
+        args:
+          - |
+            git config --global http.extraHeader "Authorization: Bearer $GIT_ACCESS_TOKEN"
+            git clone --branch '{{inputs.parameters.branch}}' '{{inputs.parameters.repo}}' .
+
+    # -- Git Checkout Definition --
     - name: list-workspace
       inputs:
           parameters:
@@ -139,6 +135,8 @@ spec:
             ls -la
             pwd
             whoami
+            echo $HOME
+            echo $USER
 #    - name: build
 #      inputs:
 #        parameters:
