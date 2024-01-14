@@ -30,16 +30,16 @@ kind: WorkflowTemplate
 metadata:
   name: buildkit
 spec:
-  arguments:
-    parameters:
-      - name: repo
-        value: https://github.com/argoproj/argo-workflows
-      - name: branch
-        value: main
-      - name: path
-        value: test/e2e/images/argosay/v2
-      - name: image
-        value: alexcollinsintuit/argosay:v2
+#  arguments:
+#    parameters:
+#      - name: repo
+#        value: https://github.com/argoproj/argo-workflows
+#      - name: branch
+#        value: main
+#      - name: path
+#        value: test/e2e/images/argosay/v2
+#      - name: image
+#        value: alexcollinsintuit/argosay:v2
   entrypoint: main
   # We use a volume claim template so that we can have a shared workspace.
   volumeClaimTemplates:
@@ -62,12 +62,16 @@ spec:
                   value: "{{workflow.parameters.repo}}"
                 - name: branch
                   value: "{{workflow.parameters.branch}}"
+                - name: gitCredentials
+                  value: "{{workflow.parameters.gitCredentials}}"
           - name: list-workspace
             template: list-workspace
             arguments:
               parameters:
                 - name: path
                   value: "{{workflow.parameters.path}}"
+                - name: gitCredentials
+                  value: "{{workflow.parameters.gitCredentials}}"
             depends: "clone"
 #          - name: build
 #            template: build
@@ -92,7 +96,7 @@ spec:
         parameters:
           - name: repo
           - name: branch
-          - name: git_secret_name
+          - name: gitCredentials
       container:
         volumeMounts:
           - mountPath: /work
@@ -102,7 +106,7 @@ spec:
           - name: GIT_ACCESS_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{inputs.parameters.git_secret_name}}
+                name: {{inputs.parameters.gitCredentials}}
                 key: token
         workingDir: /work
         command: [ sh, -c ]
@@ -116,7 +120,7 @@ spec:
       inputs:
           parameters:
           - name: path
-          - name: git_secret_name
+          - name: gitCredentials
       container:
         volumeMounts:
           - mountPath: /work
@@ -127,7 +131,7 @@ spec:
           - name: GIT_ACCESS_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{inputs.parameters.git_secret_name}}
+                name: {{inputs.parameters.gitCredentials}}
                 key: token
         command: [ sh, -c ]
         args:

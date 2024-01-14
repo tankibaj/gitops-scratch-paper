@@ -32,7 +32,7 @@ spec:
                       value: "."
                     - name: image
                       value: "thenaim/whalesay:latest"
-                    - name: git_secret_name
+                    - name: gitCredentials
                       value: "git-credentials"
                 workflowTemplateRef:
                   name: buildkit
