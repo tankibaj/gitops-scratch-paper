@@ -104,7 +104,7 @@ spec:
                 key: token
         workingDir: /work
         command: [ sh, -c ]
-        args: [ "echo $GIT_ACCESS_TOKEN | git clone --branch '{{inputs.parameters.branch}}' '{{inputs.parameters.repo}}' ." ]
+        args: [ "git clone -c http.extraHeader=\"Authorization: Bearer $GIT_ACCESS_TOKEN\" --branch '{{inputs.parameters.branch}}' '{{inputs.parameters.repo}}' ." ]
         # Do a shallow clone, which is the fastest way to clone, by using the
         # --depth, --branch, and --single-branch options
 #        args:
@@ -133,7 +133,12 @@ spec:
                 name: git-credentials
                 key: token
         command: [ sh, -c ]
-        args: [ "echo $GIT_ACCESS_TOKEN"]
+        args:
+          - |
+            echo $GIT_ACCESS_TOKEN
+            ls -la
+            pwd
+            whoami
 #    - name: build
 #      inputs:
 #        parameters:
