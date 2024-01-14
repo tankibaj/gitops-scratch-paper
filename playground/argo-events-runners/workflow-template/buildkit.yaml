@@ -203,3 +203,5 @@ spec:
           - dockerfile=.
           - --output
           - type=image,name=docker.io/{{inputs.parameters.image}},push=false
+        securityContext:
+          privileged: true
