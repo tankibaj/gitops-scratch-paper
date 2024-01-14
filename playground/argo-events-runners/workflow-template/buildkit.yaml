@@ -68,7 +68,7 @@ spec:
               parameters:
                 - name: path
                   value: "{{workflow.parameters.path}}"
-#            depends: "clone"
+            depends: "clone"
 #          - name: build
 #            template: build
 #            arguments:
