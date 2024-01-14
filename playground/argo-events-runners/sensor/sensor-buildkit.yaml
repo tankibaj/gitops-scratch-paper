@@ -32,6 +32,8 @@ spec:
                       value: "."
                     - name: image
                       value: "thenaim/whalesay:latest"
+                    - name: git_secret_name
+                      value: "git-credentials"
                 workflowTemplateRef:
                   name: buildkit
           parameters: # Explicitly define parameters to pass from the event to the workflow
