@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: sensor-aws-sqs
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa
+  dependencies:
+    - name: aws-sqs-event
+      eventSourceName: eventsource-aws-sqs
+      eventName: playgorund-medicenter-catalog-service
+  triggers:
+    - template:
+        name: sqs-workflow
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: aws-sqs-workflow-
+              spec:
+                serviceAccountName: operate-workflow-sa
+                entrypoint: alpine-whale
+                arguments:
+                  parameters:
+                    - name: message
+                      # this is the value that should be overridden
+                      value: hello world
+                templates:
+                  - name: alpine-whale
+                    inputs:
+                      parameters:
+                        - name: message
+                    container:
+                      image: thenaim/alpine-whale:latest
+                      imagePullPolicy: Always
+                      command: [sh, -c]
+                      args: ["echo '{{inputs.parameters.message}}' | jq"]
+          parameters:
+            - src:
+                dependencyName: aws-sqs-event
+                dataKey: body
+              dest: spec.arguments.parameters.0.value

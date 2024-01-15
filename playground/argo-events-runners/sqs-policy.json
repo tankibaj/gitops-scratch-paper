@@ -1,0 +1,46 @@
+{
+  "Version": "2012-10-17",
+  "Id": "SQS-Policy",
+  "Statement": [
+    {
+      "Sid": "EventWriter",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:eu-central-1:117930661147:playgorund-medicenter-catalog-service",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "117930661147"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:s3:::playgorund-medicenter-catalog-service"
+        }
+      }
+    },
+    {
+      "Sid": "EventListener",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage",
+        "sqs:ListQueues",
+        "sqs:DeleteMessage"
+      ],
+      "Resource": "arn:aws:sqs:eu-central-1:117930661147:playgorund-medicenter-catalog-service",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "117930661147"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:iam::117930661147:user/playgorund-medicenter-catalog-service"
+        }
+      }
+    }
+  ]
+}
