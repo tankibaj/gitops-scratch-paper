@@ -34,7 +34,7 @@ spec:
                       parameters:
                         - name: message
                     container:
-                      image: thenaim/alpine-whale:latest
+                      image: thenaim/alpine-whale:main
                       imagePullPolicy: Always
                       command: [sh, -c]
                       args: ["echo '{{inputs.parameters.message}}' | jq"]
