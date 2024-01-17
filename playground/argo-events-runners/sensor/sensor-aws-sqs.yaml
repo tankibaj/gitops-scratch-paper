@@ -39,7 +39,7 @@ spec:
                       image: thenaim/alpine-whale:main
                       imagePullPolicy: Always
                       command: [sh, -c]
-                      args: ["echo ''{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}'"]
+                      args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}'"]
           parameters:
             - src:
                 dependencyName: aws-sqs-event
