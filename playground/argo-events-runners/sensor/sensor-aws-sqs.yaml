@@ -25,9 +25,7 @@ spec:
                 entrypoint: alpine-whale
                 arguments:
                   parameters:
-                    - name: message
-                      value: hello world # this is the value that should be overridden line 46 parameter
-                    - name: jsonBucketName
+                    - name: jsonBucketName # this is the value that should be overridden line 46 parameter
                       value: ""
                     - name: jsonFilePath
                       value: ""
@@ -35,26 +33,19 @@ spec:
                   - name: alpine-whale
                     inputs:
                       parameters:
-                        - name: message
                         - name: jsonBucketName
                         - name: jsonFilePath
                     container:
                       image: thenaim/alpine-whale:main
                       imagePullPolicy: Always
                       command: [sh, -c]
-                      args: ["echo '{{inputs.parameters.message}}', '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}'"]
+                      args: ["echo ''{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}'"]
           parameters:
             - src:
                 dependencyName: aws-sqs-event
-                dataKey: body
+                dataKey: body.Records.0.s3.bucket.name
               dest: spec.arguments.parameters.0.value
             - src:
                 dependencyName: aws-sqs-event
-                dataTemplate: >
-                  {{(fromJson .).Records[0].s3.bucket.name}}
+                dataKey: body.Records.0.s3.object.key
               dest: spec.arguments.parameters.1.value
-            - src:
-                dependencyName: aws-sqs-event
-                dataTemplate: >
-                  {{(fromJson .).Records[0].s3.object.key}}
-              dest: spec.arguments.parameters.2.value
