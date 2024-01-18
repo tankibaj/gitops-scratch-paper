@@ -23,7 +23,7 @@ controller:
 server:
   # -- A list of supported authentication modes. Available values are `server`, `client`, or `sso`. If you provide sso, please configure `.Values.server.sso` as well.
   ## Ref: https://argoproj.github.io/argo-workflows/argo-server-auth-mode/
-  authModes: ["sso", "server"]
+  authModes: ["sso", "client"]
 
   # -- Ingress configuration.
   ingress:
@@ -49,7 +49,7 @@ server:
       key: client-secret
     # The OIDC redirect URL. Should be in the form <argo-root-url>/oauth2/callback.
     # -- Fix: SSO Issue --> https://github.com/argoproj/argo-workflows/issues/6634#issuecomment-1118012324
-    redirectUrl: https://workflows.local.naim.run/argo/oauth2/callback
+    redirectUrl: https://workflows.local.naim.run/oauth2/callback
     sessionExpiry: 240h
     userInfoPath: /protocol/openid-connect/userinfo
     rbac:
