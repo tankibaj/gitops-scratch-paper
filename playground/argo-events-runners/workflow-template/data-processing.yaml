@@ -26,6 +26,16 @@ spec:
   templates:
     - name: main
       steps:
+        - - name: download-json
+            arguments:
+              parameters:
+                - name: jsonBucketName
+                  value: "{{workflow.parameters.jsonBucketName}}"
+                - name: jsonFilePath
+                  value: "{{workflow.parameters.jsonFilePath}}"
+                - name: downloadedJsonFileName
+                  value: blaue-hand-briefe.json
+            template: download-json
         - - name: debug-info
             arguments:
               parameters:
@@ -34,8 +44,6 @@ spec:
                 - name: jsonFilePath
                   value: "{{workflow.parameters.jsonFilePath}}"
             template: debug-info
-#        - - name: download-json
-#            template: download-json
 #        - - name: transfer-artifacts
 #            template: transfer-artifacts
 #        - - name: prepare-json-for-catalog
@@ -58,7 +66,7 @@ spec:
         image: thenaim/alpine-whale:main
         imagePullPolicy: Always
         command: [sh, -c]
-        args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}' && ls -la /workspace"]
+        args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}' && ls -la /workspace && cat /workspace/blaue-hand-briefe.json"]
         volumeMounts:
           - name: workspace
             mountPath: /workspace
@@ -68,11 +76,23 @@ spec:
         parameters:
           - name: jsonBucketName
           - name: jsonFilePath
+          - name: downloadedJsonFileName
       container:
         image: amazon/aws-cli
         command: [sh, -c]
-        args: ["aws s3 cp s3://{{inputs.parameters.jsonBucketName}}/{{inputs.parameters.jsonFilePath}} /workspace/blaue-hand-briefe.json"]
-#        workingDir: /workspace
+        args: ["aws s3 cp s3://{{inputs.parameters.jsonBucketName}}/{{inputs.parameters.jsonFilePath}} {{inputs.parameters.downloadedJsonFileName}}"]
+        workingDir: /workspace
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: sqs-eventsource-aws-secret
+                key: accesskey
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: sqs-eventsource-aws-secret
+                key: secretkey
         volumeMounts:
           - name: workspace
             mountPath: /workspace
