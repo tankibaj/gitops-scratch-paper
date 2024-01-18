@@ -23,3 +23,11 @@ kubectl apply -f sensor/sensor-aws-sqs.yaml
 ```bash
 kubectl delete -f sensor/sensor-aws-sqs.yaml
 ```
+
+```bash
+kubectl apply -f workflow-template/data-processing.yaml
+```
+
+```bash
+kubectl delete -f workflow-template/data-processing.yaml
+```

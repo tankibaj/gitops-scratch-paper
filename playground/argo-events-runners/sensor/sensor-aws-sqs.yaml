@@ -11,9 +11,9 @@ spec:
       eventName: playgorund-medicenter-catalog-service
   triggers:
     - template:
-        name: sqs-workflow
-        k8s:
-          operation: create
+        name: workflow-trigger
+        argoWorkflow:
+          operation: submit
           source:
             resource:
               apiVersion: argoproj.io/v1alpha1
@@ -22,24 +22,26 @@ spec:
                 generateName: aws-sqs-workflow-
               spec:
                 serviceAccountName: operate-workflow-sa
-                entrypoint: alpine-whale
+#                entrypoint: alpine-whale
                 arguments:
                   parameters:
                     - name: jsonBucketName # this is the value that should be overridden line 46 parameter
                       value: ""
                     - name: jsonFilePath
                       value: ""
-                templates:
-                  - name: alpine-whale
-                    inputs:
-                      parameters:
-                        - name: jsonBucketName
-                        - name: jsonFilePath
-                    container:
-                      image: thenaim/alpine-whale:main
-                      imagePullPolicy: Always
-                      command: [sh, -c]
-                      args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}'"]
+                workflowTemplateRef:
+                  name: data-processing
+#                templates:
+#                  - name: alpine-whale
+#                    inputs:
+#                      parameters:
+#                        - name: jsonBucketName
+#                        - name: jsonFilePath
+#                    container:
+#                      image: thenaim/alpine-whale:main
+#                      imagePullPolicy: Always
+#                      command: [sh, -c]
+#                      args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}'"]
           parameters:
             - src:
                 dependencyName: aws-sqs-event

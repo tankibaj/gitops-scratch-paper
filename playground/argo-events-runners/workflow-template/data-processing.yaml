@@ -1,0 +1,157 @@
+# SUMMARY:
+#
+# ...
+#
+# DESCRIPTION:
+#
+# ...
+#
+#
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: data-processing
+spec:
+  entrypoint: main
+#  onExit: exit-handler  # Define the exit handler
+  # We use a volume claim template so that we can have a shared workspace.
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 500Mi
+  templates:
+    - name: main
+      steps:
+        - - name: debug-info
+            arguments:
+              parameters:
+                - name: jsonBucketName
+                  value: "{{workflow.parameters.jsonBucketName}}"
+                - name: jsonFilePath
+                  value: "{{workflow.parameters.jsonFilePath}}"
+            template: debug-info
+#        - - name: download-json
+#            template: download-json
+#        - - name: transfer-artifacts
+#            template: transfer-artifacts
+#        - - name: prepare-json-for-catalog
+#            template: prepare-json-for-catalog
+#        - - name: notify-catalog-service
+#            template: send-post-request
+#        - - name: remove-temporary-json
+#            template: cleanup-json-file
+#        - - name: success-notification
+#            template: notify-teams-on-success
+#          - name: failure-notification
+#            template: notify-teams-on-failure
+
+    - name: debug-info
+      inputs:
+        parameters:
+          - name: jsonBucketName
+          - name: jsonFilePath
+      container:
+        image: thenaim/alpine-whale:main
+        imagePullPolicy: Always
+        command: [sh, -c]
+        args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}' && ls -la /workspace"]
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+
+    - name: download-json
+      inputs:
+        parameters:
+          - name: jsonBucketName
+          - name: jsonFilePath
+      container:
+        image: amazon/aws-cli
+        command: [sh, -c]
+        args: ["aws s3 cp s3://{{inputs.parameters.jsonBucketName}}/{{inputs.parameters.jsonFilePath}} /workspace/blaue-hand-briefe.json"]
+#        workingDir: /workspace
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+
+    - name: transfer-artifacts
+      container:
+        image: python:3.8-slim
+        envFrom:
+          - configMapRef:
+              name: workflow-config
+        command: [python, /scripts/process_and_copy.py]
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+      volumes:
+        - name: scripts
+          configMap:
+            name: process-and-copy-script
+
+    - name: prepare-json-for-catalog
+      container:
+        image: python:3.8-slim
+        env:
+          - name: STORAGE_PATH
+            valueFrom:
+              configMapKeyRef:
+                name: workflow-config
+                key: STORAGE_PATH
+        command: [python, /scripts/update_json.py]
+        volumeMounts:
+          - name: data-volume
+            mountPath: /mnt/data
+
+    - name: send-post-request
+      container:
+        image: appropriate/curl
+        env:
+          - name: ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: workflow-config
+                key: ENDPOINT
+          - name: BASIC_AUTH
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key: BASIC_AUTH
+        command: [sh, -c]
+        args: ["curl -X POST -H 'Authorization: Basic $BASIC_AUTH' -H 'Content-Type: application/json' --data @/mnt/data/blaue-hand-briefe.json $ENDPOINT"]
+        volumeMounts:
+          - name: data-volume
+            mountPath: /mnt/data
+
+    - name: cleanup-json-file
+      container:
+        image: alpine:latest
+        command: [rm, -f]
+        args: ["/mnt/data/blaue-hand-briefe.json"]
+        volumeMounts:
+          - name: data-volume
+            mountPath: /mnt/data
+
+#    - name: exit-handler
+#      steps:
+#        - - name: failure-notification
+#            template: notify-teams-on-failure
+#            when: "{{workflow.status}} == 'Failed'"
+#        - - name: success-notification
+#            template: notify-teams-on-success
+#            when: "{{workflow.status}} == 'Succeeded'"
+#
+#    - name: notify-teams-on-success
+#      container:
+#        image: appropriate/curl
+#        command: [sh, -c]
+#        args: ["curl -H 'Content-Type: application/json' -d '{\"text\": \"Workflow {{workflow.name}} succeeded.\"}' <WEBHOOK_URL>"]
+#
+#    - name: notify-teams-on-failure
+#      container:
+#        image: appropriate/curl
+#        command: [sh, -c]
+#        args: ["curl -H 'Content-Type: application/json' -d '{\"text\": \"Workflow {{workflow.name}} failed. Failure cause: {{workflow.failures}}\"}' <WEBHOOK_URL>"]
