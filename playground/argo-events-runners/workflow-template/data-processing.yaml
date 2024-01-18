@@ -34,18 +34,20 @@ spec:
                 - name: jsonFilePath
                   value: "{{workflow.parameters.jsonFilePath}}"
                 - name: downloadedJsonFileName
-                  value: blaue-hand-briefe.json
+                  value: "{{workflow.parameters.downloadedJsonFileName}}"
             template: download-json
         - - name: debug-info
+            template: debug-info
+        - - name: transfer-artifacts
             arguments:
               parameters:
-                - name: jsonBucketName
-                  value: "{{workflow.parameters.jsonBucketName}}"
-                - name: jsonFilePath
-                  value: "{{workflow.parameters.jsonFilePath}}"
-            template: debug-info
-#        - - name: transfer-artifacts
-#            template: transfer-artifacts
+                - name: downloadedJsonFileName
+                  value: "{{workflow.parameters.downloadedJsonFileName}}"
+                - name: targetBucketName
+                  value: "{{workflow.parameters.targetBucketName}}"
+                - name: targetBucketStoragePath
+                  value: "{{workflow.parameters.targetBucketStoragePath}}"
+            template: transfer-artifacts
 #        - - name: prepare-json-for-catalog
 #            template: prepare-json-for-catalog
 #        - - name: notify-catalog-service
@@ -58,15 +60,12 @@ spec:
 #            template: notify-teams-on-failure
 
     - name: debug-info
-      inputs:
-        parameters:
-          - name: jsonBucketName
-          - name: jsonFilePath
       container:
         image: thenaim/alpine-whale:main
         imagePullPolicy: Always
         command: [sh, -c]
-        args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}' && ls -la /workspace && cat /workspace/blaue-hand-briefe.json"]
+        args: ["ls -la && cat blaue-hand-briefe.json"]
+        workingDir: /workspace
         volumeMounts:
           - name: workspace
             mountPath: /workspace
@@ -74,8 +73,8 @@ spec:
     - name: download-json
       inputs:
         parameters:
-          - name: jsonBucketName
           - name: jsonFilePath
+          - name: jsonBucketName
           - name: downloadedJsonFileName
       container:
         image: amazon/aws-cli
@@ -98,62 +97,76 @@ spec:
             mountPath: /workspace
 
     - name: transfer-artifacts
+      inputs:
+        parameters:
+          - name: downloadedJsonFileName
+          - name: targetBucketName
+          - name: targetBucketStoragePath
       container:
-        image: python:3.8-slim
-        envFrom:
-          - configMapRef:
-              name: workflow-config
-        command: [python, /scripts/process_and_copy.py]
+        image: thenaim/aws-s3-transfer-artifacts:latest
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: sqs-eventsource-aws-secret
+                key: accesskey
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: sqs-eventsource-aws-secret
+                key: secretkey
+          - name: JSON_FILE
+            value: "{{inputs.parameters.downloadedJsonFileName}}"
+          - name: TARGET_BUCKET
+            value: "{{inputs.parameters.targetBucketName}}"
+          - name: TARGET_BUCKET_STORAGE_PATH
+            value: "{{inputs.parameters.targetBucketStoragePath}}"
         volumeMounts:
           - name: workspace
             mountPath: /workspace
-      volumes:
-        - name: scripts
-          configMap:
-            name: process-and-copy-script
 
-    - name: prepare-json-for-catalog
-      container:
-        image: python:3.8-slim
-        env:
-          - name: STORAGE_PATH
-            valueFrom:
-              configMapKeyRef:
-                name: workflow-config
-                key: STORAGE_PATH
-        command: [python, /scripts/update_json.py]
-        volumeMounts:
-          - name: data-volume
-            mountPath: /mnt/data
+#    - name: prepare-json-for-catalog
+#      container:
+#        image: python:3.8-slim
+#        env:
+#          - name: STORAGE_PATH
+#            valueFrom:
+#              configMapKeyRef:
+#                name: workflow-config
+#                key: STORAGE_PATH
+#        command: [python, /scripts/update_json.py]
+#        volumeMounts:
+#          - name: data-volume
+#            mountPath: /mnt/data
 
-    - name: send-post-request
-      container:
-        image: appropriate/curl
-        env:
-          - name: ENDPOINT
-            valueFrom:
-              configMapKeyRef:
-                name: workflow-config
-                key: ENDPOINT
-          - name: BASIC_AUTH
-            valueFrom:
-              secretKeyRef:
-                name: auth-secret
-                key: BASIC_AUTH
-        command: [sh, -c]
-        args: ["curl -X POST -H 'Authorization: Basic $BASIC_AUTH' -H 'Content-Type: application/json' --data @/mnt/data/blaue-hand-briefe.json $ENDPOINT"]
-        volumeMounts:
-          - name: data-volume
-            mountPath: /mnt/data
+#    - name: send-post-request
+#      container:
+#        image: appropriate/curl
+#        env:
+#          - name: ENDPOINT
+#            valueFrom:
+#              configMapKeyRef:
+#                name: workflow-config
+#                key: ENDPOINT
+#          - name: BASIC_AUTH
+#            valueFrom:
+#              secretKeyRef:
+#                name: auth-secret
+#                key: BASIC_AUTH
+#        command: [sh, -c]
+#        args: ["curl -X POST -H 'Authorization: Basic $BASIC_AUTH' -H 'Content-Type: application/json' --data @/mnt/data/blaue-hand-briefe.json $ENDPOINT"]
+#        volumeMounts:
+#          - name: data-volume
+#            mountPath: /mnt/data
 
-    - name: cleanup-json-file
-      container:
-        image: alpine:latest
-        command: [rm, -f]
-        args: ["/mnt/data/blaue-hand-briefe.json"]
-        volumeMounts:
-          - name: data-volume
-            mountPath: /mnt/data
+#    - name: cleanup-json-file
+#      container:
+#        image: alpine:latest
+#        command: [rm, -f]
+#        args: ["/mnt/data/blaue-hand-briefe.json"]
+#        volumeMounts:
+#          - name: data-volume
+#            mountPath: /mnt/data
 
 #    - name: exit-handler
 #      steps:

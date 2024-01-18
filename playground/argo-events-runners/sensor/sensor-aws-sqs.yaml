@@ -29,6 +29,14 @@ spec:
                       value: ""
                     - name: jsonFilePath
                       value: ""
+                    - name: downloadedJsonFileName
+                      value: "/workspace/blaue-hand-briefe.json"
+                    - name: targetBucketName
+                      value: "playgorund-software-distribution"
+                    - name: targetBucketStoragePath
+                      value: "vos/pdfs/EducationalMaterials"
+                    - name: catalogStoragePath
+                      value: "pdfs/EducationalMaterials"
                 workflowTemplateRef:
                   name: data-processing
 #                templates:
