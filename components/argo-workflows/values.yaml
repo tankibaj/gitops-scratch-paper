@@ -53,7 +53,7 @@ server:
     sessionExpiry: 240h
     userInfoPath: /protocol/openid-connect/userinfo
     rbac:
-      enabled: true
+      enabled: false
     scopes:
       - openid
       - profile
