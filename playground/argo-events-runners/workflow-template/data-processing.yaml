@@ -104,6 +104,7 @@ spec:
           - name: targetBucketStoragePath
       container:
         image: thenaim/aws-s3-transfer-artifacts:latest
+        imagePullPolicy: Always
         env:
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
