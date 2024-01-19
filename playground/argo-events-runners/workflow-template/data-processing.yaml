@@ -36,8 +36,6 @@ spec:
                 - name: downloadedJsonFileName
                   value: "{{workflow.parameters.downloadedJsonFileName}}"
             template: download-json
-        - - name: debug-info
-            template: debug-info
         - - name: transfer-artifacts
             arguments:
               parameters:
@@ -48,8 +46,18 @@ spec:
                 - name: targetBucketStoragePath
                   value: "{{workflow.parameters.targetBucketStoragePath}}"
             template: transfer-artifacts
-#        - - name: prepare-json-for-catalog
-#            template: prepare-json-for-catalog
+        - - name: prepare-json-for-catalog
+            arguments:
+              parameters:
+                - name: downloadedJsonFileName
+                  value: "{{workflow.parameters.downloadedJsonFileName}}"
+                - name: catalogStoragePath
+                  value: "{{workflow.parameters.catalogStoragePath}}"
+                - name: catalogRequestFile
+                  value: "{{workflow.parameters.catalogRequestFile}}"
+            template: prepare-json-for-catalog
+        - - name: debug-info
+            template: debug-info
 #        - - name: notify-catalog-service
 #            template: send-post-request
 #        - - name: remove-temporary-json
@@ -64,7 +72,7 @@ spec:
         image: thenaim/alpine-whale:main
         imagePullPolicy: Always
         command: [sh, -c]
-        args: ["ls -la && cat blaue-hand-briefe.json"]
+        args: ["ls -la && cat blaue-hand-briefe.json && cat catalog-request.json"]
         workingDir: /workspace
         volumeMounts:
           - name: workspace
@@ -126,19 +134,35 @@ spec:
           - name: workspace
             mountPath: /workspace
 
-#    - name: prepare-json-for-catalog
-#      container:
-#        image: python:3.8-slim
-#        env:
-#          - name: STORAGE_PATH
-#            valueFrom:
-#              configMapKeyRef:
-#                name: workflow-config
-#                key: STORAGE_PATH
-#        command: [python, /scripts/update_json.py]
-#        volumeMounts:
-#          - name: data-volume
-#            mountPath: /mnt/data
+    - name: prepare-json-for-catalog
+      inputs:
+        parameters:
+          - name: downloadedJsonFileName
+          - name: catalogStoragePath
+          - name: catalogRequestFile
+      container:
+        image: thenaim/aws-s3-prepare-json-for-catalog:latest
+        imagePullPolicy: Always
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: sqs-eventsource-aws-secret
+                key: accesskey
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: sqs-eventsource-aws-secret
+                key: secretkey
+          - name: JSON_FILE
+            value: "{{inputs.parameters.downloadedJsonFileName}}"
+          - name: CATALOG_STORAGE_PATH
+            value: "{{inputs.parameters.catalogStoragePath}}"
+          - name: CATALOG_REQUEST_FILE
+            value: "{{inputs.parameters.catalogRequestFile}}"
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
 
 #    - name: send-post-request
 #      container:

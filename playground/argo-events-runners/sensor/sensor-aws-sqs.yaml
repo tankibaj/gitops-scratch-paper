@@ -37,6 +37,8 @@ spec:
                       value: "vos/pdfs/EducationalMaterials"
                     - name: catalogStoragePath
                       value: "pdfs/EducationalMaterials"
+                    - name: catalogRequestFile
+                      value: "/workspace/catalog-request.json"
                 workflowTemplateRef:
                   name: data-processing
 #                templates:
