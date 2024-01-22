@@ -10,6 +10,19 @@ kubectl create secret generic sqs-eventsource-aws-secret \
 ```
 
 ```bash
+CATALOG_URL=<catalog url here>
+CATALOG_USERNAME=<catalog username here>
+CATALOG_PASSWORD=<catalog password here>
+```
+
+```bash
+kubectl create secret generic catalog-credentials \
+     --from-literal=catalog_url=${CATALOG_URL} \
+     --from-literal=catalog_username=${CATALOG_USERNAME} \
+     --from-literal=catalog_password=${CATALOG_PASSWORD}
+```
+
+```bash
 kubectl apply -f eventsource/eventsource-aws-sqs.yaml
 ```
 

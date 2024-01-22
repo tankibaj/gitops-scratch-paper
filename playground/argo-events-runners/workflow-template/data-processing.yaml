@@ -56,20 +56,24 @@ spec:
                 - name: catalogRequestFile
                   value: "{{workflow.parameters.catalogRequestFile}}"
             template: prepare-catalog-distribution
-#        - - name: catalog-distribution
-#            arguments:
-#              parameters:
-#                - name: catalogRequestFile
-#                  value: "{{workflow.parameters.catalogRequestFile}}"
-#                - name: catalogURL
-#                  value: "{{workflow.parameters.catalogURL}}"
-#            template: catalog-distribution
+        - - name: catalog-distribution
+            arguments:
+              parameters:
+                - name: catalogRequestFile
+                  value: "{{workflow.parameters.catalogRequestFile}}"
+            template: catalog-distribution
         - - name: debug-info
             template: debug-info
+#        - - name: cleanup-workspace
+#            arguments:
+#              parameters:
+#                - name: downloadedJsonFileName
+#                  value: "{{workflow.parameters.downloadedJsonFileName}}"
+#                - name: catalogRequestFile
+#                  value: "{{workflow.parameters.catalogRequestFile}}"
+#            template: cleanup-workspace
 #        - - name: notify-catalog-service
 #            template: send-post-request
-#        - - name: remove-temporary-json
-#            template: cleanup-json-file
 #        - - name: success-notification
 #            template: notify-teams-on-success
 #          - name: failure-notification
@@ -172,34 +176,49 @@ spec:
           - name: workspace
             mountPath: /workspace
 
-#    - name: send-post-request
-#      container:
-#        image: appropriate/curl
-#        env:
-#          - name: ENDPOINT
-#            valueFrom:
-#              configMapKeyRef:
-#                name: workflow-config
-#                key: ENDPOINT
-#          - name: BASIC_AUTH
-#            valueFrom:
-#              secretKeyRef:
-#                name: auth-secret
-#                key: BASIC_AUTH
-#        command: [sh, -c]
-#        args: ["curl -X POST -H 'Authorization: Basic $BASIC_AUTH' -H 'Content-Type: application/json' --data @/mnt/data/blaue-hand-briefe.json $ENDPOINT"]
-#        volumeMounts:
-#          - name: data-volume
-#            mountPath: /mnt/data
+    - name: catalog-distribution
+      inputs:
+        parameters:
+          - name: catalogRequestFile
+      container:
+        image: thenaim/catalog-distribution:latest
+        imagePullPolicy: Always
+        env:
+          - name: CATALOG_URL
+            valueFrom:
+              secretKeyRef:
+                name: catalog-credentials
+                key: catalog_url
+          - name: CATALOG_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: catalog-credentials
+                key: catalog_username
+          - name: CATALOG_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: catalog-credentials
+                key: catalog_password
+          - name: CATALOG_REQUEST_FILE
+            value: "{{inputs.parameters.catalogRequestFile}}"
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
 
-#    - name: cleanup-json-file
+#    - name: cleanup-workspace
+#      inputs:
+#        parameters:
+#          - name: downloadedJsonFileName
+#          - name: catalogRequestFile
 #      container:
 #        image: alpine:latest
 #        command: [rm, -f]
-#        args: ["/mnt/data/blaue-hand-briefe.json"]
+#        args:
+#          - "{{inputs.parameters.downloadedJsonFileName}}"
+#          - "{{inputs.parameters.catalogRequestFile}}"
 #        volumeMounts:
-#          - name: data-volume
-#            mountPath: /mnt/data
+#          - name: workspace
+#            mountPath: /workspace
 
 #    - name: exit-handler
 #      steps:

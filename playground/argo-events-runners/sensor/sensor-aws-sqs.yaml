@@ -39,8 +39,6 @@ spec:
                       value: "pdfs/EducationalMaterials"
                     - name: catalogRequestFile
                       value: "/workspace/catalog-request.json"
-                    - name: catalogURL
-                      value: "https://update.sharedservices-development.api.ifap.de"
                 workflowTemplateRef:
                   name: data-processing
 #                templates:
