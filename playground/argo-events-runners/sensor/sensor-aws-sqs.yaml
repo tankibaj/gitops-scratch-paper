@@ -8,7 +8,7 @@ spec:
   dependencies:
     - name: aws-sqs-event
       eventSourceName: eventsource-aws-sqs
-      eventName: playgorund-medicenter-catalog-service
+      eventName: playground-catalog-service
   triggers:
     - template:
         name: workflow-trigger
@@ -32,7 +32,7 @@ spec:
                     - name: downloadedJsonFileName
                       value: "/workspace/blaue-hand-briefe.json"
                     - name: targetBucketName
-                      value: "playgorund-software-distribution"
+                      value: "playground-software-distribution"
                     - name: targetBucketStoragePath
                       value: "vos/pdfs/EducationalMaterials"
                     - name: catalogStoragePath

@@ -4,7 +4,7 @@ metadata:
   name: eventsource-aws-sqs
 spec:
   sqs:
-    playgorund-medicenter-catalog-service:
+    playground-catalog-service:
       # jsonBody specifies that all event body payload coming from this
       # source will be JSON
       jsonBody: true
@@ -23,7 +23,7 @@ spec:
       # aws region
       region: eu-central-1
       # name of the queue. The eventsource resolves the url of the queue from the queue name.
-      queue: playgorund-medicenter-catalog-service
+      queue: playground-catalog-service
       # The duration (in seconds) for which the call waits for a message to arrive in the queue before returning.
       # MUST BE > 0 AND <= 20
       waitTimeSeconds: 20
