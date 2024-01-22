@@ -46,7 +46,7 @@ spec:
                 - name: targetBucketStoragePath
                   value: "{{workflow.parameters.targetBucketStoragePath}}"
             template: transfer-artifacts
-        - - name: prepare-json-for-catalog
+        - - name: prepare-catalog-distribution
             arguments:
               parameters:
                 - name: downloadedJsonFileName
@@ -55,7 +55,15 @@ spec:
                   value: "{{workflow.parameters.catalogStoragePath}}"
                 - name: catalogRequestFile
                   value: "{{workflow.parameters.catalogRequestFile}}"
-            template: prepare-json-for-catalog
+            template: prepare-catalog-distribution
+        - - name: catalog-distribution
+            arguments:
+              parameters:
+                - name: catalogRequestFile
+                  value: "{{workflow.parameters.catalogRequestFile}}"
+                - name: catalogURL
+                  value: "{{workflow.parameters.catalogURL}}"
+            template: catalog-distribution
         - - name: debug-info
             template: debug-info
 #        - - name: notify-catalog-service
@@ -134,14 +142,14 @@ spec:
           - name: workspace
             mountPath: /workspace
 
-    - name: prepare-json-for-catalog
+    - name: prepare-catalog-distribution
       inputs:
         parameters:
           - name: downloadedJsonFileName
           - name: catalogStoragePath
           - name: catalogRequestFile
       container:
-        image: thenaim/aws-s3-prepare-json-for-catalog:latest
+        image: thenaim/prepare-catalog-distribution:latest
         imagePullPolicy: Always
         env:
           - name: AWS_ACCESS_KEY_ID
