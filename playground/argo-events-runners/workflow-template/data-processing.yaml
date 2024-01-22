@@ -56,14 +56,14 @@ spec:
                 - name: catalogRequestFile
                   value: "{{workflow.parameters.catalogRequestFile}}"
             template: prepare-catalog-distribution
-        - - name: catalog-distribution
-            arguments:
-              parameters:
-                - name: catalogRequestFile
-                  value: "{{workflow.parameters.catalogRequestFile}}"
-                - name: catalogURL
-                  value: "{{workflow.parameters.catalogURL}}"
-            template: catalog-distribution
+#        - - name: catalog-distribution
+#            arguments:
+#              parameters:
+#                - name: catalogRequestFile
+#                  value: "{{workflow.parameters.catalogRequestFile}}"
+#                - name: catalogURL
+#                  value: "{{workflow.parameters.catalogURL}}"
+#            template: catalog-distribution
         - - name: debug-info
             template: debug-info
 #        - - name: notify-catalog-service
