@@ -13,8 +13,7 @@ metadata:
   name: data-processing
 spec:
   entrypoint: main
-#  onExit: exit-handler  # Define the exit handler
-  # We use a volume claim template so that we can have a shared workspace.
+  onExit: exit-handler
   volumeClaimTemplates:
     - metadata:
         name: workspace
@@ -205,6 +204,21 @@ spec:
           - name: workspace
             mountPath: /workspace
 
+    - name: exit-handler
+      steps:
+        - - name: notify
+            template: notify-workflow-status
+    - name: notify-workflow-status
+      container:
+        image: alpine:latest
+        command: [sh, -c]
+        args: ["echo send e-mail: {{workflow.name}} {{workflow.status}} {{workflow.duration}}"]
+        # MS Teams Webhook URL
+#        args:
+#          - "curl -H 'Content-Type: application/json' -d '{\"text\": \"Workflow {{workflow.name}} {{workflow.status}} {{workflow.duration}}\"}' <WEBHOOK_URL>"
+
+
+
 #    - name: cleanup-workspace
 #      inputs:
 #        parameters:
@@ -219,24 +233,3 @@ spec:
 #        volumeMounts:
 #          - name: workspace
 #            mountPath: /workspace
-
-#    - name: exit-handler
-#      steps:
-#        - - name: failure-notification
-#            template: notify-teams-on-failure
-#            when: "{{workflow.status}} == 'Failed'"
-#        - - name: success-notification
-#            template: notify-teams-on-success
-#            when: "{{workflow.status}} == 'Succeeded'"
-#
-#    - name: notify-teams-on-success
-#      container:
-#        image: appropriate/curl
-#        command: [sh, -c]
-#        args: ["curl -H 'Content-Type: application/json' -d '{\"text\": \"Workflow {{workflow.name}} succeeded.\"}' <WEBHOOK_URL>"]
-#
-#    - name: notify-teams-on-failure
-#      container:
-#        image: appropriate/curl
-#        command: [sh, -c]
-#        args: ["curl -H 'Content-Type: application/json' -d '{\"text\": \"Workflow {{workflow.name}} failed. Failure cause: {{workflow.failures}}\"}' <WEBHOOK_URL>"]
