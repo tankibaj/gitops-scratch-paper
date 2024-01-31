@@ -70,7 +70,7 @@ spec:
         args:
           - |
             terraform init -upgrade
-            terraform plan -out=tfplan -input=false -no-color -detailed-exitcode
+            terraform plan -out=tfplan -input=false -no-color
 
     # -- Manual Approval --
     - name: approve
