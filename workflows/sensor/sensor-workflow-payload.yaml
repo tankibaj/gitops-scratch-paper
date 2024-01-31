@@ -4,7 +4,7 @@ metadata:
   name: sensor-workflow-payload
 spec:
   template:
-    serviceAccountName: operate-workflow-sa
+    serviceAccountName: workflow-generic-sa
   dependencies:
     - name: test-dep
       eventSourceName: eventsource-webhook
@@ -24,7 +24,7 @@ spec:
               metadata:
                 generateName: webhook-
               spec:
-                serviceAccountName: operate-workflow-sa
+                serviceAccountName: workflow-generic-sa
                 entrypoint: whalesay
                 arguments:
                   parameters:

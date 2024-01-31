@@ -17,10 +17,10 @@ spec:
       endpoint: /push
       # HTTP request method to allow. In this case, only POST requests are accepted
       method: POST
-#    example-foo:
-#      port: "12000"
-#      endpoint: /example2
-#      method: POST
+    terraform:
+      port: "12000"
+      endpoint: /terraform
+      method: POST
 
 
 ---
@@ -31,10 +31,17 @@ metadata:
 spec:
   ingressClassName: public
   rules:
-    - host: gitea-webhook.local.naim.run
+    - host: webhook.local.naim.run
       http:
         paths:
           - path: /push
+            pathType: Prefix
+            backend:
+              service:
+                name: eventsource-webhook-eventsource-svc
+                port:
+                  number: 12000
+          - path: /terraform
             pathType: Prefix
             backend:
               service:

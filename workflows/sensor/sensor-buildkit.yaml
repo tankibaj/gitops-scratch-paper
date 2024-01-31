@@ -4,7 +4,7 @@ metadata:
   name: sensor-buildkit
 spec:
   template:
-    serviceAccountName: operate-workflow-sa # buildkit-sa
+    serviceAccountName: workflow-generic-sa
   dependencies:
     - name: build-event
       eventSourceName: eventsource-webhook
@@ -21,7 +21,7 @@ spec:
               metadata:
                 generateName: buildkit-
               spec:
-                serviceAccountName: operate-workflow-sa
+                serviceAccountName: workflow-generic-sa
                 arguments:
                   parameters:
                     - name: repo

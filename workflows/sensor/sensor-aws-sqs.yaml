@@ -4,7 +4,7 @@ metadata:
   name: sensor-aws-sqs
 spec:
   template:
-    serviceAccountName: operate-workflow-sa
+    serviceAccountName: workflow-generic-sa
   dependencies:
     - name: aws-sqs-event
       eventSourceName: eventsource-aws-sqs
@@ -21,7 +21,7 @@ spec:
               metadata:
                 generateName: aws-sqs-workflow-
               spec:
-                serviceAccountName: operate-workflow-sa
+                serviceAccountName: workflow-generic-sa
 #                entrypoint: alpine-whale
                 arguments:
                   parameters:

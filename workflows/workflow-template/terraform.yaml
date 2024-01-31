@@ -1,0 +1,91 @@
+# SUMMARY:
+#
+# This workflow demonstrates a Terraform plan and apply process using Argo Workflows.
+#
+# DESCRIPTION:
+#
+# The workflow has four stages:
+#
+# * Cloning the Git repository containing Terraform configuration
+# * Running 'terraform plan' to create an execution plan
+# * A manual approval step
+# * Running 'terraform apply' to apply the changes
+#
+# USAGE:
+#
+# Requires setting up secrets for accessing the Terraform backend and any other sensitive information.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: terraform
+spec:
+  entrypoint: main
+  volumeClaimTemplates:
+    - metadata:
+        name: terraform-workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: clone-repo
+            template: clone-repo
+          - name: terraform-plan
+            template: plan
+            depends: "clone-repo"
+          - name: manual-approve
+            template: approve
+            depends: "terraform-plan"
+          - name: terraform-apply
+            template: apply
+            depends: "manual-approve"
+
+    # -- Git Checkout --
+    - name: clone-repo
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: alpine/git:v2.43.0
+        workingDir: /workspace
+        command: [sh, -c]
+        args:
+          - |
+            git clone https://github.com/tankibaj/terraform-argo-demo.git .
+
+    # -- Terraform Plan --
+    - name: plan
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: hashicorp/terraform:1.7.2
+        workingDir: /workspace
+        command: [sh, -c]
+        args:
+          - |
+            terraform init -upgrade
+            terraform plan -out=tfplan -input=false -no-color -detailed-exitcode
+
+    # -- Manual Approval --
+    - name: approve
+      suspend: {}
+
+    # -- Terraform Apply --
+    - name: apply
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: hashicorp/terraform:1.7.2
+        workingDir: /workspace
+        command: [sh, -c]
+        args:
+          - |
+            terraform apply "tfplan"
+            terraform output

@@ -1,8 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: workflow-operator-role
-#  namespace: argo-events-runners
+  name: workflow-generic-role
 rules:
   - apiGroups: ["argoproj.io"]
     resources: ["workflows", "workflowtemplates", "cronworkflows", "clusterworkflowtemplates"]
@@ -16,4 +15,21 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "list", "watch"]
-
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: workflow-generic-binding
+subjects:
+  - kind: ServiceAccount
+    name: workflow-generic-sa
+roleRef:
+  kind: Role
+  name: workflow-generic-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: workflow-generic-sa
+#  annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::XXX:role/eks-spacex-development-irsa}
