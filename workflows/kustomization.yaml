@@ -17,6 +17,6 @@ resources:
 #  - sensor/sensor-aws-sqs.yaml
 
   # -- Workflow: Terraform
-#  - workflow-template/terraform.yaml
-#  - eventsource/eventsource-webhook.yaml
-#  - sensor/sensor-terraform.yaml
+  - workflow-template/terraform.yaml
+  - eventsource/eventsource-webhook.yaml
+  - sensor/sensor-terraform.yaml
