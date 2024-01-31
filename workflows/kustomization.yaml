@@ -7,9 +7,9 @@ resources:
   - eventbus/eventbus-default.yaml
 
 # -- Workflow: Buildkit
-  - workflow-template/buildkit.yaml
-  - eventsource/eventsource-webhook.yaml
-  - sensor/sensor-buildkit.yaml
+#  - workflow-template/buildkit.yaml
+#  - eventsource/eventsource-webhook.yaml
+#  - sensor/sensor-buildkit.yaml
 
 # -- Workflow: AWS SQS
 #  - workflow-template/data-processing.yaml
@@ -17,6 +17,6 @@ resources:
 #  - sensor/sensor-aws-sqs.yaml
 
   # -- Workflow: Terraform
-  - workflow-template/terraform.yaml
-  - eventsource/eventsource-webhook.yaml
-  - sensor/sensor-terraform.yaml
+#  - workflow-template/terraform.yaml
+#  - eventsource/eventsource-webhook.yaml
+#  - sensor/sensor-terraform.yaml
