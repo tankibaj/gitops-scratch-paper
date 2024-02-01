@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: https://helm.releases.hashicorp.com
       chart: consul
-      targetRevision: 0.48.0
+      targetRevision: 1.3.2
       helm:
         version: v3
         releaseName: consul
