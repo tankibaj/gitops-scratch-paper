@@ -19,7 +19,7 @@ spec:
 #          - $values/vault/secrets.enc.yaml
     - ref: values
       repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-      targetRevision: development
+      targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: vault
