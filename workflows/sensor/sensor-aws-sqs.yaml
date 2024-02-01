@@ -19,39 +19,27 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: aws-sqs-workflow-
+                generateName: cd-
               spec:
                 serviceAccountName: workflow-generic-sa
-#                entrypoint: alpine-whale
                 arguments:
                   parameters:
-                    - name: jsonBucketName # this is the value that should be overridden line 46 parameter
+                    - name: jsonBucketName
                       value: ""
-                    - name: jsonFilePath
+                    - name: jsonBucketPath
                       value: ""
-                    - name: downloadedJsonFileName
-                      value: "/workspace/blaue-hand-briefe.json"
-                    - name: targetBucketName
-                      value: "playground-software-distribution"
-                    - name: targetBucketStoragePath
-                      value: "vos/pdfs/EducationalMaterials"
-                    - name: catalogStoragePath
+                    - name: downloadedJsonFile
+                      value: "/workspace/data.json"
+                    - name: distributionBucketName
+                      value: "software-distribution-bucket"
+                    - name: distributionBucketPath
                       value: "pdfs/EducationalMaterials"
+                    - name: roleARN
+                      value: "arn:aws:iam::XXX:role/assume-role"
                     - name: catalogRequestFile
-                      value: "/workspace/catalog-request.json"
+                      value: "/workspace/data-request.json"
                 workflowTemplateRef:
-                  name: data-processing
-#                templates:
-#                  - name: alpine-whale
-#                    inputs:
-#                      parameters:
-#                        - name: jsonBucketName
-#                        - name: jsonFilePath
-#                    container:
-#                      image: thenaim/alpine-whale:main
-#                      imagePullPolicy: Always
-#                      command: [sh, -c]
-#                      args: ["echo '{{inputs.parameters.jsonBucketName}}', '{{inputs.parameters.jsonFilePath}}'"]
+                  name: catalog-distribution
           parameters:
             - src:
                 dependencyName: aws-sqs-event

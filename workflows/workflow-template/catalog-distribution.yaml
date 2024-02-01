@@ -1,0 +1,154 @@
+# SUMMARY:
+#
+# ...
+#
+# DESCRIPTION:
+#
+# ...
+#
+#
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: catalog-distribution
+spec:
+  entrypoint: main
+  onExit: exit-handler
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 500Mi
+  templates:
+    - name: main
+      steps:
+        - - name: transfer-artifacts
+            arguments:
+              parameters:
+                - name: jsonBucketName
+                  value: "{{workflow.parameters.jsonBucketName}}"
+                - name: jsonBucketPath
+                  value: "{{workflow.parameters.jsonBucketPath}}"
+                - name: downloadedJsonFile
+                  value: "{{workflow.parameters.downloadedJsonFile}}"
+                - name: distributionBucketName
+                  value: "{{workflow.parameters.distributionBucketName}}"
+                - name: distributionBucketPath
+                  value: "{{workflow.parameters.distributionBucketPath}}"
+                - name: roleARN
+                  value: "{{workflow.parameters.roleARN}}"
+            template: transfer-artifacts
+        - - name: prepare-distribution
+            arguments:
+              parameters:
+                - name: downloadedJsonFile
+                  value: "{{workflow.parameters.downloadedJsonFile}}"
+                - name: distributionBucketPath
+                  value: "{{workflow.parameters.distributionBucketPath}}"
+                - name: catalogRequestFile
+                  value: "{{workflow.parameters.catalogRequestFile}}"
+            template: prepare-distribution
+        - - name: distribution
+            arguments:
+              parameters:
+                - name: catalogRequestFile
+                  value: "{{workflow.parameters.catalogRequestFile}}"
+            template: distribution
+
+    - name: transfer-artifacts
+      inputs:
+        parameters:
+          - name: jsonBucketName
+          - name: jsonBucketPath
+          - name: downloadedJsonFile
+          - name: distributionBucketName
+          - name: distributionBucketPath
+          - name: roleARN
+      container:
+        image: thenaim/transfer-artifacts:latest
+        env:
+          - name: JSON_BUCKET_NAME
+            value: "{{inputs.parameters.jsonBucketName}}"
+          - name: JSON_BUCKET_PATH
+            value: "{{inputs.parameters.jsonBucketPath}}"
+          - name: DOWNLOADED_JSON_FILE
+            value: "{{inputs.parameters.downloadedJsonFile}}"
+          - name: DISTRIBUTION_BUCKET_NAME
+            value: "{{inputs.parameters.distributionBucketName}}"
+          - name: DISTRIBUTION_BUCKET_PATH
+            value: "{{inputs.parameters.distributionBucketPath}}"
+          - name: ASSUME_ROLE_ARN
+            value: "{{inputs.parameters.roleARN}}"
+          - name: LOG_LEVEL
+            value: "info"
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+
+    - name: prepare-distribution
+      inputs:
+        parameters:
+          - name: downloadedJsonFile
+          - name: distributionBucketPath
+          - name: catalogRequestFile
+      container:
+        image: thenaim/prepare-catalog-distribution:latest
+        env:
+          - name: JSON_FILE
+            value: "{{inputs.parameters.downloadedJsonFile}}"
+          - name: CATALOG_STORAGE_PATH
+            value: "{{inputs.parameters.distributionBucketPath}}"
+          - name: CATALOG_REQUEST_FILE
+            value: "{{inputs.parameters.catalogRequestFile}}"
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+
+    - name: distribution
+      inputs:
+        parameters:
+          - name: catalogRequestFile
+      container:
+        image: thenaim/catalog-distribution:latest
+        env:
+          - name: CATALOG_URL
+            value: "https://catalog.local.naim.run"
+          - name: CATALOG_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: catalog-credentials
+                key: catalog_username
+          - name: CATALOG_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: catalog-credentials
+                key: catalog_password
+          - name: CATALOG_REQUEST_FILE
+            value: "{{inputs.parameters.catalogRequestFile}}"
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+
+    - name: exit-handler
+      steps:
+        - - name: notify
+            template: notify-workflow-status
+    - name: notify-workflow-status
+      container:
+        image: thenaim/alpine-whale:latest
+        env:
+          - name: WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                name: ms-teams-webhook
+                key: webhook_url
+        command: [sh, -c]
+        args:
+          - >
+            curl -H 'Content-Type: application/json' -d '{
+              "text": "**Workflow:** {{workflow.name}} \n\n**Status:** {{workflow.status}} \n\n**Duration:** {{workflow.duration}} \n\n[Click here for more details](https://workflows.local.naim.run/workflows/argo/{{workflow.name}})"
+            }' $WEBHOOK_URL            
+        

@@ -12,7 +12,7 @@ resources:
 #  - sensor/sensor-buildkit.yaml
 
 # -- Workflow: AWS SQS
-#  - workflow-template/data-processing.yaml
+#  - workflow-template/catalog-distribution.yaml
 #  - eventsource/eventsource-aws-sqs.yaml
 #  - sensor/sensor-aws-sqs.yaml
 

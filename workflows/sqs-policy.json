@@ -9,36 +9,13 @@
         "Service": "s3.amazonaws.com"
       },
       "Action": "sqs:SendMessage",
-      "Resource": "arn:aws:sqs:eu-central-1:XXXXX:playgorund-catalog-service",
+      "Resource": "arn:aws:sqs:eu-central-1:XXXXX:catalog-service",
       "Condition": {
         "StringEquals": {
           "aws:SourceAccount": "117930661147"
         },
         "ArnLike": {
-          "aws:SourceArn": "arn:aws:s3:::playgorund-catalog-service"
-        }
-      }
-    },
-    {
-      "Sid": "EventListener",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "s3.amazonaws.com"
-      },
-      "Action": [
-        "sqs:GetQueueAttributes",
-        "sqs:GetQueueUrl",
-        "sqs:ReceiveMessage",
-        "sqs:ListQueues",
-        "sqs:DeleteMessage"
-      ],
-      "Resource": "arn:aws:sqs:eu-central-1:XXXX:playgorund-catalog-service",
-      "Condition": {
-        "StringEquals": {
-          "aws:SourceAccount": "XXXXXX"
-        },
-        "ArnLike": {
-          "aws:SourceArn": "arn:aws:iam::XXXXX:user/playgorund-catalog-service"
+          "aws:SourceArn": "arn:aws:s3:::catalog-service"
         }
       }
     }
