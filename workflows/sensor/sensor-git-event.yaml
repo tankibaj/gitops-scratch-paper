@@ -22,14 +22,13 @@ spec:
                 generateName: git-event-
               spec:
                 serviceAccountName: workflow-generic-sa
-                entrypoint: whalesay
+                entrypoint: main
                 arguments:
                   parameters:
-                    - name: payload
-                      # the value will get overridden by event payload from test-dep
-                      value: hello world
+                    - name: message
+                      value: hello world # the value will get overridden by events dependency
                 templates:
-                  - name: alpine-whale
+                  - name: main
                     inputs:
                       parameters:
                         - name: message
