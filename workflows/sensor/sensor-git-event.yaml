@@ -25,7 +25,7 @@ spec:
                 entrypoint: whalesay
                 arguments:
                   parameters:
-                    - name: message
+                    - name: payload
                       # the value will get overridden by event payload from test-dep
                       value: hello world
                 templates:
@@ -34,9 +34,12 @@ spec:
                       parameters:
                         - name: message
                     container:
-                      image: docker/whalesay:latest
-                      command: [cowsay]
-                      args: ["{{inputs.parameters.message}}"]
+                      image: thenaim/alpine-whale:latest
+                      command: ["sh", "-c", "echo $PAYLOAD"]
+                      env:
+                        - name: PAYLOAD
+                          valueFrom:
+                            event: {{inputs.parameters.payload}}
           parameters:
             - src:
                 dependencyName: events
