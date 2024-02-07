@@ -9,6 +9,13 @@ spec:
     - name: events
       eventSourceName: eventsource-webhook # This is the name of the event source
       eventName: playground-gitea # This is the name of the event in the event source
+      filters:
+        script: |-
+          if event.data.header['X-GitHub-Event'] == 'create' and event.data.body.ref_type == 'branch' then
+            return true
+          else
+            return false
+          end
   triggers:
     - template:
         name: webhook-workflow-trigger
