@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: sensor-git
+  name: sensor-git-event
 spec:
   template:
     serviceAccountName: workflow-generic-sa
@@ -19,7 +19,7 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: webhook-
+                generateName: git-event-
               spec:
                 serviceAccountName: workflow-generic-sa
                 entrypoint: whalesay
