@@ -29,17 +29,19 @@ spec:
                       # the value will get overridden by event payload from test-dep
                       value: hello world
                 templates:
-                  - name: whalesay
+                  - name: alpine-whale
                     inputs:
                       parameters:
                         - name: message
                     container:
                       image: thenaim/alpine-whale:latest
-                      command: ["sh", "-c", "echo $PAYLOAD"]
+                      command: ["sh", "-c", "echo $EVENT \n && echo $MESSAGE"]
                       env:
-                        - name: PAYLOAD
+                        - name: EVENT
                           valueFrom:
-                            event: {{inputs.parameters.payload}}
+                            event: "events"
+                        - name: MESSAGE
+                          value: "{{inputs.parameters.message}}"
           parameters:
             - src:
                 dependencyName: events
