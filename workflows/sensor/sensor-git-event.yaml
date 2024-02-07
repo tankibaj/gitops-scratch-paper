@@ -34,7 +34,7 @@ spec:
                         - name: message
                     container:
                       image: thenaim/alpine-whale:latest
-                      command: ["sh", "-c", "echo $EVENT \n && echo $MESSAGE"]
+                      command: ["sh", "-c", "echo $MESSAGE"]
                       env:
 #                        - name: EVENT
 #                          valueFrom:
