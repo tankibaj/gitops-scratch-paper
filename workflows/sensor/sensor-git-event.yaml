@@ -34,11 +34,8 @@ spec:
                         - name: message
                     container:
                       image: thenaim/alpine-whale:latest
-                      command: ["sh", "-c", "jq -r $MESSAGE"]
+                      command: [ "sh", "-c", "echo $MESSAGE | jq -r ." ]
                       env:
-#                        - name: EVENT
-#                          valueFrom:
-#                            event: "events"
                         - name: MESSAGE
                           value: "{{inputs.parameters.message}}"
           parameters:
