@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: sensor-git
+spec:
+  template:
+    serviceAccountName: workflow-generic-sa
+  dependencies:
+    - name: events
+      eventSourceName: eventsource-webhook # This is the name of the event source
+      eventName: playground-gitea # This is the name of the event in the event source
+  triggers:
+    - template:
+        name: webhook-workflow-trigger
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: webhook-
+              spec:
+                serviceAccountName: workflow-generic-sa
+                entrypoint: whalesay
+                arguments:
+                  parameters:
+                    - name: message
+                      # the value will get overridden by event payload from test-dep
+                      value: hello world
+                templates:
+                  - name: whalesay
+                    inputs:
+                      parameters:
+                        - name: message
+                    container:
+                      image: docker/whalesay:latest
+                      command: [cowsay]
+                      args: ["{{inputs.parameters.message}}"]
+          parameters:
+            - src:
+                dependencyName: events
+                dataKey: body
+              dest: spec.arguments.parameters.0.value

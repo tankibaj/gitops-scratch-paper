@@ -20,3 +20,6 @@ resources:
   - workflow-template/terraform.yaml
   - eventsource/eventsource-webhook.yaml
   - sensor/sensor-terraform.yaml
+
+  # -- Workflow: Git
+  - sensor/sensor-git.yaml
