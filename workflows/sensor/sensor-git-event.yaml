@@ -36,9 +36,9 @@ spec:
                       image: thenaim/alpine-whale:latest
                       command: ["sh", "-c", "echo $EVENT \n && echo $MESSAGE"]
                       env:
-                        - name: EVENT
-                          valueFrom:
-                            event: "events"
+#                        - name: EVENT
+#                          valueFrom:
+#                            event: "events"
                         - name: MESSAGE
                           value: "{{inputs.parameters.message}}"
           parameters:
