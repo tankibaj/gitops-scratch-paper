@@ -21,9 +21,9 @@ metadata:
   name: terraform
 spec:
   ttlStrategy:
-#    secondsAfterCompletion: 10 # Time to live after workflow is completed, replaces ttlSecondsAfterFinished
-    secondsAfterSuccess: 20     # Time to live after workflow is successful
-    secondsAfterFailure: 120     # Time to live after workflow fails
+    secondsAfterCompletion: 30 # Time to live after workflow is completed, replaces ttlSecondsAfterFinished
+#    secondsAfterSuccess: 20 # Time to live after workflow is successful
+#    secondsAfterFailure: 120 # Time to live after workflow fails
   entrypoint: main
   volumeClaimTemplates:
     - metadata:
@@ -73,8 +73,6 @@ spec:
         command: [sh, -c]
         args:
           - |
-            exit_code=1
-            exit 1
             terraform init -upgrade
             terraform plan -out=tfplan -input=false -no-color
 
