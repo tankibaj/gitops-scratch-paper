@@ -20,6 +20,10 @@ kind: WorkflowTemplate
 metadata:
   name: terraform
 spec:
+  ttlStrategy:
+#    secondsAfterCompletion: 10 # Time to live after workflow is completed, replaces ttlSecondsAfterFinished
+    secondsAfterSuccess: 20     # Time to live after workflow is successful
+    secondsAfterFailure: 60     # Time to live after workflow fails
   entrypoint: main
   volumeClaimTemplates:
     - metadata:
