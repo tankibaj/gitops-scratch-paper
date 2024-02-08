@@ -73,7 +73,8 @@ spec:
         command: [sh, -c]
         args:
           - |
-            helload
+            exit_code=1
+            exit 1
             terraform init -upgrade
             terraform plan -out=tfplan -input=false -no-color
 
