@@ -20,6 +20,13 @@ kind: WorkflowTemplate
 metadata:
   name: terraform
 spec:
+  # must complete in 8h (28,800 seconds)
+  activeDeadlineSeconds: 28800
+  ttlStrategy:
+    # keep workflows for 1d (86,400 seconds)
+    secondsAfterCompletion: 28800 # Time to live after the workflow is completed, replaces ttlSecondsAfterFinished
+  #    secondsAfterSuccess: 20 # Time to live after workflow is successful
+  #    secondsAfterFailure: 120 # Time to live after workflow fails
   entrypoint: main
   volumeClaimTemplates:
     - metadata:
