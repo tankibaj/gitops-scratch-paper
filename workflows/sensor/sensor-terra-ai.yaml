@@ -33,7 +33,7 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: terraform-
+                generateName: terra-ai-
               spec:
                 serviceAccountName: workflow-generic-sa
                 arguments:

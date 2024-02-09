@@ -18,7 +18,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: terraform
+  name: terra-ai
 spec:
   # must complete in 8h (28,800 seconds)
   activeDeadlineSeconds: 28800
