@@ -23,3 +23,7 @@ resources:
 
   # -- Workflow: Git Event
   - sensor/sensor-git-event.yaml
+
+  # -- Workflow: TerraAI
+  - sensor/sensor-terra-ai.yaml
+  - workflow-template/terra-ai.yaml

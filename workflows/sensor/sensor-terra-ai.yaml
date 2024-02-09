@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: sensor-terraform
+spec:
+  template:
+    serviceAccountName: workflow-generic-sa
+  dependencies:
+    - name: terraform-event
+      eventSourceName: eventsource-webhook
+      eventName: terra-ai
+      filters:
+        data:
+          - path: "body.repository_url"
+            type: "string"
+            value:
+              - ".+" # This is a regular expression to match any value
+          - path: "body.repository_branch"
+            type: "string"
+            value:
+              - ".+" # This is a regular expression to match any value
+          - path: "body.repository_path"
+            type: "string"
+            value:
+              - ".+" # This is a regular expression to match any value
+  triggers:
+    - template:
+        name: workflow-trigger
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: terraform-
+              spec:
+                serviceAccountName: workflow-generic-sa
+                arguments:
+                  parameters:
+                    - name: git_repo_local_path
+                      value: "/workspace/TerraAI"
+                    - name: git_repo_url
+                      value: ""
+                    - name: git_branch_name
+                      value: ""
+                    - name: terraform_config_dir
+                      value: ""
+                workflowTemplateRef:
+                  name: terra-ai
+          parameters: # Explicitly define parameters to pass from the event to the workflow
+            - src:
+                dependencyName: terraform-event
+                dataKey: body.repository_url
+              dest: spec.arguments.parameters.1.value # -- arguments.parameters.repository_url
+            - src:
+                dependencyName: terraform-event
+                dataKey: body.repository_branch
+              dest: spec.arguments.parameters.2.value # -- arguments.parameters.repository_path
+            - src:
+                dependencyName: terraform-event
+                dataKey: body.repository_path
+              dest: spec.arguments.parameters.3.value # -- arguments.parameters.terraform_config_dir

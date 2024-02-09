@@ -1,0 +1,124 @@
+# SUMMARY:
+#
+# This workflow demonstrates a Terraform plan and apply process using Argo Workflows.
+#
+# DESCRIPTION:
+#
+# The workflow has four stages:
+#
+# * Cloning the Git repository containing Terraform configuration
+# * Running 'terraform plan' to create an execution plan
+# * A manual approval step
+# * Running 'terraform apply' to apply the changes
+#
+# USAGE:
+#
+# Requires setting up secrets for accessing the Terraform backend and any other sensitive information.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: terraform
+spec:
+  entrypoint: main
+  volumeClaimTemplates:
+    - metadata:
+        name: terraform-workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: clone-repo
+            template: clone-repo
+            arguments:
+              parameters:
+                - name: git_repo_local_path
+                  value: "{{workflow.parameters.git_repo_local_path}}"
+                - name: git_repo_url
+                  value: "{{workflow.parameters.git_repo_url}}"
+                - name: git_branch_name
+                  value: "{{workflow.parameters.git_branch_name}}"
+          - name: terraform-plan
+            template: plan
+            depends: "clone-repo"
+            arguments:
+              parameters:
+                - name: git_repo_local_path
+                  value: "{{workflow.parameters.git_repo_local_path}}"
+                - name: terraform_config_dir
+                  value: "{{workflow.parameters.terraform_config_dir}}"
+          - name: manual-approve
+            template: approve
+            depends: "terraform-plan"
+          - name: terraform-apply
+            template: apply
+            depends: "manual-approve"
+            arguments:
+              parameters:
+                - name: git_repo_local_path
+                  value: "{{workflow.parameters.git_repo_local_path}}"
+                - name: terraform_config_dir
+                  value: "{{workflow.parameters.terraform_config_dir}}"
+
+    # -- Git Checkout --
+    - name: checkout-repo
+      inputs:
+        parameters:
+          - name: git_repo_local_path
+          - name: git_repo_url
+          - name: git_branch_name
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: alpine/git:v2.43.0
+        workingDir: /workspace
+        command: [sh, -c]
+        args:
+          - |
+            git clone --branch '{{inputs.parameters.git_branch_name}}' '{{inputs.parameters.git_repo_url}}' {{inputs.parameters.git_repo_local_path}}
+
+    # -- Terraform Plan --
+    - name: plan
+      inputs:
+        parameters:
+          - name: git_repo_local_path
+          - name: terraform_config_dir
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: hashicorp/terraform:1.7.2
+        workingDir: /workspace
+        command: [sh, -c]
+        args:
+          - |
+            terraform init -upgrade -chdir={{inputs.parameters.git_repo_local_path}}/{{inputs.parameters.terraform_config_dir}}
+            terraform plan -out=tfplan -input=false -no-color -chdir={{inputs.parameters.git_repo_local_path}}/{{inputs.parameters.terraform_config_dir}}
+
+    # -- Manual Approval --
+    - name: approve
+      suspend: {}
+
+    # -- Terraform Apply --
+    - name: apply
+      inputs:
+        parameters:
+          - name: git_repo_local_path
+          - name: terraform_config_dir
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: hashicorp/terraform:1.7.2
+        workingDir: /workspace
+        command: [sh, -c]
+        args:
+          - |
+            terraform apply "tfplan" -auto-approve -no-color -chdir={{inputs.parameters.git_repo_local_path}}/{{inputs.parameters.terraform_config_dir}}
+            terraform output
