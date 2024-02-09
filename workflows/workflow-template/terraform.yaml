@@ -76,7 +76,6 @@ spec:
         command: [sh, -c]
         args:
           - |
-            exit 1
             terraform init -upgrade
             terraform plan -out=tfplan -input=false -no-color
 
