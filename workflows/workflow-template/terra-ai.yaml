@@ -81,7 +81,9 @@ spec:
         command: [sh, -c]
         args:
           - |
+            ls -lnah
             git clone --branch '{{inputs.parameters.git_branch_name}}' '{{inputs.parameters.git_repo_url}}' .
+            ls -lnah
 
     # -- Terraform Plan --
     - name: plan
@@ -97,9 +99,9 @@ spec:
         command: [sh, -c]
         args:
           - |
-            echo "{{inputs.parameters.terraform_config_dir}}"
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -upgrade
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -out=tfplan -input=false
+            ls -lnah
 
     # -- Manual Approval --
     - name: approve
@@ -121,3 +123,4 @@ spec:
           - |
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -auto-approve "tfplan"
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
+            ls -lnah
