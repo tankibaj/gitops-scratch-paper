@@ -44,8 +44,6 @@ spec:
             template: checkout-repo
             arguments:
               parameters:
-                - name: git_repo_local_path
-                  value: "{{workflow.parameters.git_repo_local_path}}"
                 - name: git_repo_url
                   value: "{{workflow.parameters.git_repo_url}}"
                 - name: git_branch_name
@@ -55,8 +53,6 @@ spec:
             depends: "checkout-repo"
             arguments:
               parameters:
-                - name: git_repo_local_path
-                  value: "{{workflow.parameters.git_repo_local_path}}"
                 - name: terraform_config_dir
                   value: "{{workflow.parameters.terraform_config_dir}}"
           - name: manual-approve
@@ -67,8 +63,6 @@ spec:
             depends: "manual-approve"
             arguments:
               parameters:
-                - name: git_repo_local_path
-                  value: "{{workflow.parameters.git_repo_local_path}}"
                 - name: terraform_config_dir
                   value: "{{workflow.parameters.terraform_config_dir}}"
 
@@ -76,7 +70,6 @@ spec:
     - name: checkout-repo
       inputs:
         parameters:
-          - name: git_repo_local_path
           - name: git_repo_url
           - name: git_branch_name
       container:
@@ -88,13 +81,12 @@ spec:
         command: [sh, -c]
         args:
           - |
-            git clone --branch '{{inputs.parameters.git_branch_name}}' '{{inputs.parameters.git_repo_url}}' {{inputs.parameters.git_repo_local_path}}
+            git clone --branch '{{inputs.parameters.git_branch_name}}' '{{inputs.parameters.git_repo_url}}' .
 
     # -- Terraform Plan --
     - name: plan
       inputs:
         parameters:
-          - name: git_repo_local_path
           - name: terraform_config_dir
       container:
         volumeMounts:
@@ -105,8 +97,8 @@ spec:
         command: [sh, -c]
         args:
           - |
-            terraform init -upgrade -chdir={{inputs.parameters.git_repo_local_path}}/{{inputs.parameters.terraform_config_dir}}
-            terraform plan -out=tfplan -input=false -no-color -chdir={{inputs.parameters.git_repo_local_path}}/{{inputs.parameters.terraform_config_dir}}
+            terraform init -upgrade -chdir={{inputs.parameters.terraform_config_dir}}
+            terraform plan -out=tfplan -input=false -no-color -chdir={{inputs.parameters.terraform_config_dir}}
 
     # -- Manual Approval --
     - name: approve
@@ -116,7 +108,6 @@ spec:
     - name: apply
       inputs:
         parameters:
-          - name: git_repo_local_path
           - name: terraform_config_dir
       container:
         volumeMounts:
@@ -127,5 +118,5 @@ spec:
         command: [sh, -c]
         args:
           - |
-            terraform apply "tfplan" -auto-approve -no-color -chdir={{inputs.parameters.git_repo_local_path}}/{{inputs.parameters.terraform_config_dir}}
+            terraform apply "tfplan" -auto-approve -no-color -chdir={{inputs.parameters.terraform_config_dir}}
             terraform output

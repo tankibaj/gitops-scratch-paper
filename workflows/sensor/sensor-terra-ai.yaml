@@ -38,8 +38,6 @@ spec:
                 serviceAccountName: workflow-generic-sa
                 arguments:
                   parameters:
-                    - name: git_repo_local_path
-                      value: "/workspace/TerraAI"
                     - name: git_repo_url
                       value: ""
                     - name: git_branch_name
@@ -52,12 +50,12 @@ spec:
             - src:
                 dependencyName: terraform-event
                 dataKey: body.repository_url
-              dest: spec.arguments.parameters.1.value # -- arguments.parameters.repository_url
+              dest: spec.arguments.parameters.0.value # -- arguments.parameters.repository_url
             - src:
                 dependencyName: terraform-event
                 dataKey: body.repository_branch
-              dest: spec.arguments.parameters.2.value # -- arguments.parameters.repository_path
+              dest: spec.arguments.parameters.1.value # -- arguments.parameters.repository_path
             - src:
                 dependencyName: terraform-event
                 dataKey: body.repository_path
-              dest: spec.arguments.parameters.3.value # -- arguments.parameters.terraform_config_dir
+              dest: spec.arguments.parameters.2.value # -- arguments.parameters.terraform_config_dir
