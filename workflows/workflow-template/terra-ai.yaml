@@ -40,8 +40,8 @@ spec:
     - name: main
       dag:
         tasks:
-          - name: clone-repo
-            template: clone-repo
+          - name: checkout-repo
+            template: checkout-repo
             arguments:
               parameters:
                 - name: git_repo_local_path
