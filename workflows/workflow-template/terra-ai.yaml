@@ -119,5 +119,5 @@ spec:
         command: [sh, -c]
         args:
           - |
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply "tfplan" -auto-approve
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -auto-approve "tfplan"
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
