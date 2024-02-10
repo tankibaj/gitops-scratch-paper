@@ -52,7 +52,7 @@ spec:
                   value: "{{workflow.parameters.git_branch_name}}"
           - name: terraform-plan
             template: plan
-            depends: "clone-repo"
+            depends: "checkout-repo"
             arguments:
               parameters:
                 - name: git_repo_local_path
