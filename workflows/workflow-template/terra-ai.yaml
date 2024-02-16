@@ -40,84 +40,35 @@ spec:
     - name: main
       dag:
         tasks:
-          - name: checkout-repo
-            template: checkout-repo
+          - name: terraform
+            template: terraform
             arguments:
               parameters:
                 - name: git_repo_url
                   value: "{{workflow.parameters.git_repo_url}}"
                 - name: git_branch_name
                   value: "{{workflow.parameters.git_branch_name}}"
-          - name: terraform-plan
-            template: plan
-            depends: "checkout-repo"
-            arguments:
-              parameters:
-                - name: terraform_config_dir
-                  value: "{{workflow.parameters.terraform_config_dir}}"
-#          - name: manual-approve
-#            template: approve
-#            depends: "terraform-plan"
-          - name: terraform-apply
-            template: apply
-#            depends: "manual-approve"
-            depends: "terraform-plan"
-            arguments:
-              parameters:
                 - name: terraform_config_dir
                   value: "{{workflow.parameters.terraform_config_dir}}"
 
-    # -- Git Checkout --
-    - name: checkout-repo
+    # -- Terraform execution --
+    - name: terraform
       inputs:
         parameters:
           - name: git_repo_url
           - name: git_branch_name
+          - name: terraform_config_dir
       container:
         volumeMounts:
           - mountPath: /workspace
             name: terraform-workspace
-        image: alpine/git:v2.43.0
+        image: thenaim/terraform-git:latest
         workingDir: /workspace
         command: [sh, -c]
         args:
           - |
             git clone --branch '{{inputs.parameters.git_branch_name}}' '{{inputs.parameters.git_repo_url}}' .
-
-    # -- Terraform Plan --
-    - name: plan
-      inputs:
-        parameters:
-          - name: terraform_config_dir
-      container:
-        volumeMounts:
-          - mountPath: /workspace
-            name: terraform-workspace
-        image: hashicorp/terraform:1.7.2
-        workingDir: /workspace
-        command: [sh, -c]
-        args:
-          - |
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -upgrade -no-color
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
-
-    # -- Manual Approval --
-#    - name: approve
-#      suspend: {}
-
-    # -- Terraform Apply --
-    - name: apply
-      inputs:
-        parameters:
-          - name: terraform_config_dir
-      container:
-        volumeMounts:
-          - mountPath: /workspace
-            name: terraform-workspace
-        image: hashicorp/terraform:1.7.2
-        workingDir: /workspace
-        command: [sh, -c]
-        args:
-          - |
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve "tfplan"
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
