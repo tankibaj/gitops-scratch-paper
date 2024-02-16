@@ -120,4 +120,4 @@ spec:
         args:
           - |
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve "tfplan"
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" -no-color output
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
