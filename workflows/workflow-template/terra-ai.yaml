@@ -78,9 +78,9 @@ spec:
         args:
           - |
             git clone '{{inputs.parameters.git_repo_url}}' .
-            cp backend.example.hcl backend.$TF_VAR_name.hcl
-            sed -i '' "s|aws/service/tfstate|aws/${TF_VAR_name}/tfstate|" backend.$TF_VAR_name.hcl
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init terraform init -backend-config=backend.$TF_VAR_name.hcl -upgrade -no-color
+            cp backend.example.hcl backend.{{inputs.parameters.stack_name}}.hcl
+            sed -i "s|aws/service/tfstate|aws/{{inputs.parameters.stack_name}}/tfstate|" backend.{{inputs.parameters.stack_name}}.hcl
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -backend-config="backend.{{inputs.parameters.stack_name}}.hcl" -upgrade -no-color
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve "tfplan"
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve tfplan
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
