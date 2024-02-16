@@ -46,10 +46,12 @@ spec:
               parameters:
                 - name: git_repo_url
                   value: "{{workflow.parameters.git_repo_url}}"
-                - name: git_branch_name
-                  value: "{{workflow.parameters.git_branch_name}}"
                 - name: terraform_config_dir
                   value: "{{workflow.parameters.terraform_config_dir}}"
+                - name: instance_name
+                  value: "{{workflow.parameters.instance_name}}"
+                - name: instance_type
+                  value: "{{workflow.parameters.instance_type}}"
 
     # -- Terraform execution --
     - name: terraform
@@ -65,9 +67,20 @@ spec:
         image: thenaim/terraform-git:latest
         workingDir: /workspace
         command: [sh, -c]
+        env:
+          - name: TF_VAR_aws_access_key
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: aws_access_key
+          - name: TF_VAR_aws_secret_key
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: aws_secret_key
         args:
           - |
-            git clone --branch '{{inputs.parameters.git_branch_name}}' '{{inputs.parameters.git_repo_url}}' .
+            git clone '{{inputs.parameters.git_repo_url}}' .
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -upgrade -no-color
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve "tfplan"
