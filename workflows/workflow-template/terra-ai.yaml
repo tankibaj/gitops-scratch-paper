@@ -1,20 +1,3 @@
-# SUMMARY:
-#
-# This workflow demonstrates a Terraform plan and apply process using Argo Workflows.
-#
-# DESCRIPTION:
-#
-# The workflow has four stages:
-#
-# * Cloning the Git repository containing Terraform configuration
-# * Running 'terraform plan' to create an execution plan
-# * A manual approval step
-# * Running 'terraform apply' to apply the changes
-#
-# USAGE:
-#
-# Requires setting up secrets for accessing the Terraform backend and any other sensitive information.
-#
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
@@ -48,8 +31,8 @@ spec:
                   value: "{{workflow.parameters.git_repo_url}}"
                 - name: terraform_config_dir
                   value: "{{workflow.parameters.terraform_config_dir}}"
-                - name: instance_name
-                  value: "{{workflow.parameters.instance_name}}"
+                - name: stack_name
+                  value: "{{workflow.parameters.stack_name}}"
                 - name: instance_type
                   value: "{{workflow.parameters.instance_type}}"
 
@@ -60,6 +43,8 @@ spec:
           - name: git_repo_url
           - name: git_branch_name
           - name: terraform_config_dir
+          - name: stack_name
+          - name: instance_type
       container:
         volumeMounts:
           - mountPath: /workspace
@@ -78,10 +63,16 @@ spec:
               secretKeyRef:
                 name: aws-credentials
                 key: aws_secret_key
+          - name: TF_VAR_name
+            value: "{{inputs.parameters.stack_name}}"
+          - name: TF_VAR_instance_type
+            value: "{{inputs.parameters.instance_type}}"
         args:
           - |
             git clone '{{inputs.parameters.git_repo_url}}' .
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -upgrade -no-color
+            cp backend.example.hcl backend.$TF_VAR_name.hcl
+            sed -i '' "s|aws/service/tfstate|aws/${TF_VAR_name}/tfstate|" backend.$TF_VAR_name.hcl
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init terraform init -backend-config=backend.$TF_VAR_name.hcl -upgrade -no-color
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve "tfplan"
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
