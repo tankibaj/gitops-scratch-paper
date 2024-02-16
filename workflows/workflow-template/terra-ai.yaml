@@ -97,8 +97,8 @@ spec:
         command: [sh, -c]
         args:
           - |
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -upgrade
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -out=tfplan -input=false
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -upgrade -no-color
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
 
     # -- Manual Approval --
     - name: approve
@@ -118,5 +118,5 @@ spec:
         command: [sh, -c]
         args:
           - |
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -auto-approve "tfplan"
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve "tfplan"
+            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" -no-color output
