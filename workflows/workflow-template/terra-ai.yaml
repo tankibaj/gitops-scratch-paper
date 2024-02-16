@@ -1,3 +1,12 @@
+# SUMMARY:
+#
+# This workflow demonstrates a Terraform plan and apply process using Argo Workflows.
+#
+#
+#  kubectl create secret generic aws-credentials \
+#  --from-literal=aws_access_key='<your_aws_access_key>' \
+#  --from-literal=aws_secret_key='<your_aws_secret_key>'
+
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
