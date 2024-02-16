@@ -55,12 +55,13 @@ spec:
               parameters:
                 - name: terraform_config_dir
                   value: "{{workflow.parameters.terraform_config_dir}}"
-          - name: manual-approve
-            template: approve
-            depends: "terraform-plan"
+#          - name: manual-approve
+#            template: approve
+#            depends: "terraform-plan"
           - name: terraform-apply
             template: apply
-            depends: "manual-approve"
+#            depends: "manual-approve"
+            depends: "terraform-plan"
             arguments:
               parameters:
                 - name: terraform_config_dir
@@ -101,8 +102,8 @@ spec:
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
 
     # -- Manual Approval --
-    - name: approve
-      suspend: {}
+#    - name: approve
+#      suspend: {}
 
     # -- Terraform Apply --
     - name: apply
