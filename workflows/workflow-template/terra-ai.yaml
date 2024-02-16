@@ -50,7 +50,6 @@ spec:
       inputs:
         parameters:
           - name: git_repo_url
-          - name: git_branch_name
           - name: terraform_config_dir
           - name: stack_name
           - name: instance_type
