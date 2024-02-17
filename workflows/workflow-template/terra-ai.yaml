@@ -44,6 +44,9 @@ spec:
                   value: "{{workflow.parameters.stack_name}}"
                 - name: instance_type
                   value: "{{workflow.parameters.instance_type}}"
+          - name: clean-workspace
+            template: clean-workspace
+            depends: terraform
 
     # -- Terraform execution --
     - name: terraform
@@ -84,3 +87,15 @@ spec:
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve tfplan
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
+
+    # -- Clean up workspace directory --
+    - name: clean-workspace
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: alpine:3.7
+        workingDir: /workspace
+        command: [sh, -c]
+        args:
+          - rm -rf /workspace/*
