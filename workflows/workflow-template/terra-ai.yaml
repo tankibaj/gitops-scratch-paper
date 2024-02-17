@@ -86,7 +86,6 @@ spec:
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" init -backend-config="backend.{{inputs.parameters.stack_name}}.hcl" -upgrade -no-color
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" plan -input=false -no-color -out=tfplan
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" apply -no-color -auto-approve tfplan
-            terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
 
     # -- Clean up workspace directory --
 #    - name: clean-workspace

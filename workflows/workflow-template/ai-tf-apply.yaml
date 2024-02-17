@@ -80,4 +80,3 @@ spec:
             terraform init -backend-config="backend.{{inputs.parameters.stack_name}}.hcl" -upgrade -no-color
             terraform plan -input=false -no-color -out=tfplan
             terraform apply -no-color -auto-approve tfplan
-            terraform output
