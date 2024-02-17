@@ -1,0 +1,76 @@
+# SUMMARY:
+#
+# This workflow demonstrates a Terraform destroy process using Argo Workflows.
+#
+#
+#  kubectl create secret generic aws-credentials \
+#  --from-literal=aws_access_key='<your_aws_access_key>' \
+#  --from-literal=aws_secret_key='<your_aws_secret_key>'
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: ai-tf-destroy
+spec:
+  # must complete in 8h (28,800 seconds)
+  activeDeadlineSeconds: 28800
+  ttlStrategy:
+    # keep workflows for 1d (86,400 seconds)
+    secondsAfterCompletion: 28800 # Time to live after the workflow is completed, replaces ttlSecondsAfterFinished
+  #    secondsAfterSuccess: 20 # Time to live after workflow is successful
+  #    secondsAfterFailure: 120 # Time to live after workflow fails
+  entrypoint: main
+  volumeClaimTemplates:
+    - metadata:
+        name: terraform-workspace
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: terraform
+            template: terraform
+            arguments:
+              parameters:
+                - name: git_repo_url
+                  value: "{{workflow.parameters.git_repo_url}}"
+                - name: stack_name
+                  value: "{{workflow.parameters.stack_name}}"
+
+    # -- Terraform execution --
+    - name: terraform
+      inputs:
+        parameters:
+          - name: git_repo_url
+          - name: stack_name
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: terraform-workspace
+        image: thenaim/terraform-git:latest
+        workingDir: /workspace
+        command: [sh, -c]
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: aws_access_key
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: aws_secret_key
+          - name: TF_VAR_name
+            value: "{{inputs.parameters.stack_name}}"
+        args:
+          - |
+            git clone '{{inputs.parameters.git_repo_url}}' .
+            cp backend.example.hcl backend.{{inputs.parameters.stack_name}}.hcl
+            sed -i "s|aws/service/tfstate|aws/{{inputs.parameters.stack_name}}/tfstate|" backend.{{inputs.parameters.stack_name}}.hcl
+            terraform init -backend-config="backend.{{inputs.parameters.stack_name}}.hcl" -upgrade -no-color
+            terraform destroy -no-color -input=false -auto-approve

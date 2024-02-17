@@ -27,3 +27,5 @@ resources:
   # -- Workflow: TerraAI
   - sensor/sensor-terra-ai.yaml
   - workflow-template/terra-ai.yaml
+  - workflow-template/ai-tf-apply.yaml
+  - workflow-template/ai-tf-destroy.yaml
