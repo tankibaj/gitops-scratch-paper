@@ -44,9 +44,9 @@ spec:
                   value: "{{workflow.parameters.stack_name}}"
                 - name: instance_type
                   value: "{{workflow.parameters.instance_type}}"
-          - name: clean-workspace
-            template: clean-workspace
-            depends: terraform
+#          - name: clean-workspace
+#            template: clean-workspace
+#            depends: terraform
 
     # -- Terraform execution --
     - name: terraform
@@ -64,12 +64,12 @@ spec:
         workingDir: /workspace
         command: [sh, -c]
         env:
-          - name: TF_VAR_aws_access_key
+          - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
                 name: aws-credentials
                 key: aws_access_key
-          - name: TF_VAR_aws_secret_key
+          - name: AWS_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: aws-credentials
@@ -89,13 +89,13 @@ spec:
             terraform -chdir="{{inputs.parameters.terraform_config_dir}}" output
 
     # -- Clean up workspace directory --
-    - name: clean-workspace
-      container:
-        volumeMounts:
-          - mountPath: /workspace
-            name: terraform-workspace
-        image: alpine:3.7
-        workingDir: /workspace
-        command: [sh, -c]
-        args:
-          - rm -rf /workspace/*
+#    - name: clean-workspace
+#      container:
+#        volumeMounts:
+#          - mountPath: /workspace
+#            name: terraform-workspace
+#        image: alpine:3.7
+#        workingDir: /workspace
+#        command: [sh, -c]
+#        args:
+#          - rm -rf /workspace/*
