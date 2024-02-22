@@ -34,8 +34,11 @@ spec:
               parameters:
                 - name: instance_ip
                   value: "{{workflow.parameters.instance_ip}}"
+                - name: ssh_username
+                  value: "{{workflow.parameters.ssh_username}}"
                 - name: package_list
                   value: "{{workflow.parameters.package_list}}"
+
 
     # -- Ansible execution --
     - name: install-packages
@@ -50,6 +53,7 @@ spec:
         parameters:
           - name: instance_ip
           - name: package_list
+          - name: ssh_username
       container:
         volumeMounts:
           - name: ssh-key
@@ -67,4 +71,4 @@ spec:
             export ANSIBLE_HOST_KEY_CHECKING=False
             echo '{{inputs.parameters.instance_ip}}'
             echo '{{inputs.parameters.package_list}}'
-            ansible-playbook -i '{{inputs.parameters.instance_ip}},' -e 'ansible_ssh_private_key_file=~/.ssh/id_rsa' playbook.yml --extra-vars "packages={{workflow.parameters.package_list}}"
+            ansible-playbook -i '{{inputs.parameters.ssh_user}}@{{inputs.parameters.instance_ip}},' -e 'ansible_ssh_private_key_file=~/.ssh/id_rsa' playbook.yml --extra-vars "packages={{workflow.parameters.package_list}}"
