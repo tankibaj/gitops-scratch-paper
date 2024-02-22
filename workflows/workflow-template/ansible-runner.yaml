@@ -55,9 +55,11 @@ spec:
           - name: ssh-key
             mountPath: "/etc/ssh-key"
         image: thenaim/ansible-runner-with-playbook:latest
+        workingDir: /playbooks
         command: [sh, -c]
         args:
           - |
+            ls -nahl
             mkdir -p ~/.ssh
             cp /etc/ssh-key/ssh-privatekey ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
