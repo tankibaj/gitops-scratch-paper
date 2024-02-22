@@ -1,0 +1,66 @@
+# SUMMARY:
+#
+# This workflow demonstrates ansible-runner with a simple playbook.
+#
+#
+#kubectl create secret generic ssh-key-secret \
+#  --from-file=ssh-privatekey=/path/to/your/ssh-private-key
+
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: ansible-runner
+spec:
+  # must complete in 8h (28,800 seconds)
+  activeDeadlineSeconds: 28800
+  ttlStrategy:
+    # keep workflows for 1d (86,400 seconds)
+    secondsAfterCompletion: 28800 # Time to live after the workflow is completed, replaces ttlSecondsAfterFinished
+  #    secondsAfterSuccess: 20 # Time to live after workflow is successful
+  #    secondsAfterFailure: 120 # Time to live after workflow fails
+  entrypoint: main
+  volumes:
+    - name: ssh-key
+      secret:
+        secretName: ssh-key-secret  # Your Kubernetes secret holding the SSH private key
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: install-packages
+            template: install-packages
+            arguments:
+              parameters:
+                - name: instance_ip
+                  value: "{{workflow.parameters.instance_ip}}"
+                - name: package_list
+                  value: "{{workflow.parameters.package_list}}"
+
+    # -- Ansible execution --
+    - name: install-packages
+      retryStrategy:
+        limit: "5" # Retry 5 times
+        retryPolicy: Always
+        backoff:
+          duration: "10s"  # Wait 10 seconds before each retry
+          factor: "1" # Multiply the duration by 2 after each retry
+          maxDuration: "1m"
+      inputs:
+        parameters:
+          - name: instance_ip
+          - name: package_list
+      container:
+        volumeMounts:
+          - name: ssh-key
+            mountPath: "/etc/ssh-key"
+        image: thenaim/ansible-runner-with-playbook:latest
+        command: [sh, -c]
+        args:
+          - |
+            mkdir -p ~/.ssh
+            cp /etc/ssh-key/ssh-privatekey ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -H '{{inputs.parameters.instance_ip}}' >> ~/.ssh/known_hosts
+            export ANSIBLE_HOST_KEY_CHECKING=False
+            ansible-playbook -i '{{inputs.parameters.instance_ip}},' -e 'ansible_ssh_private_key_file=~/.ssh/id_rsa' playbook.yaml --extra-vars "packages={{workflow.parameters.package_list}}"
