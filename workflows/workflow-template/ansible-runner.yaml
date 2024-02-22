@@ -59,6 +59,7 @@ spec:
           - name: ssh-key
             mountPath: "/etc/ssh-key"
         image: thenaim/ansible-runner-with-playbook:latest
+        imagePullPolicy: Always
         workingDir: /playbooks
         command: [sh, -c]
         args:
