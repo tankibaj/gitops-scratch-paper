@@ -65,4 +65,6 @@ spec:
             chmod 600 ~/.ssh/id_rsa
             ssh-keyscan -H '{{inputs.parameters.instance_ip}}' >> ~/.ssh/known_hosts
             export ANSIBLE_HOST_KEY_CHECKING=False
+            echo '{{inputs.parameters.instance_ip}}'
+            echo '{{inputs.parameters.package_list}}'
             ansible-playbook -i '{{inputs.parameters.instance_ip}},' -e 'ansible_ssh_private_key_file=~/.ssh/id_rsa' playbook.yaml --extra-vars "packages={{workflow.parameters.package_list}}"
