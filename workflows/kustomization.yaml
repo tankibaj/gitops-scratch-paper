@@ -32,3 +32,6 @@ resources:
 
   # -- Workflow: Ansible Runner
   - workflow-template/ansible-runner.yaml
+
+  # -- Workflow: Catalog Import
+  - sensor/sensor-catalog-import.yaml

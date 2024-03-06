@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: sensor-git-event
+  name: sensor-catalog-import
 spec:
   template:
     serviceAccountName: workflow-generic-sa
@@ -11,15 +11,20 @@ spec:
       eventName: catalog-import # This is the name of the event in the event source
       filters:
         data:
-          - path: "body.ref_type"
-            type: "string"
-            value:
-              - "branch"
           - path: "body.ref"
             type: "string"
             value:
               - "refs/heads/main"
               - "refs/heads/stage"
+          - path: "body.commits[].modified"
+            type: "string"
+            value:
+              - "drugInfo.json"
+          - path: "body.commits[].added"
+            type: "string"
+            value:
+              - "drugInfo.json"
+
   triggers:
     - template:
         name: webhook-workflow-trigger
@@ -30,7 +35,7 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: git-event-
+                generateName: drug-info-
               spec:
                 serviceAccountName: workflow-generic-sa
                 entrypoint: main
