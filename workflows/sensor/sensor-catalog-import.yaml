@@ -16,11 +16,7 @@ spec:
             value:
               - "refs/heads/main"
               - "refs/heads/stage"
-          - path: "body.commits[].modified"
-            type: "string"
-            value:
-              - "drugInfo.json"
-          - path: "body.commits[].added"
+          - path: "body.head_commit.modified"
             type: "string"
             value:
               - "drugInfo.json"
