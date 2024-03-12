@@ -16,10 +16,26 @@ spec:
             value:
               - "refs/heads/main"
               - "refs/heads/stage"
-          - path: "body.head_commit.modified"
-            type: "string"
-            value:
-              - "drugInfo.json"
+#          - path: "body.head_commit.modified"
+#            type: "string"
+#            value:
+#              - "drugInfo.json"
+        script: |-
+          function includes(table, val)
+            for i=1,#table do
+              if table[i] == val then 
+                return true
+              end
+            end
+            return false
+          end
+          
+          if (event.body.head_commit.modified and includes(event.body.head_commit.modified, "drugInfo.json")) or 
+             (event.body.head_commit.added and includes(event.body.head_commit.added, "drugInfo.json")) then
+            return true
+          else
+            return false
+          end
 
   triggers:
     - template:
