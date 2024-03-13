@@ -67,12 +67,10 @@ spec:
                         - name: branch
                     container:
                       image: thenaim/alpine-whale:latest
-                      command: [ "sh", "-c", "echo $BRANCH | awk -F'/' '{print $3}'", "echo $REPO_URL"]
-                      env:
-                        - name: REPO_URL
-                          value: "{{inputs.parameters.repo_url}}"
-                        - name: BRANCH
-                          value: "{{inputs.parameters.branch}}"
+                      command: [ "sh", "-c" ]
+                      args:
+                        - "echo 'Repo URL: {{inputs.parameters.repo_url}} and Branch: {{inputs.parameters.branch}}'"
+
           parameters:
             - src:
                 dependencyName: events
