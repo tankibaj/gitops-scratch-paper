@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: drug-info
+spec:
+  entrypoint: main
+  # We use a volume claim template so that we can have a shared workspace.
+  volumeClaimTemplates:
+    - metadata:
+        name: workspace
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 100Mi
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: clone
+            template: clone
+            arguments:
+              parameters:
+                - name: repo
+                  value: "{{workflow.parameters.repo}}"
+                - name: branch
+                  value: "{{workflow.parameters.branch}}"
+          - name: debug-info
+            template: debug-info
+            arguments:
+              parameters:
+                - name: path
+                  value: "{{workflow.parameters.path}}"
+            depends: "clone"
+
+    # -- Git Checkout --
+    - name: clone
+      inputs:
+        parameters:
+          - name: repo
+          - name: branch
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: workspace
+        image: alpine/git:v2.43.0
+        workingDir: /workspace
+        command: [ sh, -c ]
+        args:
+          - |
+            git clone --branch '{{inputs.parameters.branch}}' '{{inputs.parameters.repo}}' .
+
+    # -- Debug --
+    - name: debug-info
+      inputs:
+        parameters:
+          - name: path
+      container:
+        volumeMounts:
+          - mountPath: /workspace
+            name: workspace
+        workingDir: /work/{{inputs.parameters.path}}
+        image: alpine:latest
+        env:
+          - name: GIT_ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: git-credentials
+                key: token
+        command: [ sh, -c ]
+        args:
+          - |
+            id
+            echo "Listing /work directory:"
+            ls -lah /work
