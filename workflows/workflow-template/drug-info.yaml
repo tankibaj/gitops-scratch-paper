@@ -19,29 +19,12 @@ spec:
         tasks:
           - name: clone
             template: clone
-            arguments:
-              parameters:
-                - name: repo_url
-                  value: "{{workflow.parameters.repo_url}}"
-                - name: branch
-                  value: "{{workflow.parameters.branch}}"
-                - name: work_dir
-                  value: "{{workflow.parameters.work_dir}}"
           - name: debug-info
             template: debug-info
-            arguments:
-              parameters:
-                - name: work_dir
-                  value: "{{workflow.parameters.work_dir}}"
             depends: "clone"
 
     # -- Git Checkout --
     - name: clone
-      inputs:
-        parameters:
-          - name: repo_url
-          - name: branch
-          - name: work_dir
       container:
         volumeMounts:
           - mountPath: /workspace
@@ -51,14 +34,11 @@ spec:
         command: [ sh, -c ]
         args:
           - |
-            branch_name=$(echo '{{inputs.parameters.branch}}' | awk -F'/' '{print $3}')
-            git clone --branch $branch_name '{{inputs.parameters.repo_url}}' .
+            branch_name=$(echo '{{workflow.parameters.branch}}' | awk -F'/' '{print $3}')
+            git clone --branch $branch_name '{{workflow.parameters.repo_url}}' .
 
     # -- Debug --
     - name: debug-info
-      inputs:
-        parameters:
-          - name: work_dir
       container:
         volumeMounts:
           - mountPath: "{{workflow.parameters.work_dir}}"
