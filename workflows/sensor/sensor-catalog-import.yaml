@@ -57,8 +57,8 @@ spec:
                       value: # the value will get overridden by events dependency
                     - name: branch
                       value: # the value will get overridden by events dependency
-                workflowTemplateRef:
-                  name: drug-info
+#                workflowTemplateRef:
+#                  name: drug-info
                 templates:
                   - name: main
                     inputs:
