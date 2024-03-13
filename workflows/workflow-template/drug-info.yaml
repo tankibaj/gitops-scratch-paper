@@ -44,10 +44,10 @@ spec:
           - name: work_dir
       container:
         volumeMounts:
-          - mountPath: "{{inputs.parameters.work_dir}}"
+          - mountPath: /workspace
             name: workspace
         image: alpine/git:v2.43.0
-        workingDir: "{{inputs.parameters.work_dir}}"
+        workingDir: /workspace
         command: [ sh, -c ]
         args:
           - |
