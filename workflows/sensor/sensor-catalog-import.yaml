@@ -57,19 +57,21 @@ spec:
                       value: # the value will get overridden by events dependency
                     - name: branch
                       value: # the value will get overridden by events dependency
-#                workflowTemplateRef:
-#                  name: drug-info
-                templates:
-                  - name: main
-                    inputs:
-                      parameters:
-                        - name: repo_url
-                        - name: branch
-                    container:
-                      image: thenaim/alpine-whale:latest
-                      command: [ "sh", "-c" ]
-                      args:
-                        - "echo 'Repo URL: {{inputs.parameters.repo_url}} and Branch: {{inputs.parameters.branch}}'"
+                    - name: work_dir
+                      value: /workspace
+                workflowTemplateRef:
+                  name: drug-info
+#                templates:
+#                  - name: main
+#                    inputs:
+#                      parameters:
+#                        - name: repo_url
+#                        - name: branch
+#                    container:
+#                      image: thenaim/alpine-whale:latest
+#                      command: [ "sh", "-c" ]
+#                      args:
+#                        - "echo 'Repo URL: {{inputs.parameters.repo_url}} and Branch: {{inputs.parameters.branch}}'"
 
           parameters:
             - src:
