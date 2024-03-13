@@ -63,6 +63,7 @@ spec:
                   - name: main
                     inputs:
                       parameters:
+                        - name: repo_url
                         - name: branch
                     container:
                       image: thenaim/alpine-whale:latest
