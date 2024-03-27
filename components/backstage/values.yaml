@@ -4,12 +4,12 @@ backstage:
 #    repository: janus-idp/redhat-backstage-build
 #    tag: latest
   extraEnvVars:
-    - name: 'APP_CONFIG_app_baseUrl'
-      value: 'https://{{ .Values.ingress.host }}'
-    - name: 'APP_CONFIG_backend_baseUrl'
-      value: 'https://{{ .Values.ingress.host }}'
-    - name: 'APP_CONFIG_backend_cors_origin'
-      value: 'https://{{ .Values.ingress.host }}'
+#    - name: 'APP_CONFIG_app_baseUrl'
+#      value: 'https://{{ .Values.ingress.host }}'
+#    - name: 'APP_CONFIG_backend_baseUrl'
+#      value: 'https://{{ .Values.ingress.host }}'
+#    - name: 'APP_CONFIG_backend_cors_origin'
+#      value: 'https://{{ .Values.ingress.host }}'
 #    - name: 'APP_CONFIG_backend_database_client'
 #      value: pg
 #    - name: 'APP_CONFIG_backend_database_connection_host'
