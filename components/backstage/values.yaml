@@ -1,3 +1,30 @@
+backstage:
+  image:
+    registry: ghcr.io
+    repository: janus-idp/redhat-backstage-build
+    tag: latest
+  extraEnvVars:
+    - name: 'APP_CONFIG_app_baseUrl'
+      value: 'https://{{ .Values.ingress.host }}'
+    - name: 'APP_CONFIG_backend_baseUrl'
+      value: 'https://{{ .Values.ingress.host }}'
+    - name: 'APP_CONFIG_backend_cors_origin'
+      value: 'https://{{ .Values.ingress.host }}'
+    - name: 'APP_CONFIG_backend_database_client'
+      value: pg
+    - name: 'APP_CONFIG_backend_database_connection_host'
+      value: '{{ include "backstage.postgresql.host" . }}'
+    - name: 'APP_CONFIG_backend_database_connection_port'
+      value: '5432'
+    - name: 'APP_CONFIG_backend_database_connection_user'
+      value: '{{ .Values.postgresql.auth.username }}'
+    - name: 'APP_CONFIG_backend_database_connection_password'
+      valueFrom:
+        secretKeyRef:
+          key: postgres-password
+          name: '{{ include "backstage.postgresql.fullname" . }}'
+
+
 ingress:
   enabled: true
   className: public
@@ -5,3 +32,8 @@ ingress:
 
 postgresql:
   enabled: true
+  database: backstage
+#  postgresqlDataDir: /var/lib/pgsql/data/userdata
+  auth:
+    username: postgres
+    database: backstage
