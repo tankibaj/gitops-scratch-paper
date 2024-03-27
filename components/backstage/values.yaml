@@ -36,4 +36,4 @@ postgresql:
 #  postgresqlDataDir: /var/lib/pgsql/data/userdata
   auth:
     username: postgres
-    database: backstage
+#    database: backstage
