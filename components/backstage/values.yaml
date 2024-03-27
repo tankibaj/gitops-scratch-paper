@@ -1,8 +1,8 @@
 backstage:
-  image:
-    registry: ghcr.io
-    repository: janus-idp/redhat-backstage-build
-    tag: latest
+#  image:
+#    registry: ghcr.io
+#    repository: janus-idp/redhat-backstage-build
+#    tag: latest
   extraEnvVars:
     - name: 'APP_CONFIG_app_baseUrl'
       value: 'https://{{ .Values.ingress.host }}'
@@ -22,7 +22,7 @@ backstage:
       valueFrom:
         secretKeyRef:
           key: postgres-password
-          name: '{{ include "backstage.postgresql.fullname" . }}'
+          name: backstage-postgresql #'{{ include "backstage.postgresql.fullname" . }}'
 
 
 ingress:
