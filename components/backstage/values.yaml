@@ -22,7 +22,7 @@ backstage:
       valueFrom:
         secretKeyRef:
           key: postgres-password
-          name: '{{ include "backstage.postgresql.fullname" . }}'
+          name: hello #'{{ include "backstage.postgresql.fullname" . }}'
 
 
 ingress:
