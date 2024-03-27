@@ -19,7 +19,7 @@ backstage:
     - name: 'APP_CONFIG_backend_database_connection_user'
       value: '{{ .Values.postgresql.auth.username }}'
     - name: 'APP_CONFIG_backend_database_connection_password'
-      value: '{{ .Values.postgresql.auth.password }}'
+      value: postgres
 #      valueFrom:
 #        secretKeyRef:
 #          key: hello-password
