@@ -23,28 +23,28 @@ backstage:
 #        secretKeyRef:
 #          key: postgres-password
 #          name: '{{ include "backstage.postgresql.fullname" . }}'`
-    - name: POSTGRES_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          key: postgres-password
-          name: '{{ include "backstage.postgresql.fullname" . }}'
+#    - name: POSTGRES_PASSWORD
+#      valueFrom:
+#        secretKeyRef:
+#          key: postgres-password
+#          name: '{{ include "backstage.postgresql.fullname" . }}'
 
-  appConfig:
-    app:
-      # Let's test that everything is fine with comments
-      title: The very best Backstage Helm Chart! :D
-      baseUrl: https://somedomain.tl
-    backend:
-      baseUrl: https://somedomain.tl
-      listen:
-        port: 12345
-      database:
-        client: pg
-        connection:
-          host: '{{ include "backstage.postgresql.host" . }}'
-          port: 5432
-          user: '{{ .Values.postgresql.auth.username }}'
-          password: '{{ .Values.postgresql.auth.password }}'
+#  appConfig:
+#    app:
+#      # Let's test that everything is fine with comments
+#      title: The very best Backstage Helm Chart! :D
+#      baseUrl: https://somedomain.tl
+#    backend:
+#      baseUrl: https://somedomain.tl
+#      listen:
+#        port: 12345
+#      database:
+#        client: pg
+#        connection:
+#          host: '{{ include "backstage.postgresql.host" . }}'
+#          port: 5432
+#          user: '{{ .Values.postgresql.auth.username }}'
+#          password: '{{ .Values.postgresql.auth.password }}'
 
 ingress:
   enabled: true
@@ -56,5 +56,9 @@ postgresql:
   database: backstage
 #  postgresqlDataDir: /var/lib/pgsql/data/userdata
   auth:
-    username: postgres
-    password: "postgres"
+    existingSecret: "backstage-postgresql"
+    secretKeys:
+      adminPasswordKey: admin-password
+      userPasswordKey: password
+
+# -- kubectl create secret generic backstage-postgresql --from-literal=admin-password=foo123 --from-literal=password=postgres
