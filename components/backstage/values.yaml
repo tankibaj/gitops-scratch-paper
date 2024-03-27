@@ -21,7 +21,7 @@ backstage:
     - name: 'APP_CONFIG_backend_database_connection_password'
       valueFrom:
         secretKeyRef:
-          key: postgres-password
+          key: hello-password
           name: hello #'{{ include "backstage.postgresql.fullname" . }}'
 
 
