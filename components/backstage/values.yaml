@@ -18,12 +18,16 @@ backstage:
       value: '5432'
     - name: 'APP_CONFIG_backend_database_connection_user'
       value: '{{ .Values.postgresql.auth.username }}'
-    - name: 'APP_CONFIG_backend_database_connection_password'
-      value: postgres
+#    - name: 'APP_CONFIG_backend_database_connection_password'
 #      valueFrom:
 #        secretKeyRef:
-#          key: hello-password
-#          name: hello #'{{ include "backstage.postgresql.fullname" . }}'
+#          key: postgres-password
+#          name: '{{ include "backstage.postgresql.fullname" . }}'
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: postgres-password
+          name: '{{ include "backstage.postgresql.fullname" . }}'
 
 
 ingress:
