@@ -19,10 +19,11 @@ backstage:
     - name: 'APP_CONFIG_backend_database_connection_user'
       value: '{{ .Values.postgresql.auth.username }}'
     - name: 'APP_CONFIG_backend_database_connection_password'
-      valueFrom:
-        secretKeyRef:
-          key: hello-password
-          name: hello #'{{ include "backstage.postgresql.fullname" . }}'
+      value: '{{ .Values.postgresql.auth.password }}'
+#      valueFrom:
+#        secretKeyRef:
+#          key: hello-password
+#          name: hello #'{{ include "backstage.postgresql.fullname" . }}'
 
 
 ingress:
@@ -36,4 +37,4 @@ postgresql:
 #  postgresqlDataDir: /var/lib/pgsql/data/userdata
   auth:
     username: postgres
-#    database: backstage
+    password: "postgres"
