@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backstage
+  namespace: argocd
+  labels:
+    name: dip
+spec:
+  project: gitops
+  sources:
+    - repoURL: https://backstage.github.io/charts
+      chart: backstage
+      targetRevision: 1.9.2
+      helm:
+        version: v3
+        releaseName: backstage
+        valueFiles:
+          - $values/components/backstage/values.yaml
+#          - $values/components/backstage/secrets.enc.yaml
+    - ref: values
+      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: backstage
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
