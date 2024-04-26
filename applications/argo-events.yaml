@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: https://argoproj.github.io/argo-helm
       chart: argo-events
-      targetRevision: 2.4.2
+      targetRevision: 2.4.4
       helm:
         version: v3
         releaseName: argo-events
