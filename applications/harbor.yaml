@@ -21,3 +21,21 @@ spec:
     namespace: harbor
   syncPolicy:
     automated: { }
+  ignoreDifferences:
+    - group: "*"
+      kind: Secret
+      jsonPointers:
+        - /data/tls.crt
+        - /data/tls.key
+        - /data/REGISTRY_HTPASSWD
+        - /data/CSRF_KEY
+        - /data/secret
+        - /data/JOBSERVICE_SECRET
+        - /data/REGISTRY_HTTP_SECRET
+        - /spec/template/metadata/annotations/checksum/secret
+        - /spec/template/metadata/annotations/checksum/secret-jobservice
+        - /spec/template/metadata/annotations/checksum/secret-core
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/metadata/annotations
