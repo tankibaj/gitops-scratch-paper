@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
     targetRevision: main
-    path: cloudflared
+    path: components/cloudflared
   destination:
     server: https://kubernetes.default.svc
     namespace: cloudflared
