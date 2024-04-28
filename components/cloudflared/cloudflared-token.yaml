@@ -1,0 +1,21 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cloudflared-token
+#  namespace: cloudflared
+spec:
+  refreshInterval: "15s"
+  secretStoreRef:
+    name: vault-management                            # -- Name of ClusterSecretStore/SecretStore
+    kind: ClusterSecretStore
+  target:
+    name: cloudflared-token                           # -- Kubernetes secret object name
+  data:
+    - secretKey: token                                # -- This will be the key in kubernetes secret.
+      remoteRef:                                      # -- Vault information about secret
+        key: management/cloudflare-tunnel             # -- Path of vault secret
+        property: token                               # -- Key of secret in vault
+#    - secretKey: user
+#      remoteRef:
+#        key: management/foo
+#        property: user
