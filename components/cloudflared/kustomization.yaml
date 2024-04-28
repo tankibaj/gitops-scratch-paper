@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - cloudflared-token.yaml
   - cloudflared.yaml
-  - httpbin.yaml
+#  - httpbin.yaml
