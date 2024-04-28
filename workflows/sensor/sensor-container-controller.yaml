@@ -1,0 +1,84 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: sensor-container-controller
+spec:
+  template:
+    serviceAccountName: workflow-generic-sa
+  dependencies:
+    - name: events
+      eventSourceName: eventsource-webhook # This is the name of the event source
+      eventName: container-controller # This is the name of the event in the event source
+      filters:
+        data:
+          - path: "body.ref"
+            type: "string"
+            value:
+              - "refs/heads/main"
+              - "refs/heads/test"
+#          - path: "body.head_commit.modified"
+#            type: "string"
+#            value:
+#              - "drugInfo.json"
+#        script: |-
+#          function includes(table, val)
+#            for i=1,#table do
+#              if table[i] == val then
+#                return true
+#              end
+#            end
+#            return false
+#          end
+#
+#          if (event.body.head_commit.modified and includes(event.body.head_commit.modified, "drugInfo.json")) or
+#             (event.body.head_commit.added and includes(event.body.head_commit.added, "drugInfo.json")) then
+#            return true
+#          else
+#            return false
+#          end
+
+  triggers:
+    - template:
+        name: webhook-workflow-trigger
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: drug-info-
+              spec:
+                serviceAccountName: workflow-generic-sa
+                entrypoint: main
+                arguments:
+                  parameters:
+                    - name: repo_url
+                      value: # the value will get overridden by events dependency
+                    - name: branch
+                      value: # the value will get overridden by events dependency
+                    - name: work_dir
+                      value: /workspace
+                workflowTemplateRef:
+                  name: drug-info
+#                templates:
+#                  - name: main
+#                    inputs:
+#                      parameters:
+#                        - name: repo_url
+#                        - name: branch
+#                    container:
+#                      image: thenaim/alpine-whale:latest
+#                      command: [ "sh", "-c" ]
+#                      args:
+#                        - "echo 'Repo URL: {{inputs.parameters.repo_url}} and Branch: {{inputs.parameters.branch}}'"
+
+          parameters:
+            - src:
+                dependencyName: events
+                dataKey: body.repository.clone_url
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: events
+                dataKey: body.ref
+              dest: spec.arguments.parameters.1.value

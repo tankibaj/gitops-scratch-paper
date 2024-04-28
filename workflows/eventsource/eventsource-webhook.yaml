@@ -31,6 +31,12 @@ spec:
       method: POST
       events:
         - push
+    container-controller:
+      port: "12000"
+      endpoint: /container-controller
+      method: POST
+      events:
+        - push
 
 
 ---
