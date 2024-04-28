@@ -36,3 +36,5 @@ resources:
   # -- Workflow: Catalog Import
   - sensor/sensor-catalog-import.yaml
   - workflow-template/drug-info.yaml
+
+  # -- Workflow: Container controller
