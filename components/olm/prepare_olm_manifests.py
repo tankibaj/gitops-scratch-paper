@@ -20,7 +20,7 @@ def append_annotations_to_crds(filename):
             if crd and crd.get('kind') == 'CustomResourceDefinition':
                 crd.setdefault('metadata', {}).setdefault('annotations', {}).update({
                     'argocd.argoproj.io/sync-wave': '-1',
-                    'argocd.argoproj.io/hook': 'PreSync'
+                    # 'argocd.argoproj.io/hook': 'PreSync'
                 })
 
     with open(filename, 'w') as f:
@@ -55,7 +55,7 @@ def write_manifest(filename, resources, sync_wave=None, hook=None):
             if sync_wave and hook and 'metadata' in resource:
                 resource['metadata'].setdefault('annotations', {}).update({
                     'argocd.argoproj.io/sync-wave': sync_wave,
-                    'argocd.argoproj.io/hook': hook
+                    # 'argocd.argoproj.io/hook': hook
                 })
             yaml.dump(resource, f)
             f.write('---\n')
