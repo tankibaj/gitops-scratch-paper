@@ -1,0 +1,5 @@
+- Fetch crds.yaml and olm.yaml manifests from the github repository
+- Remove namespace resources from the OLM manifests to avoid conflicts with the gitops
+- Split up manifests into separate files for easier management
+- Add sync-wave and hook annotations to ensure that the CRDs are created before the operator
+- Add a `kustomization.yaml` file to make it easier to deploy the manifests
