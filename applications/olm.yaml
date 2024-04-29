@@ -16,5 +16,11 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
     automated:
       prune: true
+  ignoreDifferences:
+    - group: "*"
+      kind: ClusterServiceVersion
+      jsonPointers:
+        - /spec/version
