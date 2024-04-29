@@ -7,17 +7,26 @@ metadata:
     name: db
 spec:
   project: gitops
-  source:
-    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-    path: components/postgres
-    targetRevision: main
-    helm:
-      releaseName: postgres
-      valueFiles:
-        - values.yaml
-        - secrets.enc.yaml
+  sources:
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: postgresql
+      targetRevision: 15.2.5
+      helm:
+        version: v3
+        releaseName: postgres
+        valueFiles:
+          - $values/components/postgres/values.yaml
+    - ref: values
+      repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: main
+    - repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: main
+      path: components/postgres
+      kustomize:
+        namePrefix: postgres-
   destination:
     server: https://kubernetes.default.svc
     namespace: postgres
   syncPolicy:
-    automated: { }
+    syncOptions:
+      - CreateNamespace=true
