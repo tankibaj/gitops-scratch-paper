@@ -3,7 +3,6 @@ kind: OperatorGroup
 metadata:
   annotations:
     argocd.argoproj.io/hook: Sync
-    argocd.argoproj.io/sync-wave: '1'
   name: global-operators
   namespace: operators
 ---

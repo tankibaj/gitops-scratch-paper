@@ -3,7 +3,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: catalogsources.operators.coreos.com
@@ -1260,7 +1259,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: clusterserviceversions.operators.coreos.com
@@ -12622,7 +12620,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: installplans.operators.coreos.com
@@ -12940,7 +12937,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: olmconfigs.operators.coreos.com
@@ -13084,7 +13080,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: operatorconditions.operators.coreos.com
@@ -13538,7 +13533,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: operatorgroups.operators.coreos.com
@@ -13937,7 +13931,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: operators.operators.coreos.com
@@ -14116,7 +14109,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/sync-wave: '-1'
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
   name: subscriptions.operators.coreos.com
