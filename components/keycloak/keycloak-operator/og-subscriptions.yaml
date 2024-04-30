@@ -1,0 +1,19 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: operatorgroup
+spec:
+  targetNamespaces:
+  - keycloak
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: keycloak-operator
+spec:
+  channel: fast
+  name: keycloak-operator
+  source: operatorhubio-catalog
+  sourceNamespace: olm
+  installPlanApproval: Manual
+  startingCSV: keycloak-operator.v24.0.3

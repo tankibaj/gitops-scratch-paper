@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak
+  namespace: argocd
+  labels:
+    name: sso
+spec:
+  project: gitops
+  sources:
+    - repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+      targetRevision: main
+      path: components/keycloak/keycloak-operator
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: keycloak
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
