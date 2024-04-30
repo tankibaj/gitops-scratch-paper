@@ -48,14 +48,14 @@ server:
   auditStorage:
     enabled: false
 
-  # AWS KMS Auto Unseal secret - https://developer.hashicorp.com/vault/docs/configuration/seal/awskms
-  extraSecretEnvironmentVars:
-    - envName: AWS_SECRET_ACCESS_KEY
-      secretName: aws-kms
-      secretKey: AWS_SECRET_ACCESS_KEY
-    - envName: AWS_ACCESS_KEY_ID
-      secretName: aws-kms
-      secretKey: AWS_ACCESS_KEY_ID
+#  # AWS KMS Auto Unseal secret - https://developer.hashicorp.com/vault/docs/configuration/seal/awskms
+#  extraSecretEnvironmentVars:
+#    - envName: AWS_SECRET_ACCESS_KEY
+#      secretName: aws-kms
+#      secretKey: AWS_SECRET_ACCESS_KEY
+#    - envName: AWS_ACCESS_KEY_ID
+#      secretName: aws-kms
+#      secretKey: AWS_ACCESS_KEY_ID
 
 
 #  standalone:
