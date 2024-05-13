@@ -43,8 +43,8 @@ spec:
         image: docker:dind
         command: [sh, -c]
         args: [
-          "dockerd-entrypoint.sh &",
-          "sleep 10",
+#          "dockerd-entrypoint.sh &",
+#          "sleep 10",
           "docker login {{workflow.parameters.harbor-endpoint}} -u {{workflow.parameters.harbor-user}} -p {{workflow.parameters.harbor-password}}",
           "IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')",
           "docker pull $IMAGE_TAGGED",
