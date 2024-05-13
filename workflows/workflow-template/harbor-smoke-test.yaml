@@ -101,9 +101,15 @@ spec:
         args:
           - |
             until docker ps; do sleep 3; done;
-            echo 'DEBUG: {{inputs.parameters.image}}'
-            echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
-            docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
+            endpoint="{{workflow.parameters.harbor-endpoint}}"
+            # Remove http:// or https:// for Docker tagging
+            clean_endpoint="${endpoint#http://}"
+            clean_endpoint="${clean_endpoint#https://}"
+            # Further clean to ensure all protocols are removed
+            clean_endpoint="${clean_endpoint/http:\/\//}"
+            clean_endpoint="${clean_endpoint/https:\/\//}"
+            echo '{{workflow.parameters.harbor-password}}' | docker login "${endpoint}" -u '{{workflow.parameters.harbor-user}}' --password-stdin
+            docker pull "${clean_endpoint}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image}}"
         env:
           - name: DOCKER_HOST
             value: 127.0.0.1
