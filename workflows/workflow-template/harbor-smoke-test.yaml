@@ -58,7 +58,9 @@ spec:
             echo 'DEBUG: {{inputs.parameters.image}}'
             docker pull '{{inputs.parameters.image}}'
             echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
+            docker images
             docker tag '{{inputs.parameters.image}}' '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
+            docker images
             docker push '{{workflow.parameters.harbor-endpoint}}'/'{'{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
             docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
         env:
