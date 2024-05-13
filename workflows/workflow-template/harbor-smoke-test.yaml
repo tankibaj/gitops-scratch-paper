@@ -41,7 +41,12 @@ spec:
       container:
         image: curlimages/curl:latest
         command: [sh, -c]
-        args: ["curl -s -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X POST '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects' -H 'Content-Type: application/json' -d '{\"project_name\": \"{{workflow.parameters.harbor-project}}\", \"public\": false}'"]
+        args:
+          - |
+            endpoint="{{workflow.parameters.harbor-endpoint}}"
+            # Ensure endpoint starts with https://
+            [[ "$endpoint" =~ ^https:// ]] || endpoint="https://${endpoint#http://}"
+            curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X POST "$endpoint/api/v2.0/projects" -H 'Content-Type: application/json' -d '{"project_name": "{{workflow.parameters.harbor-project}}", "public": false}'
 
     # -- https://argo-workflows.readthedocs.io/en/latest/walk-through/docker-in-docker-using-sidecars/
     - name: push-image
@@ -51,17 +56,21 @@ spec:
       container:
         image: docker:19.03.13
         command: [sh, -c]
-#        args: ["until docker ps; do sleep 3; done; docker run --rm debian:latest cat /etc/os-release"]
         args:
           - |
             until docker ps; do sleep 3; done;
+            endpoint="{{workflow.parameters.harbor-endpoint}}"
+            # Remove http:// or https:// for Docker tagging
+            clean_endpoint="${endpoint#http://}"
+            clean_endpoint="${clean_endpoint#https://}"
+            # Further clean to ensure all protocols are removed
+            clean_endpoint="${clean_endpoint/http:\/\//}"
+            clean_endpoint="${clean_endpoint/https:\/\//}"
             echo 'DEBUG: {{inputs.parameters.image}}'
-            docker pull '{{inputs.parameters.image}}'
-            echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
-            docker images
-            docker tag "{{inputs.parameters.image}}" "{{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image}}"
-            docker images
-            docker push "{{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image}}"
+            docker pull "{{inputs.parameters.image}}"
+            echo '{{workflow.parameters.harbor-password}}' | docker login "${endpoint}" -u '{{workflow.parameters.harbor-user}}' --password-stdin
+            docker tag "{{inputs.parameters.image}}" "${clean_endpoint}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image}}"
+            docker push "${clean_endpoint}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image}}"
         env:
           - name: DOCKER_HOST                 # the docker daemon can be access on the standard port on localhost
             value: 127.0.0.1
