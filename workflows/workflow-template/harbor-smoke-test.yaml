@@ -33,7 +33,7 @@ spec:
       container:
         image: curlimages/curl:latest
         command: [sh, -c]
-        args: ["curl -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X POST '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects' -H 'Content-Type: application/json' -d '{\"project_name\": \"{{workflow.parameters.harbor-project}}\", \"public\": false}'"]
+        args: ["curl -s -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X POST '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects' -H 'Content-Type: application/json' -d '{\"project_name\": \"{{workflow.parameters.harbor-project}}\", \"public\": false}'"]
 
     - name: push-pull-image
       inputs:
@@ -54,12 +54,12 @@ spec:
         ]
         securityContext:
           privileged: true
-        env:
-          - name: DOCKER_HOST
-            value: tcp://localhost:2375
+#        env:
+#          - name: DOCKER_HOST
+#            value: tcp://localhost:2375
 
     - name: cleanup
       container:
         image: curlimages/curl:latest
         command: [sh, -c]
-        args: ["curl -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X DELETE '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects/{{workflow.parameters.harbor-project}}'"]
+        args: ["curl -s -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X DELETE '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects/{{workflow.parameters.harbor-project}}'"]
