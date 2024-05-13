@@ -40,36 +40,39 @@ spec:
         parameters:
           - name: image
       container:
-        image: docker:dind
+#        image: docker:dind
+        image: docker:19.03.13
         command: [sh, -c]
-        args:
-          - |
-            dockerd-entrypoint.sh &
-            sleep 10
-            echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
-            echo '{{inputs.parameters.image}}'
-            IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')
-            docker pull $IMAGE_TAGGED
-            echo $IMAGE_TAGGED
-            docker tag $IMAGE_TAGGED '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
-            docker push '{{workflow.parameters.harbor-endpoint}}'/'{'{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
-            docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
-#        args: [
-##          "dockerd-entrypoint.sh &",
-##          "sleep 10",
-#          "docker login {{workflow.parameters.harbor-endpoint}} -u {{workflow.parameters.harbor-user}} -p {{workflow.parameters.harbor-password}}",
-#          "IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')",
-#          "docker pull $IMAGE_TAGGED",
-#          "echo $IMAGE_TAGGED",
-#          "docker tag $IMAGE_TAGGED {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
-#          "docker push {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
-#          "docker pull {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED"
-#        ]
-        securityContext:
-          privileged: true
-#        env:
-#          - name: DOCKER_HOST
-#            value: tcp://localhost:2375
+        args: ["until docker ps; do sleep 3; done; docker run --rm debian:latest cat /etc/os-release"]
+#        args:
+#          - |
+#            dockerd-entrypoint.sh &
+#            sleep 10
+#            echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
+#            echo '{{inputs.parameters.image}}'
+#            IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')
+#            docker pull $IMAGE_TAGGED
+#            echo $IMAGE_TAGGED
+#            docker tag $IMAGE_TAGGED '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
+#            docker push '{{workflow.parameters.harbor-endpoint}}'/'{'{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
+#            docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
+        env:
+          - name: DOCKER_HOST               # the docker daemon can be access on the standard port on localhost
+            value: 127.0.0.1
+      sidecars:
+        - name: dind
+          image: docker:19.03.13-dind          # Docker already provides an image for running a Docker daemon
+          command: [ dockerd-entrypoint.sh ]
+          env:
+            - name: DOCKER_TLS_CERTDIR         # Docker TLS env config
+              value: ""
+          securityContext:
+            privileged: true                # the Docker daemon can only run in a privileged container
+          # mirrorVolumeMounts will mount the same volumes specified in the main container
+          # to the sidecar (including artifacts), at the same mountPaths. This enables
+          # dind daemon to (partially) see the same filesystem as the main container in
+          # order to use features such as docker volume binding.
+          mirrorVolumeMounts: true
 
     - name: cleanup
       container:
