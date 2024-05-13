@@ -4,13 +4,13 @@ metadata:
   name: harbor-smoke-test
 spec:
   entrypoint: main
-#  arguments:
-#    parameters:
-#      - name: harbor-endpoint
-#      - name: harbor-user
-#      - name: harbor-password
-#      - name: harbor-project
-#      - name: image-list
+  arguments:
+    parameters:
+      - name: harbor-endpoint
+      - name: harbor-user
+      - name: harbor-password
+      - name: harbor-project
+      - name: image-list
   templates:
     - name: main
       dag:
@@ -19,7 +19,7 @@ spec:
             template: create-project
           - name: push-pull-image
             template: push-pull-image
-            dependencies: [create-project]  # Only runs after create-project is completed
+            dependencies: [create-project]
             arguments:
               parameters:
                 - name: image
@@ -27,7 +27,7 @@ spec:
             withParam: "{{workflow.parameters.image-list}}"
           - name: cleanup
             template: cleanup
-            dependencies: [push-pull-image]  # Only runs after push-pull-image is completed
+            dependencies: [push-pull-image]
 
     - name: create-project
       container:
@@ -44,12 +44,13 @@ spec:
         command: [sh, -c]
         args: [
           "dockerd-entrypoint.sh &",
-          "sleep 10",  # Wait for Docker daemon to start
+          "sleep 10",
           "docker login {{workflow.parameters.harbor-endpoint}} -u {{workflow.parameters.harbor-user}} -p {{workflow.parameters.harbor-password}}",
-          "docker pull {{inputs.parameters.image}}",
-          "docker tag {{inputs.parameters.image}} {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image | replace(':', '_')}}",
-          "docker push {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image | replace(':', '_')}}",
-          "docker pull {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image | replace(':', '_')}}"
+          "IMAGE_TAGGED='{{inputs.parameters.image | replace(':', '_')}}'",
+          "docker pull $IMAGE_TAGGED",
+          "docker tag $IMAGE_TAGGED {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
+          "docker push {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
+          "docker pull {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED"
         ]
         securityContext:
           privileged: true
