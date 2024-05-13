@@ -25,10 +25,10 @@ spec:
                 - name: image
                   value: "{{item}}"
             withParam: "{{workflow.parameters.image-list}}"
-          - name: pull-image
+          - name: pull-image-{{item}}
             template: pull-image
             dependencies:
-              - "{{tasks.push-image.outputs.parameters.image}}" # Ensure each pull directly depends on its corresponding push
+              - push-image-{{item}} # Direct mapping to ensure exact dependency
             arguments:
               parameters:
                 - name: image
