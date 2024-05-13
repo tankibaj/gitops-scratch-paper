@@ -17,9 +17,17 @@ spec:
         tasks:
           - name: create-project
             template: create-project
-          - name: push-pull-image
-            template: push-pull-image
+          - name: push-image
+            template: push-image
             dependencies: [create-project]
+            arguments:
+              parameters:
+                - name: image
+                  value: "{{item}}"
+            withParam: "{{workflow.parameters.image-list}}"
+          - name: pull-image
+            template: pull-image
+            dependencies: [push-image]
             arguments:
               parameters:
                 - name: image
@@ -36,7 +44,7 @@ spec:
         args: ["curl -s -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X POST '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects' -H 'Content-Type: application/json' -d '{\"project_name\": \"{{workflow.parameters.harbor-project}}\", \"public\": false}'"]
 
     # -- https://argo-workflows.readthedocs.io/en/latest/walk-through/docker-in-docker-using-sidecars/
-    - name: push-pull-image
+    - name: push-image
       inputs:
         parameters:
           - name: image
@@ -48,13 +56,11 @@ spec:
           - |
             until docker ps; do sleep 3; done;
             echo 'DEBUG: {{inputs.parameters.image}}'
-            docker pull $IMAGE_TAGGED
+            docker pull '{{inputs.parameters.image}}'
             echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
-            IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')
-            echo 'DEBUG:' $IMAGE_TAGGED
-            docker tag $IMAGE_TAGGED '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
-            docker push '{{workflow.parameters.harbor-endpoint}}'/'{'{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
-            docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
+            docker tag '{{inputs.parameters.image}}' '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
+            docker push '{{workflow.parameters.harbor-endpoint}}'/'{'{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
+            docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
         env:
           - name: DOCKER_HOST                 # the docker daemon can be access on the standard port on localhost
             value: 127.0.0.1
@@ -71,6 +77,34 @@ spec:
           # to the sidecar (including artifacts), at the same mountPaths. This enables
           # dind daemon to (partially) see the same filesystem as the main container in
           # order to use features such as docker volume binding.
+          mirrorVolumeMounts: true
+
+    # -- https://argo-workflows.readthedocs.io/en/latest/walk-through/docker-in-docker-using-sidecars/
+    - name: pull-image
+      inputs:
+        parameters:
+          - name: image
+      container:
+        image: docker:19.03.13
+        command: [sh, -c]
+        args:
+          - |
+            until docker ps; do sleep 3; done;
+            echo 'DEBUG: {{inputs.parameters.image}}'
+            echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
+            docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/'{{inputs.parameters.image}}'
+        env:
+          - name: DOCKER_HOST
+            value: 127.0.0.1
+      sidecars:
+        - name: dind
+          image: docker:19.03.13-dind
+          command: [ dockerd-entrypoint.sh ]
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          securityContext:
+            privileged: true
           mirrorVolumeMounts: true
 
     - name: cleanup
