@@ -42,16 +42,27 @@ spec:
       container:
         image: docker:dind
         command: [sh, -c]
-        args: [
-#          "dockerd-entrypoint.sh &",
-#          "sleep 10",
-          "docker login {{workflow.parameters.harbor-endpoint}} -u {{workflow.parameters.harbor-user}} -p {{workflow.parameters.harbor-password}}",
-          "IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')",
-          "docker pull $IMAGE_TAGGED",
-          "docker tag $IMAGE_TAGGED {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
-          "docker push {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
-          "docker pull {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED"
-        ]
+        args:
+          - |
+            docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' -p '{{workflow.parameters.harbor-password}}'
+            echo '{{inputs.parameters.image}}'
+            IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')
+            docker pull $IMAGE_TAGGED
+            echo $IMAGE_TAGGED
+            docker tag $IMAGE_TAGGED '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
+            docker push '{{workflow.parameters.harbor-endpoint}}'/'{'{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
+            docker pull '{{workflow.parameters.harbor-endpoint}}'/'{{workflow.parameters.harbor-project}}'/$IMAGE_TAGGED
+#        args: [
+##          "dockerd-entrypoint.sh &",
+##          "sleep 10",
+#          "docker login {{workflow.parameters.harbor-endpoint}} -u {{workflow.parameters.harbor-user}} -p {{workflow.parameters.harbor-password}}",
+#          "IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')",
+#          "docker pull $IMAGE_TAGGED",
+#          "echo $IMAGE_TAGGED",
+#          "docker tag $IMAGE_TAGGED {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
+#          "docker push {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
+#          "docker pull {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED"
+#        ]
         securityContext:
           privileged: true
 #        env:
