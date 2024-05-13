@@ -28,7 +28,7 @@ spec:
           - name: pull-image
             template: pull-image
             dependencies:
-              - "{{tasks.push-image}}"
+              - push-image
             arguments:
               parameters:
                 - name: image
