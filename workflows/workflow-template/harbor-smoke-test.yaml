@@ -44,7 +44,9 @@ spec:
         command: [sh, -c]
         args:
           - |
-            docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' -p '{{workflow.parameters.harbor-password}}'
+            dockerd-entrypoint.sh &
+            sleep 10
+            echo '{{workflow.parameters.harbor-password}}' | docker login '{{workflow.parameters.harbor-endpoint}}' -u '{{workflow.parameters.harbor-user}}' --password-stdin
             echo '{{inputs.parameters.image}}'
             IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')
             docker pull $IMAGE_TAGGED
