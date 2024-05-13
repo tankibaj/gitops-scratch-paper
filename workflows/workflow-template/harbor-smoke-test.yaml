@@ -121,4 +121,9 @@ spec:
       container:
         image: curlimages/curl:latest
         command: [sh, -c]
-        args: ["curl -s -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X DELETE '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects/{{workflow.parameters.harbor-project}}'"]
+        args:
+          - |
+            endpoint="{{workflow.parameters.harbor-endpoint}}"
+            # Ensure endpoint starts with https://
+            [[ "$endpoint" =~ ^https:// ]] || endpoint="https://${endpoint#http://}"
+            curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X DELETE "$endpoint/api/v2.0/projects/{{workflow.parameters.harbor-project}}"
