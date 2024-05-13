@@ -37,6 +37,10 @@ spec:
       method: POST
       events:
         - push
+    harbor-smoke-test:
+      port: "12000"
+      endpoint: /harbor-smoke-test
+      method: POST
 
 
 ---
@@ -72,6 +76,13 @@ spec:
                 port:
                   number: 12000
           - path: /catalog-import
+            pathType: Prefix
+            backend:
+              service:
+                name: eventsource-webhook-eventsource-svc
+                port:
+                  number: 12000
+          - path: /harbor-smoke-test
             pathType: Prefix
             backend:
               service:

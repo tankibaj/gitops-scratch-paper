@@ -1,0 +1,64 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: harbor-smoke-test
+spec:
+  entrypoint: main
+#  arguments:
+#    parameters:
+#      - name: harbor-endpoint
+#      - name: harbor-user
+#      - name: harbor-password
+#      - name: harbor-project
+#      - name: image-list
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: create-project
+            template: create-project
+          - name: push-pull-image
+            template: push-pull-image
+            dependencies: [create-project]  # Only runs after create-project is completed
+            arguments:
+              parameters:
+                - name: image
+                  value: "{{item}}"
+            withParam: "{{workflow.parameters.image-list}}"
+          - name: cleanup
+            template: cleanup
+            dependencies: [push-pull-image]  # Only runs after push-pull-image is completed
+
+    - name: create-project
+      container:
+        image: curlimages/curl:latest
+        command: [sh, -c]
+        args: ["curl -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X POST '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects' -H 'Content-Type: application/json' -d '{\"project_name\": \"{{workflow.parameters.harbor-project}}\", \"public\": false}'"]
+
+    - name: push-pull-image
+      inputs:
+        parameters:
+          - name: image
+      container:
+        image: docker:dind
+        command: [sh, -c]
+        args: [
+          "dockerd-entrypoint.sh &",
+          "sleep 10",  # Wait for Docker daemon to start
+          "docker login {{workflow.parameters.harbor-endpoint}} -u {{workflow.parameters.harbor-user}} -p {{workflow.parameters.harbor-password}}",
+          "docker pull {{inputs.parameters.image}}",
+          "docker tag {{inputs.parameters.image}} {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image | replace(':', '_')}}",
+          "docker push {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image | replace(':', '_')}}",
+          "docker pull {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/{{inputs.parameters.image | replace(':', '_')}}"
+        ]
+        securityContext:
+          privileged: true
+#        env:
+#          - name: DOCKER_HOST
+#            value: tcp://localhost:2375
+
+    - name: cleanup
+      container:
+        image: curlimages/curl:latest
+        command: [sh, -c]
+        args: ["curl -u {{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}} -X DELETE '{{workflow.parameters.harbor-endpoint}}/api/v2.0/projects/{{workflow.parameters.harbor-project}}'"]

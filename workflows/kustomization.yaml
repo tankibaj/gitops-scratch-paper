@@ -38,3 +38,7 @@ resources:
   - workflow-template/drug-info.yaml
 
   # -- Workflow: Container controller
+
+  # -- Workflow: Harbor Smoke Test
+  - sensor/harbor-smoke-test.yaml
+  - workflow-template/harbor-smoke-test.yaml

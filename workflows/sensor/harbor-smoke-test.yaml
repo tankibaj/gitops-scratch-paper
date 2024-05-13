@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: harbor-smoke-test
+spec:
+  template:
+    serviceAccountName: workflow-generic-sa
+  dependencies:
+    - name: webhook-payload
+      eventSourceName: eventsource-webhook
+      eventName: harbor-smoke-test
+  triggers:
+    - template:
+        name: workflow-trigger
+        argoWorkflow:
+          operation: submit # This is the key addition
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: harbor-smoke-test-
+              spec:
+                serviceAccountName: workflow-generic-sa
+                arguments:
+                  parameters:
+                    - name: harbor-endpoint
+                    - name: harbor-user
+                    - name: harbor-password
+                    - name: harbor-project
+                    - name: image-list
+                workflowTemplateRef:
+                  name: harbor-smoke-test
+          parameters: # Explicitly define parameters to pass from the event to the workflow
+            - src:
+                dependencyName: webhook-payload
+                dataKey: body.endpoint
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: webhook-payload
+                dataKey: body.user
+              dest: spec.arguments.parameters.1.value
+            - src:
+                dependencyName: webhook-payload
+                dataKey: body.password
+              dest: spec.arguments.parameters.2.value
+            - src:
+                dependencyName: webhook-payload
+                dataKey: body.project
+              dest: spec.arguments.parameters.3.value
+            - src:
+                dependencyName: webhook-payload
+                dataKey: body.images
+              dest: spec.arguments.parameters.4.value
