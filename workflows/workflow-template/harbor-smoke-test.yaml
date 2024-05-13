@@ -27,7 +27,8 @@ spec:
             withParam: "{{workflow.parameters.image-list}}"
           - name: pull-image
             template: pull-image
-            dependencies: [push-image]
+            dependencies:
+              - "{{tasks.push-image.outputs.parameters.image}}" # Ensure each pull directly depends on its corresponding push
             arguments:
               parameters:
                 - name: image
