@@ -46,7 +46,7 @@ spec:
           "dockerd-entrypoint.sh &",
           "sleep 10",
           "docker login {{workflow.parameters.harbor-endpoint}} -u {{workflow.parameters.harbor-user}} -p {{workflow.parameters.harbor-password}}",
-          "IMAGE_TAGGED='{{inputs.parameters.image | replace(':', '_')}}'",
+          "IMAGE_TAGGED=$(echo '{{inputs.parameters.image}}' | sed 's/:/_/g')",
           "docker pull $IMAGE_TAGGED",
           "docker tag $IMAGE_TAGGED {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
           "docker push {{workflow.parameters.harbor-endpoint}}/{{workflow.parameters.harbor-project}}/$IMAGE_TAGGED",
@@ -54,9 +54,9 @@ spec:
         ]
         securityContext:
           privileged: true
-#        env:
-#          - name: DOCKER_HOST
-#            value: tcp://localhost:2375
+        env:
+          - name: DOCKER_HOST
+            value: tcp://localhost:2375
 
     - name: cleanup
       container:
