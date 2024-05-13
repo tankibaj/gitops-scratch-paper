@@ -27,16 +27,18 @@ spec:
             withParam: "{{workflow.parameters.image-list}}"
           - name: pull-image
             template: pull-image
-            dependencies:
-              - push-image
+            dependencies: [push-image]
             arguments:
               parameters:
                 - name: image
                   value: "{{item}}"
             withParam: "{{workflow.parameters.image-list}}"
-#          - name: cleanup
-#            template: cleanup
-#            dependencies: [push-pull-image]
+          - name: approve
+            template: approve
+            dependencies: [pull-image]
+          - name: cleanup
+            template: cleanup
+            dependencies: [pull-image]
 
     - name: create-project
       container:
@@ -123,6 +125,10 @@ spec:
           securityContext:
             privileged: true
           mirrorVolumeMounts: true
+
+    # -- Manual Approval --
+    - name: approve
+      suspend: {}
 
     - name: cleanup
       container:
