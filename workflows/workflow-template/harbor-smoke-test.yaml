@@ -25,9 +25,9 @@ spec:
                 - name: image
                   value: "{{item}}"
             withParam: "{{workflow.parameters.image-list}}"
-          - name: cleanup
-            template: cleanup
-            dependencies: [push-pull-image]
+#          - name: cleanup
+#            template: cleanup
+#            dependencies: [push-pull-image]
 
     - name: create-project
       container:
