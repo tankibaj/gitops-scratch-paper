@@ -137,6 +137,9 @@ spec:
         args:
           - |
             endpoint="{{workflow.parameters.harbor-endpoint}}"
-            # Ensure endpoint starts with https://
             [[ "$endpoint" =~ ^https:// ]] || endpoint="https://${endpoint#http://}"
+            repositories=$(curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" "$endpoint/api/v2.0/projects/{{workflow.parameters.harbor-project}}/repositories" | jq -r '.[].name')
+            for repo in $repositories; do
+              curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X DELETE "$endpoint/api/v2.0/projects/{{workflow.parameters.harbor-project}}/repositories/$repo"
+            done
             curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X DELETE "$endpoint/api/v2.0/projects/{{workflow.parameters.harbor-project}}"
