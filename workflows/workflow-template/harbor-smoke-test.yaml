@@ -139,10 +139,9 @@ spec:
             endpoint="{{workflow.parameters.harbor-endpoint}}"
             [[ "$endpoint" =~ ^https:// ]] || endpoint="https://${endpoint#http://}"
             project="{{workflow.parameters.harbor-project}}"
-            auth="{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}"
 
             echo "Fetching repositories for project $project..."
-            repos=$(curl -s -u $auth "$endpoint/api/v2.0/projects/$project/repositories" | jq -r '.[].name')
+            repos=$(curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X GET "$endpoint/api/v2.0/projects/$project/repositories" | jq -r '.[].name')
 
             if [ -z "$repos" ]; then
               echo "No repositories found for project $project."
@@ -150,9 +149,9 @@ spec:
               for repo in $repos; do
                 echo "Deleting repository $repo..."
                 repo_name=$(echo $repo | sed "s|^$project/||")
-                curl -s -u $auth -X DELETE "$endpoint/api/v2.0/projects/$project/repositories/$repo_name"
+                curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X DELETE "$endpoint/api/v2.0/projects/$project/repositories/$repo_name"
               done
             fi
 
             echo "Deleting project $project..."
-            curl -s -u $auth -X DELETE "$endpoint/api/v2.0/projects/$project"
+            curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X DELETE "$endpoint/api/v2.0/projects/$project"
