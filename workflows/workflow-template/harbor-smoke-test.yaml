@@ -132,8 +132,8 @@ spec:
 
     - name: cleanup
       container:
-        image: curlimages/curl:latest
-        command: [sh, -c]
+        image: thenaim/alpine-whale
+        command: ["/bin/bash", "-c"]
         args:
           - |
             endpoint="{{workflow.parameters.harbor-endpoint}}"
