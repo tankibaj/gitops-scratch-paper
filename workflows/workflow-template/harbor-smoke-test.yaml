@@ -132,14 +132,26 @@ spec:
 
     - name: cleanup
       container:
-        image: thenaim/alpine-whale
-        command: ["/bin/bash", "-c"]
+        image: curlimages/curl:latest
+        command: [sh, -c]
         args:
           - |
             endpoint="{{workflow.parameters.harbor-endpoint}}"
             [[ "$endpoint" =~ ^https:// ]] || endpoint="https://${endpoint#http://}"
-            repositories=$(curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" "$endpoint/api/v2.0/projects/{{workflow.parameters.harbor-project}}/repositories" | jq -r '.[].name')
-            for repo in $repositories; do
-              curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X DELETE "$endpoint/api/v2.0/projects/{{workflow.parameters.harbor-project}}/repositories/$repo"
-            done
-            curl -s -u "{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}" -X DELETE "$endpoint/api/v2.0/projects/{{workflow.parameters.harbor-project}}"
+            project="{{workflow.parameters.harbor-project}}"
+            auth="{{workflow.parameters.harbor-user}}:{{workflow.parameters.harbor-password}}"
+
+            echo "Fetching repositories for project $project..."
+            repos=$(curl -s -u $auth "$endpoint/api/v2.0/projects/$project/repositories" | jq -r '.[].name')
+
+            if [ -z "$repos" ]; then
+              echo "No repositories found for project $project."
+            else
+              for repo in $repos; do
+                echo "Deleting repository $repo..."
+                curl -s -u $auth -X DELETE "$endpoint/api/v2.0/projects/$project/repositories/$repo"
+              done
+            fi
+
+            echo "Deleting project $project..."
+            curl -s -u $auth -X DELETE "$endpoint/api/v2.0/projects/$project"
