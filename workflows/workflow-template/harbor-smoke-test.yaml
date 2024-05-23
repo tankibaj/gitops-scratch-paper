@@ -149,7 +149,8 @@ spec:
             else
               for repo in $repos; do
                 echo "Deleting repository $repo..."
-                curl -s -u $auth -X DELETE "$endpoint/api/v2.0/projects/$project/repositories/$repo"
+                repo_name=$(echo $repo | sed "s|^$project/||")
+                curl -s -u $auth -X DELETE "$endpoint/api/v2.0/projects/$project/repositories/$repo_name"
               done
             fi
 
