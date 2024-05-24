@@ -15,7 +15,7 @@ spec:
       key: password
     host: postgres.postgres.svc.cluster.local
   http:
-    httpEnabled: false
+    httpEnabled: true
   hostname:
 #    hostname: identity.local.naim.run
 #    admin: identity-admin.local.naim.run
