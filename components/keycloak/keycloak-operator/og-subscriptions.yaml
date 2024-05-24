@@ -5,6 +5,7 @@ metadata:
 spec:
   targetNamespaces:
     - keycloak-operator
+    - keycloak-instance
 
 ---
 apiVersion: operators.coreos.com/v1alpha1

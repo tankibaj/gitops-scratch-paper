@@ -3,7 +3,7 @@ kind: Keycloak
 metadata:
   name: keycloak-instance
 spec:
-  instances: 3
+  instances: 1
   db:
     vendor: postgres
     usernameSecret:
@@ -13,6 +13,10 @@ spec:
       name: keycloak-db-secret
       key: password
     host: postgres.postgres.svc.cluster.local
+  externalAccess:
+    enabled: FALSE
+  externalDatabase:
+    enabled: True
 #    database: database
 #    port: 123
 #    schema: schema
