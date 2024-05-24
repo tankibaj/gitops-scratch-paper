@@ -23,5 +23,5 @@ spec:
   ingress:
     enabled: false
   proxy:
-    mode: edge
+#    mode: edge
     headers: forwarded
