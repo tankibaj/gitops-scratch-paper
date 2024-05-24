@@ -14,8 +14,8 @@ spec:
       name: keycloak-db-secret
       key: password
     host: postgres.postgres.svc.cluster.local
-#  http:
-#    httpEnabled: true
+  http:
+    httpEnabled: true
   hostname:
     hostname: identity.local.naim.run
 #    strict: true
