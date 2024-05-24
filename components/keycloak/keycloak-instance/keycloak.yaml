@@ -20,8 +20,8 @@ spec:
 #    httpsPort: 8443
 #    tlsSecret: INSECURE-DISABLE
   hostname:
-    hostname: identity.local.naim.run
-    admin: identity-admin.local.naim.run
+#    hostname: identity.local.naim.run
+#    admin: identity-admin.local.naim.run
     strict: false
     strictBackchannel: false
   ingress:
