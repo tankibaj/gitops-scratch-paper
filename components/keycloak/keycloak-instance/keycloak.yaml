@@ -18,7 +18,7 @@ spec:
     httpEnabled: true
   hostname:
     hostname: identity.local.naim.run
-    admin: identity-admin.local.naim.run
+    admin: identity.local.naim.run
     strict: false
     strictBackchannel: false
   ingress:
