@@ -16,7 +16,6 @@ spec:
     host: postgres.postgres.svc.cluster.local
   http:
     httpEnabled: false
-#    tlsSecret: example-tls-secret
   hostname:
 #    hostname: identity.local.naim.run
 #    admin: identity-admin.local.naim.run
@@ -24,15 +23,15 @@ spec:
     strictBackchannel: true
   ingress:
     enabled: false
-#  proxy:
-#    headers: xforwarded
+  proxy:
+    headers: xforwarded
   additionalOptions:
     - name: hostname-url
       value: "https://identity.local.naim.run"
     - name: hostname-admin-url
       value: "https://identity.local.naim.run"
-    - name: proxy
-      value: "edge"
+#    - name: proxy
+#      value: "edge"
     - name: log-console-color
       value: "true"
     - name: log-level
