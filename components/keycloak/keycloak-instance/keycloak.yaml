@@ -19,8 +19,8 @@ spec:
   hostname:
 #    hostname: identity.local.naim.run
 #    admin: identity-admin.local.naim.run
-    strict: true
-    strictBackchannel: true
+    strict: false
+    strictBackchannel: false
   ingress:
     enabled: false
   proxy:
