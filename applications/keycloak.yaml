@@ -10,11 +10,9 @@ spec:
   sources:
     - repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
       targetRevision: main
-      path: components/keycloak/keycloak-operator
+      path: components/keycloak
   destination:
     server: https://kubernetes.default.svc
-    namespace: keycloak
+    namespace: argocd
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-      - Replace=true
+    automated: { }
