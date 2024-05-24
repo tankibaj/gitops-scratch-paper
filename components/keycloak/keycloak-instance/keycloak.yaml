@@ -22,6 +22,8 @@ spec:
     strictBackchannel: false
   proxy:
     headers: xforwarded # default nginx ingress sets x-forwarded
+  externalAccess:
+    enabled: FALSE
 
 #  externalAccess:
 #    enabled: FALSE
