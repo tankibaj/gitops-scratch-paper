@@ -18,8 +18,8 @@ spec:
     httpEnabled: true
 #    tlsSecret: example-tls-secret
   hostname:
-    hostname: identity.local.naim.run
-    admin: identity-admin.local.naim.run
+#    hostname: identity.local.naim.run
+#    admin: identity-admin.local.naim.run
     strict: false
     strictBackchannel: false
   ingress:
