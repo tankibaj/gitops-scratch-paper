@@ -22,4 +22,4 @@ spec:
   ingress:
     enabled: false
   proxy:
-    headers: xforwarded # default nginx ingress sets x-forwarded
+    headers: forwarded
