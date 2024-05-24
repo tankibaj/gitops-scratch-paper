@@ -4,7 +4,7 @@ metadata:
   name: keycloak-instance
   namespace: keycloak
 spec:
-  instances: 3
+  instances: 1
   db:
     vendor: postgres
     usernameSecret:
