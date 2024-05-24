@@ -23,7 +23,7 @@ spec:
     strict: false
     strictBackchannel: false
   ingress:
-    enabled: true
+    enabled: false
   proxy:
     headers: forwarded
   additionalOptions:
