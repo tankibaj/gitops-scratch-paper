@@ -4,7 +4,7 @@ metadata:
   name: keycloak-operator-group
 spec:
   targetNamespaces:
-    - keycloak-v24
+    - keycloak
 
 ---
 apiVersion: operators.coreos.com/v1alpha1
@@ -18,3 +18,16 @@ spec:
   sourceNamespace: olm
   installPlanApproval: Automatic # Manual
 #  startingCSV: keycloak-operator.v24.0.4
+
+---
+#apiVersion: operators.coreos.com/v1alpha1
+#kind: Subscription
+#metadata:
+#  name: keycloak-operator-v19
+#spec:
+#  channel: alpha
+#  name: keycloak-operator
+#  source: operatorhubio-catalog
+#  sourceNamespace: olm
+#  installPlanApproval: Manual
+#  startingCSV: keycloak-operator.v19.0.2
