@@ -14,7 +14,7 @@ spec:
           - path: 'components/keycloak/*'
   template:
     metadata:
-      name: '{{path}}'
+      name: '{{path | replace "/" "-" | replace "." "-"}}'  # Transform path to a valid name
       labels:
         app.kubernetes.io/managed-by: argocd-applicationset-controller
     spec:
@@ -25,7 +25,7 @@ spec:
         path: '{{path}}'
       destination:
         server: 'https://kubernetes.default.svc'
-        namespace: '{{path}}'
+        namespace: '{{path | replace "/" "-" | replace "." "-"}}'  # Ensure namespace name is also valid
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
