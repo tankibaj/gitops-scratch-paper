@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - db-secret.yaml
   - keycloak.yaml
+  - ingress.yaml

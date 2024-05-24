@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+spec:
+  ingressClassName: public
+  rules:
+    - host: identity.local.naim.run
+      http:
+        paths:
+          - backend:
+              service:
+                name: keycloak-instance-service
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
