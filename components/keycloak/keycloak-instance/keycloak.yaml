@@ -27,9 +27,9 @@ spec:
 #  proxy:
 #    headers: xforwarded
   additionalOptions:
-    - name: hostname-url
-      value: "https://identity.local.naim.run"
-    - name: hostname-admin-url
-      value: "https://identity-admin.local.naim.run"
+#    - name: hostname-url
+#      value: "https://identity.local.naim.run"
+#    - name: hostname-admin-url
+#      value: "https://identity-admin.local.naim.run"
     - name: proxy
       value: "edge"
