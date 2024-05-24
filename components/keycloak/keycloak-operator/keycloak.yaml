@@ -1,0 +1,40 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak-instance
+spec:
+  instances: 3
+  db:
+    vendor: postgres
+    usernameSecret:
+      name: keycloak-db-secret
+      key: username
+    passwordSecret:
+      name: keycloak-db-secret
+      key: password
+    host: postgres.postgres.svc.cluster.local
+#    database: database
+#    port: 123
+#    schema: schema
+#    poolInitialSize: 1
+#    poolMinSize: 2
+#    poolMaxSize: 3
+#  http:
+#    httpEnabled: true
+#    httpPort: 8180
+#    httpsPort: 8543
+#    tlsSecret: my-tls-secret
+#  hostname:
+#    hostname: my-hostname
+#    admin: my-admin-hostname
+#    strict: false
+#    strictBackchannel: false
+#  features:
+#    enabled:
+#      - docker
+#      - authorization
+#    disabled:
+#      - admin
+#      - step-up-authentication
+#  transaction:
+#    xaEnabled: false
