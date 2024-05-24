@@ -25,5 +25,6 @@ spec:
                 name: keycloak-instance-service
                 port:
                   number: 8080
-            path: /auth
+#            path: /auth
+            path: /
             pathType: Prefix
