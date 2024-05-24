@@ -18,10 +18,9 @@ spec:
     httpEnabled: true
   hostname:
     hostname: identity.local.naim.run
-#    strict: false
-#    strictBackchannel: false
+    strict: false
+    strictBackchannel: false
   ingress:
     enabled: false
   proxy:
-#    mode: edge
     headers: forwarded
