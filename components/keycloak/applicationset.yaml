@@ -14,7 +14,7 @@ spec:
           - path: 'components/keycloak/*'
   template:
     metadata:
-      name: 'kc-{{path}}'
+      name: '{{path.basename}}'
       labels:
         app.kubernetes.io/managed-by: argocd-applicationset-controller
     spec:
