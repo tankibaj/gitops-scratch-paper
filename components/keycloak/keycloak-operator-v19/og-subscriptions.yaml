@@ -1,15 +1,16 @@
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name: operatorgroup
+  name: keycloak-operator-group-v19
 spec:
   targetNamespaces:
-  - keycloak-v19
+    - keycloak-operator-v19
+
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: keycloak-operator
+  name: keycloak-operator-v19
 spec:
   channel: alpha
   name: keycloak-operator

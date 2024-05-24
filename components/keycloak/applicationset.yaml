@@ -16,7 +16,6 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/managed-by: argocd-applicationset-controller
-#        app.kubernetes.io/name: keycloak
     spec:
       project: gitops
       source:

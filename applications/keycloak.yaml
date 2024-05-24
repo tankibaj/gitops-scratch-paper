@@ -7,12 +7,12 @@ metadata:
     name: sso
 spec:
   project: gitops
-  sources:
-    - repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
-      targetRevision: main
-      path: components/keycloak
+  source:
+    repoURL: https://github.com/tankibaj/gitops-scratch-paper.git
+    targetRevision: main
+    path: components/keycloak
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
   syncPolicy:
-    automated: { }
+    automated: {}
