@@ -16,6 +16,7 @@ spec:
     host: postgres.postgres.svc.cluster.local
   http:
     httpEnabled: true
+    tlsSecret: example-tls-secret
   hostname:
     hostname: identity.local.naim.run
     strict: false
