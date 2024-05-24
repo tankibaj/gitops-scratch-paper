@@ -27,7 +27,7 @@ spec:
   proxy:
     headers: xforwarded
   additionalOptions:
-    - name: KC_HOSTNAME_URL
+    - name: hostname-url
       value: "https://identity.local.naim.run"
-    - name: KC_HOSTNAME_ADMIN_URL
+    - name: hostname-admin-url
       value: "https://identity-admin.local.naim.run"
