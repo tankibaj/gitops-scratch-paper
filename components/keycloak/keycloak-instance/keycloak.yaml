@@ -16,45 +16,10 @@ spec:
     host: postgres.postgres.svc.cluster.local
   http:
     httpEnabled: true
-#    httpEnabled: false
-#    httpsPort: 8443
-#    tlsSecret: INSECURE-DISABLE
   hostname:
-    hostname: identity.local.naim.run
-    admin: identity-admin.local.naim.run
     strict: false
     strictBackchannel: false
   ingress:
     enabled: false
   proxy:
     headers: xforwarded # default nginx ingress sets x-forwarded
-
-#  externalAccess:
-#    enabled: FALSE
-#  externalDatabase:
-#    enabled: True
-#    database: database
-#    port: 123
-#    schema: schema
-#    poolInitialSize: 1
-#    poolMinSize: 2
-#    poolMaxSize: 3
-#  http:
-#    httpEnabled: true
-#    httpPort: 8180
-#    httpsPort: 8543
-#    tlsSecret: my-tls-secret
-#  hostname:
-#    hostname: my-hostname
-#    admin: my-admin-hostname
-#    strict: false
-#    strictBackchannel: false
-#  features:
-#    enabled:
-#      - docker
-#      - authorization
-#    disabled:
-#      - admin
-#      - step-up-authentication
-#  transaction:
-#    xaEnabled: false
