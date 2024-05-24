@@ -22,6 +22,5 @@ spec:
     strictBackchannel: true
   ingress:
     enabled: false
-  proxy: edge
-#  proxy:
-#    headers: forwarded
+  proxy:
+    headers: forwarded
