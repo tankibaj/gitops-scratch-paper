@@ -17,11 +17,11 @@ spec:
   http:
     httpEnabled: true
   hostname:
-#    hostname: identity.local.naim.run
+    hostname: identity.local.naim.run
     strict: true
     strictBackchannel: true
   ingress:
     enabled: false
   proxy:
     mode: edge
-#    headers: forwarded
+    headers: forwarded
