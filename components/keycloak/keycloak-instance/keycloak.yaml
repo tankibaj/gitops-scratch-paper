@@ -16,12 +16,17 @@ spec:
     host: postgres.postgres.svc.cluster.local
   http:
     httpEnabled: true
-    tlsSecret: example-tls-secret
+#    tlsSecret: example-tls-secret
   hostname:
-    hostname: identity.local.naim.run
+#    hostname: identity.local.naim.run
     strict: false
     strictBackchannel: false
   ingress:
-    enabled: false
+    enabled: true
   proxy:
-    headers: xforwarded
+    headers: forwarded
+  additionalOptions:
+    - name: KC_HOSTNAME_URL
+      value: "https://identity.local.naim.run"
+    - name: KC_HOSTNAME_ADMIN_URL
+      value: "https://identity-admin.local.naim.run"
