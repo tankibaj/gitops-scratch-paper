@@ -23,4 +23,4 @@ spec:
   ingress:
     enabled: false
   proxy:
-    headers: xforwarded
+    headers: forwarded
