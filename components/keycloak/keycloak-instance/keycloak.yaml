@@ -24,7 +24,7 @@ spec:
   ingress:
     enabled: false
   proxy:
-    headers: xforwarded
+    headers: forwarded
   additionalOptions:
     - name: hostname-url
       value: "https://identity.local.naim.run"
