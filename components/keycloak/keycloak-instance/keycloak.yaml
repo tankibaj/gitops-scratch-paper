@@ -17,8 +17,8 @@ spec:
   http:
     httpEnabled: true
   hostname:
-#    hostname: identity.local.naim.run
-#    admin: identity-admin.local.naim.run
+    hostname: identity.local.naim.run
+    admin: identity-admin.local.naim.run
     strict: false
     strictBackchannel: false
   ingress:
@@ -26,10 +26,10 @@ spec:
   proxy:
     headers: forwarded
   additionalOptions:
-    - name: hostname-url
-      value: "https://identity.local.naim.run"
-    - name: hostname-admin-url
-      value: "https://identity.local.naim.run"
+#    - name: hostname-url
+#      value: "https://identity.local.naim.run"
+#    - name: hostname-admin-url
+#      value: "https://identity.local.naim.run"
 #    - name: proxy
 #      value: "edge"
     - name: log-console-color
