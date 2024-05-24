@@ -14,9 +14,13 @@ spec:
       name: keycloak-db-secret
       key: password
     host: postgres.postgres.svc.cluster.local
+  http:
+    httpEnabled: true
   hostname:
     strict: false
-    hostname: identity.local.naim.run
+    strictBackchannel: false
+  proxy:
+    headers: xforwarded # default nginx ingress sets x-forwarded
 
 #  externalAccess:
 #    enabled: FALSE
