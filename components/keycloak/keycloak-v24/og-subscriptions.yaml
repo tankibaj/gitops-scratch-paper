@@ -4,7 +4,7 @@ metadata:
   name: keycloak-operator-group
 spec:
   targetNamespaces:
-    - keycloak
+    - keycloak-v24
 
 ---
 apiVersion: operators.coreos.com/v1alpha1
