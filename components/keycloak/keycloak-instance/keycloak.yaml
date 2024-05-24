@@ -15,10 +15,10 @@ spec:
       key: password
     host: postgres.postgres.svc.cluster.local
   http:
-#    httpEnabled: true
-    httpEnabled: false
-    httpsPort: 8443
-    tlsSecret: INSECURE-DISABLE
+    httpEnabled: true
+#    httpEnabled: false
+#    httpsPort: 8443
+#    tlsSecret: INSECURE-DISABLE
   hostname:
     hostname: identity.local.naim.run
     admin: identity-admin.local.naim.run
