@@ -54,15 +54,6 @@
    -- Grant all privileges on the public schema to the keycloak_dba role
    GRANT ALL ON SCHEMA public TO keycloak_dba WITH GRANT OPTION;
 
-   -- Grant all privileges on all tables, sequences, and functions in the public schema to the keycloak_dba role
-   GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO keycloak_dba;
-   GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO keycloak_dba;
-   GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO keycloak_dba;
-
-   -- Ensure the keycloak_dba role has default privileges for future objects
-   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO keycloak_dba;
-   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO keycloak_dba;
-   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO keycloak_dba;
    ```
 
 ### Step 3: Verify
